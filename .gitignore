@@ -11,6 +11,14 @@
 *.p12
 secrets/
 .secrets
+.claude/
+.firebase/
+Verytuff.txt
+.firebaserc
+.well-known/
+.functions/
+functions/
+memorys.md
 
 # =============================================================================
 # OS FILES
