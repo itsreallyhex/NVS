@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>شروط الخدمة | Night Void</title>
+<link rel="icon" type="image/png" href="Assets/favicon.png">
+<link rel="apple-touch-icon" href="Assets/favicon.png">
+<style>
+  :root {
+    --bg: #0a0a14;
+    --bg2: #11111f;
+    --card: #16162a;
+    --accent: #8b5cf6;
+    --accent2: #6d28d9;
+    --glow: rgba(139, 92, 246, 0.35);
+    --text: #e8e6f5;
+    --muted: #9b97b8;
+    --border: #2a2a4a;
+    --discord: #5865f2;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  * { scrollbar-width: thin; scrollbar-color: var(--accent) var(--bg2); }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(var(--accent), var(--accent2));
+    border-radius: 10px;
+    border: 2px solid var(--bg2);
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  body {
+    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== النجوم في الخلفية ===== */
+  .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  .star { position: absolute; background: #fff; border-radius: 50%; animation: twinkle 3s infinite ease-in-out; }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 1; }
+  }
+
+  main, header, footer { position: relative; z-index: 1; }
+
+  /* ===== الشريط العلوي ===== */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 5%;
+    background: rgba(17, 17, 31, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.4rem;
+    font-weight: 800;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .logo .logo-img { height: 40px; width: auto; display: block; filter: drop-shadow(0 0 8px var(--glow)); }
+  .logo span.name {
+    background: linear-gradient(90deg, #a78bfa, #f0abfc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  nav { display: flex; align-items: center; gap: 8px; }
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 9px 18px;
+    border-radius: 10px;
+    transition: all 0.2s;
+  }
+  nav a:hover { color: var(--text); background: var(--card); }
+  nav a.discord-link { color: #fff; background: var(--discord); display: flex; align-items: center; gap: 7px; }
+  nav a.discord-link:hover { background: #4752c4; }
+  .dc-ico { width: 1.2em; height: 1.2em; vertical-align: -0.18em; }
+
+  /* ===== محتوى الشروط ===== */
+  .tos-wrap { max-width: 860px; margin: 0 auto; padding: 60px 5% 80px; }
+  .tos-head { text-align: center; margin-bottom: 40px; }
+  .tos-head h1 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    margin-bottom: 12px;
+  }
+  .tos-head h1 .grad {
+    background: linear-gradient(90deg, #a78bfa, #f0abfc, #818cf8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .tos-head p { color: var(--muted); font-size: 0.95rem; }
+
+  /* ===== بطاقات البنود ===== */
+  section.term {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 26px 28px;
+    margin-bottom: 18px;
+  }
+  section.term h2 {
+    font-size: 1.15rem;
+    margin-bottom: 12px;
+    color: #c4b5fd;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  section.term p, section.term li {
+    color: var(--muted);
+    line-height: 2;
+    font-size: 0.95rem;
+  }
+  section.term ul { padding-right: 22px; margin-top: 6px; }
+  section.term b { color: var(--text); }
+  section.term a { color: var(--accent); text-decoration: none; }
+  section.term a:hover { text-decoration: underline; }
+
+  /* ===== ملاحظة الموافقة ===== */
+  .agree-note {
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid var(--accent);
+    color: #c4b5fd;
+    border-radius: 12px;
+    padding: 16px 20px;
+    text-align: center;
+    line-height: 1.9;
+    font-size: 0.92rem;
+    margin-top: 26px;
+  }
+
+  /* ===== الفوتر ===== */
+  footer {
+    text-align: center;
+    padding: 30px 5%;
+    color: var(--muted);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    background: var(--bg2);
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 640px) {
+    nav a { padding: 8px 12px; font-size: 0.85rem; }
+    .logo { font-size: 1.15rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<header>
+  <a class="logo" href="index.html">
+    <img class="logo-img" src="Assets/NVS-logo.png" alt="شعار Night Void">
+  </a>
+  <nav>
+    <a href="index.html">الرئيسية</a>
+    <a href="night-void-store.html">المتجر</a>
+    <a href="https://discord.gg/sAakXRRudu" target="_blank" rel="noopener" class="discord-link"><svg class="dc-ico" viewBox="0 0 127.14 96.36" fill="currentColor" aria-hidden="true"><path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.9-72.15ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"/></svg> ديسكورد</a>
+  </nav>
+</header>
+
+<main>
+  <div class="tos-wrap">
+    <div class="tos-head">
+      <h1>شروط الخدمة <span class="grad">Night Void</span> 📜</h1>
+      <p>آخر تحديث: 12 يونيو 2026 — باستخدامك للموقع أو الطلب منه فأنت توافق على هذه الشروط</p>
+    </div>
+
+    <section class="term">
+      <h2>١ — القبول ✅</h2>
+      <p>استخدام المتجر أو فتح حساب أو إرسال طلب يعني موافقتك على هذه الشروط كاملة. ما توافق؟ لا تستخدم المتجر.</p>
+    </section>
+
+    <section class="term">
+      <h2>٢ — الخدمات 🤖</h2>
+      <p>نقدم خدمات رقمية على الديسكورد:</p>
+      <ul>
+        <li>برمجة بوتات مخصصة من الصفر</li>
+        <li>إعداد وتخصيص بوتات جاهزة</li>
+        <li>بناء سيرفرات ديسكورد وتجهيزها</li>
+      </ul>
+      <p>نحن مستقلون ولسنا تابعين لـ <b>Discord Inc</b>.</p>
+    </section>
+
+    <section class="term">
+      <h2>٣ — الحسابات 👤</h2>
+      <p>أدخل بيانات صحيحة، خصوصاً <b>حساب الديسكورد</b>. أنت المسؤول عن حسابك. أي إساءة أو تلاعب يعني إيقاف الحساب أو حذفه.</p>
+    </section>
+
+    <section class="term">
+      <h2>٤ — الطلبات والدفع 💳</h2>
+      <p>إرسال الطلب لا يعني تأكيده — <b>التأكيد يكون داخل التذكرة الرسمية فقط</b>. الدفع كذلك داخل التذكرة. طلب يمشي <b>٧ أيام</b> بدون إكمال قد يُلغى.</p>
+    </section>
+
+    <section class="term">
+      <h2>٥ — الإلغاء والاسترداد ↩</h2>
+      <p>تقدر تلغي قبل ما نبدأ. بعد البداية لا، <b>تحت أي ظرف</b>.</p>
+      <p>الاسترداد الوحيد الممكن: دفعت ولم نبدأ ولم نسلم أي شيء. غير هذا <b>ما في استرداد</b> — لا بعد بدء التنفيذ، لا بعد التسليم، لا استثناءات.</p>
+      <p>هذا ينطبق على جميع الخدمات: البوتات المخصصة، التخصيص، السيرفرات. الخدمات الرقمية تُسلَّم مرة واحدة ولا يمكن التحقق مما يصير معها بعدها، لما نسلّم انتهى دورنا.</p>
+    </section>
+
+    <section class="term">
+      <h2>٦ — الأسعار 💰</h2>
+      <p>السعر في الموقع هو السعر النهائي. <b>ما في تفاوض بعد تأكيد الطلب</b>. أي إضافة خارج الخدمة الأصلية تُحتسب منفصلة. السعر يثبت لما تؤكد داخل التذكرة.</p>
+    </section>
+
+    <section class="term">
+      <h2>٧ — البوتات المخصصة 💻</h2>
+      <p>تستلم الكود الكامل بعد الانتهاء. <b>الاستضافة عليك</b>. نقدم دعم لـ<b>٧ أيام</b> لإصلاح الأخطاء — بعدها أي مشكلة أو تعديل خارج مسؤوليتنا.</p>
+    </section>
+
+    <section class="term">
+      <h2>٨ — البوتات الجاهزة والتخصيص 🔧</h2>
+      <p>ممكن نطلب وصول مؤقت لحسابك أو صلاحيات السيرفر لتنفيذ الخدمة. هذا الوصول <b>للتنفيذ فقط ويُلغى بعد الانتهاء</b>. بعد التسليم أي مشكلة أو تغيير مسؤوليتك.</p>
+    </section>
+
+    <section class="term">
+      <h2>٩ — الاستخدام المقبول 🚫</h2>
+      <p>ممنوع:</p>
+      <ul>
+        <li>إساءة استخدام الموقع أو النظام</li>
+        <li>انتحال صفة الإدارة</li>
+        <li>طلب خدمات تخالف <a href="https://discord.com/terms" target="_blank" rel="noopener">شروط Discord</a> أو القوانين</li>
+      </ul>
+      <p>أي مخالفة = <b>حظر فوري بدون استرداد</b>.</p>
+    </section>
+
+    <section class="term">
+      <h2>١٠ — صلاحياتنا ⚖️</h2>
+      <p>الأسعار نهائية ولا تفاوض بعد الطلب. يحق لنا نرفض أو نلغي أي طلب في أي وقت. إلغاء من طرفنا قبل البدء يعني إعادة مبلغك. إلغاء بسبب مخالفتك يعني <b>لا استرداد</b>.</p>
+    </section>
+
+    <section class="term">
+      <h2>١١ — حدود المسؤولية 🛡</h2>
+      <p>الخدمة تُقدَّم كما هي. ما نتحمل مسؤولية تحديثات Discord، ولا سوء الاستخدام، ولا مشاكل الاستضافة.</p>
+    </section>
+
+    <section class="term">
+      <h2>١٢ — تعديل الشروط 📝</h2>
+      <p>نقدر نعدل الشروط في أي وقت. استمرارك في الاستخدام يعني موافقتك.</p>
+    </section>
+
+    <section class="term">
+      <h2>١٣ — التواصل 💬</h2>
+      <p>لأي استفسار أو شكوى، افتح تذكرة في <a href="https://discord.gg/sAakXRRudu" target="_blank" rel="noopener">سيرفر Night Void الرسمي</a> — هذه قناة التواصل الرسمية الوحيدة.</p>
+    </section>
+
+    <div class="agree-note">
+       بإنشائك حساباً أو إرسالك طلباً في متجر Night Void فأنت تؤكد موافقتك الكاملة على جميع الشروط أعلاه
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p> متجر Night Void © 2026 — جميع الحقوق محفوظة | <a href="night-void-store.html">المتجر</a> | <a href="https://discord.gg/sAakXRRudu" target="_blank" rel="noopener">انضم لسيرفر الديسكورد</a></p>
+</footer>
+
+<script>
+
+const container = document.getElementById("stars");
+for (let i = 0; i < 90; i++) {
+  const star = document.createElement("div");
+  star.className = "star";
+  const size = Math.random() * 2.5 + 0.5;
+  star.style.cssText = `
+    width:${size}px; height:${size}px;
+    top:${Math.random() * 100}%; right:${Math.random() * 100}%;
+    animation-delay:${Math.random() * 3}s;
+    animation-duration:${2 + Math.random() * 3}s;`;
+  container.appendChild(star);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // المسؤولون = الحسابات أصحاب هذه الـ UIDs فقط
+    // انسخ الـ UID من: Firebase Console → Authentication → Users
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.uid in [
+          "kwbLZoAcamgD20RtZYUdt5fbmyo1", // Hex (itsreallyhex)
+          "0zbVZGDbgWdTrfh42oJ7UBC24X23" // n_22j
+        ];
+    }
+
+    // حساب الـ Worker (تأكيد الدفع فقط) — مفصول عن صلاحيات الأدمن.
+    // لا يملك صلاحيات إدارية؛ يقرأ الطلب ليتحقق من المبلغ ويعدّل حقول الدفع فقط.
+    function isWorker() {
+      return request.auth != null
+        && request.auth.uid == "5u4NpNAAvDM1YWPj4zm2FlNAcP43";
+    }
+
+    // الأقسام: أي شخص يقرأ — المسؤول فقط يعدّل
+    match /cats/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // المنتجات: أي شخص يقرأ — المسؤول فقط يعدّل
+    match /products/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // المالك = حساب Hex فقط
+    function isOwner() {
+      return request.auth != null
+        && request.auth.uid == "kwbLZoAcamgD20RtZYUdt5fbmyo1";
+    }
+
+    // إعدادات المتجر (وضع الصيانة وغيرها):
+    // أي شخص يقرأ — المالك فقط يعدّل
+    match /settings/{id} {
+      allow read: if true;
+      allow write: if isOwner();
+    }
+
+    // ملفات المستخدمين (اسم المستخدم + يوزر الديسكورد):
+    // كل مستخدم يقرأ ويعدّل ملفه فقط — والمسؤول يقرأ الجميع
+    match /users/{uid} {
+      allow read: if request.auth != null
+        && (request.auth.uid == uid || isAdmin());
+      allow write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // الطلبات:
+    // - إنشاء: المستخدم المسجّل لنفسه فقط
+    // - قراءة: صاحب الطلب أو المسؤول
+    // - تعديل: المسؤول — أو صاحب الطلب لإلغائه فقط وقبل بدء التنفيذ
+    // - حذف: المسؤول فقط
+    match /orders/{id} {
+      allow create: if request.auth != null
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.total is number
+        && request.resource.data.total >= 1
+        && request.resource.data.items is list
+        && request.resource.data.items.size() <= 50
+        && request.resource.data.status == "قيد المراجعة"
+        // لا يجوز للعميل إنشاء طلب مُعلَّم كمدفوع — الدفع يؤكَّد من الخادم/الإدارة فقط
+        && request.resource.data.get('paid', false) == false;
+      allow read: if request.auth != null
+        && (resource.data.uid == request.auth.uid || isAdmin() || isWorker());
+      // التعديل:
+      // - المالك: صلاحية كاملة دائماً — يغيّر الحالة حتى بعد الإكمال، ويعدّل التكليفات بلا قيد.
+      // - المسؤول العادي: يعدّل الطلبات ضمن قيدين:
+      //     (أ) قفل الإكمال: لا يغيّر حالة طلب "مكتمل".
+      //     (ب) فصل المهام: لا يعدّل التكليفات إذا كان الطلب مكتملاً أو كان هو نفسه أحد المكلّفين.
+      // - صاحب الطلب: إلغاء طلبه غير المدفوع قبل بدء التنفيذ فقط.
+      // العميل لا يستطيع تعليم الطلب كمدفوع إطلاقاً؛ حالة "paid" تُكتب من الإدارة
+      // أو من دالة خادمية موثوقة بعد التحقق من ميسر فقط.
+      allow update: if isOwner()
+        // الـ Worker: تأكيد الدفع فقط — لا يلمس إلا حقول الدفع، ولا شيء غيرها.
+        || (isWorker()
+          && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly(["paid", "paidAt", "moyasarPaymentId"]))
+        || (isAdmin()
+          && !(resource.data.status == "مكتمل"
+            && request.resource.data.diff(resource.data).affectedKeys().hasAny(["status"]))
+          && !(request.resource.data.diff(resource.data).affectedKeys().hasAny(["assignees", "assigneeNames"])
+            && (resource.data.status == "مكتمل"
+              || request.auth.uid in resource.data.get("assignees", []))))
+        || (request.auth != null
+          && resource.data.uid == request.auth.uid
+          && resource.data.status in ["قيد المراجعة", "قيد الانتظار"]
+          && resource.data.paid != true
+          && request.resource.data.status == "ملغي"
+          && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly(["status", "cancelledBy"]));
+      // الحذف: الإدارة دائماً — أو الـ Worker للطلبات غير المدفوعة "قيد المراجعة" فقط
+      // (التنظيف التلقائي بعد 4 أيام). لا يحذف الـ Worker أي طلب مدفوع أو قيد التنفيذ أو مكتمل.
+      allow delete: if isAdmin()
+        || (isWorker()
+          && resource.data.paid != true
+          && resource.data.status == "قيد المراجعة");
+
+      // سجل التغييرات (تدقيق): إنشاء فقط من الإدارة — لا تعديل ولا حذف إطلاقاً.
+      // سجلّ غير قابل للعبث: حتى الإدارة لا تستطيع تحرير أو حذف أي قيد بعد كتابته.
+      match /statusLog/{logId} {
+        allow read: if isAdmin();
+        allow create: if isAdmin();
+        allow update, delete: if false;
+      }
+    }
+
+    // قراءة جماعية لكل سجلات الطلبات (collection group) — لسجل النشاط الكامل في لوحة الإدارة
+    match /{path=**}/statusLog/{logId} {
+      allow read: if isAdmin();
+    }
+
+    // سجل أحداث المتجر (إضافة/تعديل/حذف منتجات وأقسام): إنشاء وقراءة للإدارة، لا تعديل/حذف
+    match /storeLog/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update, delete: if false;
+    }
+  }
+}
