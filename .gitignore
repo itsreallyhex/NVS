@@ -1,0 +1,694 @@
+# =============================================================================
+# ENVIRONMENT & SECRETS
+# =============================================================================
+.env
+.env.*
+!.env.example
+!.env.template
+*.pem
+*.key
+*.cert
+*.p12
+secrets/
+.secrets
+
+# =============================================================================
+# OS FILES
+# =============================================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.nfs*
+
+# =============================================================================
+# EDITORS & IDEs
+# =============================================================================
+# VSCode
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json.example
+
+# JetBrains (IntelliJ, Rider, PyCharm, WebStorm, etc.)
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Vim / Neovim
+*.swp
+*.swo
+Session.vim
+.netrwhist
+
+# Emacs
+\#*\#
+.\#*
+*.elc
+
+# Sublime Text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+
+# =============================================================================
+# NODE / JAVASCRIPT / TYPESCRIPT
+# =============================================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.npm
+.yarn/cache
+.yarn/unplugged
+.yarn/install-state.gz
+.pnp.*
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+dist/
+build/
+out/
+.next/
+.nuxt/
+.svelte-kit/
+.vite/
+.parcel-cache/
+.cache/
+.turbo/
+storybook-static/
+coverage/
+.nyc_output/
+*.lcov
+
+# =============================================================================
+# PYTHON
+# =============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+.installed.cfg
+MANIFEST
+.Python
+.venv/
+venv/
+env/
+ENV/
+.python-version
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.ruff_cache/
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+celerybeat-schedule
+celerybeat.pid
+instance/
+__pypackages__/
+poetry.lock
+Pipfile.lock
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# =============================================================================
+# C# / .NET
+# =============================================================================
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+.vs/
+*.rsuser
+*.pidb
+*.svclog
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.dotCover
+*.coveragexml
+TestResult.xml
+*.Cache
+*.dbmdl
+*.jfm
+*.pfx
+*.publishsettings
+*.mdf
+*.ldf
+*.ndf
+FakesAssemblies/
+.ncrunch*
+.localhistory/
+.history/
+*.orig
+project.lock.json
+artifacts/
+BenchmarkDotNet.Artifacts/
+.packages/
+*.nupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuspec
+AppPackages/
+BundleArtifacts/
+Package.StoreAssociation.xml
+*.appxsym
+.paket/
+paket-files/
+.fake/
+.ionide/
+
+# =============================================================================
+# JAVA / KOTLIN / GRADLE / MAVEN
+# =============================================================================
+*.class
+*.jar
+*.war
+*.ear
+hs_err_pid*
+.gradle/
+build/
+target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# =============================================================================
+# GO
+# =============================================================================
+*.exe
+*.exe~
+*.dll
+*.test
+*.out
+vendor/
+
+# =============================================================================
+# RUST
+# =============================================================================
+debug/
+target/
+Cargo.lock
+**/*.rs.bk
+*.pdb
+
+# =============================================================================
+# RUBY
+# =============================================================================
+*.gem
+*.rbc
+/coverage/
+/InstalledFiles
+/pkg/
+/tmp/
+.rspec
+.bundle/
+vendor/bundle
+Gemfile.lock
+.ruby-version
+
+# =============================================================================
+# PHP
+# =============================================================================
+/vendor/
+composer.phar
+composer.lock
+.phpunit.result.cache
+.php_cs.cache
+.php-cs-fixer.cache
+
+# =============================================================================
+# WEB / FRONTEND
+# =============================================================================
+.angular/
+.sass-cache/
+*.css.map
+*.sass.map
+*.scss.map
+
+# =============================================================================
+# DATABASES
+# =============================================================================
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+dump.rdb
+
+# =============================================================================
+# DOCKER
+# =============================================================================
+docker-compose.override.yml
+
+# =============================================================================
+# TERRAFORM / INFRASTRUCTURE
+# =============================================================================
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+*.tfvars
+!*.tfvars.example
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# =============================================================================
+# LOGS & TEMP FILES
+# =============================================================================
+logs/
+*.log
+*.tmp
+*.temp
+*.bak
+*.backup
+*.orig
+*.swp
+*.pid
+pids/
+tmp/
+temp/
+
+# =============================================================================
+# MISC
+# =============================================================================
+.history/
+.localhistory/
+*.patch
+*.diff
+# =============================================================================
+# SWIFT / XCODE / iOS / macOS
+# =============================================================================
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+*.xccheckout
+*.xcscmblueprint
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+Pods/
+Podfile.lock
+Carthage/Build/
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+.build/
+Package.resolved
+
+# =============================================================================
+# ANDROID / KOTLIN
+# =============================================================================
+*.apk
+*.aab
+*.ap_
+*.dex
+local.properties
+.cxx/
+.externalNativeBuild/
+captures/
+*.keystore
+!debug.keystore
+*.jks
+gen/
+.navigation/
+lint/tmp/
+lint/generated/
+
+# =============================================================================
+# FLUTTER / DART
+# =============================================================================
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+*.g.dart
+*.freezed.dart
+
+# =============================================================================
+# UNITY
+# =============================================================================
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+MemoryCaptures/
+[Rr]ecordings/
+[Aa]ssets/AssetStoreTools*
+[Aa]ssets/Plugins/Editor/JetBrains*
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+sysinfo.txt
+*.apk
+*.aab
+*.unitypackage
+*.app
+crashlytics-build.properties
+ExportedObj/
+.consulo/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.opendb
+*.VC.db
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+/[Aa]ssets/[Ss]treamingAssets/aa.meta
+/[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# =============================================================================
+# UNREAL ENGINE
+# =============================================================================
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+*.VC.db
+*.opensdf
+*.opendb
+*.sdf
+*.sln
+*.suo
+*.xcodeproj
+*.xcworkspace
+*.pbxproj
+
+# =============================================================================
+# R
+# =============================================================================
+.Rhistory
+.Rapp.history
+.RData
+.Ruserdata
+.Rproj.user/
+*.Rproj
+/packrat/lib*/
+/packrat/src/
+
+# =============================================================================
+# SCALA / SBT
+# =============================================================================
+target/
+.bsp/
+.metals/
+.bloop/
+project/target/
+project/project/
+*.class
+
+# =============================================================================
+# ELIXIR / ERLANG
+# =============================================================================
+/_build/
+/cover/
+/deps/
+/doc/
+/.fetch
+erl_crash.dump
+*.ez
+*.beam
+/config/*.secret.exs
+.elixir_ls/
+
+# =============================================================================
+# HASKELL
+# =============================================================================
+dist/
+dist-newstyle/
+.stack-work/
+*.hi
+*.o
+*.prof
+*.aux
+*.hp
+*.eventlog
+cabal.sandbox.config
+.cabal-sandbox/
+.hpc/
+
+# =============================================================================
+# LUA
+# =============================================================================
+luac.out
+*.luac
+
+# =============================================================================
+# JUPYTER / DATA SCIENCE
+# =============================================================================
+.ipynb_checkpoints/
+profile_default/
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.parquet
+*.feather
+*.arrow
+mlruns/
+.mlflow/
+wandb/
+lightning_logs/
+outputs/
+multirun/
+.hydra/
+
+# =============================================================================
+# CLOUD PROVIDERS
+# =============================================================================
+# AWS
+.aws/credentials
+aws-exports.js
+amplify/
+#awsconfiguration.json
+
+# GCP
+gcloud/
+*.json
+!package.json
+!tsconfig.json
+!jsconfig.json
+!.devcontainer/devcontainer.json
+service-account*.json
+*-service-account.json
+gcp-key*.json
+
+# Azure
+.azure/
+azure.json
+azureauth.json
+
+# =============================================================================
+# KUBERNETES / HELM
+# =============================================================================
+kubeconfig
+*.kubeconfig
+helm/charts/*.tgz
+.helm/
+
+# =============================================================================
+# ANSIBLE
+# =============================================================================
+*.retry
+.vault_pass
+vault_pass.txt
+inventory/group_vars/*/vault
+inventory/host_vars/*/vault
+
+# =============================================================================
+# VAGRANT
+# =============================================================================
+.vagrant/
+*.box
+
+# =============================================================================
+# CI/CD ARTIFACTS
+# =============================================================================
+.github/secrets/
+.circleci/
+junit.xml
+test-results/
+test-reports/
+allure-results/
+allure-report/
+surefire-reports/
+
+# =============================================================================
+# MONITORING / OBSERVABILITY
+# =============================================================================
+.sentryclirc
+newrelic.ini
+newrelic_agent.log
+datadog.yaml
+
+# =============================================================================
+# PACKAGE MANAGERS (extra)
+# =============================================================================
+# Bower
+bower_components/
+
+# JSPM
+jspm_packages/
+
+# Deno
+.deno/
+
+# Bun
+bun.lockb
+
+# NixOS
+result
+result-*
+
+# =============================================================================
+# MEDIA & LARGE BINARY FILES
+# =============================================================================
+*.mp4
+*.mp3
+*.wav
+*.ogg
+*.flac
+*.avi
+*.mov
+*.mkv
+*.iso
+*.dmg
+*.img
+*.vmdk
+*.vhd
+
+# =============================================================================
+# CERTIFICATES & CREDENTIALS
+# =============================================================================
+*.crt
+*.csr
+*.der
+*.p7b
+*.p7r
+*.pfx
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+known_hosts
+authorized_keys
+htpasswd
+.htpasswd
+.netrc
+_netrc
+.npmrc
+!.npmrc.example
+.pypirc
+
+# =============================================================================
+# MISC TOOLS
+# =============================================================================
+# Prettier
+.prettier-cache
+
+# ESLint
+.eslintcache
+
+# Stylelint
+.stylelintcache
+
+# Serverless Framework
+.serverless/
+
+# CDK
+cdk.out/
+cdk.context.json
+
+# Pulumi
+.pulumi/
+Pulumi.*.yaml
+!Pulumi.yaml
+
+# Nx
+.nx/cache
+
+# Rush
+common/temp/

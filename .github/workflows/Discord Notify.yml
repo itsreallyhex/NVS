@@ -1,0 +1,34 @@
+name: Discord Notify
+
+on:
+  push:
+    branches: [main]
+  release:
+    types: [published]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send to Discord
+        env:
+          TITLE: ${{ github.event_name == 'release' && format('[{0}] release {1}', github.repository, github.event.release.tag_name) || format('[{0}] commit جديد', github.repository) }}
+          BODY: ${{ github.event_name == 'release' && github.event.release.body || github.event.head_commit.message }}
+          URL: ${{ github.event_name == 'release' && github.event.release.html_url || github.event.head_commit.url }}
+          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          payload=$(jq -n \
+            --arg title "$TITLE" \
+            --arg body "${BODY:-No description provided.}" \
+            --arg url "$URL" \
+            '{
+              content: "<@&1506708922227097930>",
+              allowed_mentions: { roles: ["1506708922227097930"] },
+              embeds: [{
+                title: $title,
+                description: $body,
+                url: $url,
+                color: 4128767
+              }]
+            }')
+          curl -sf -H "Content-Type: application/json" -d "$payload" "$WEBHOOK"
