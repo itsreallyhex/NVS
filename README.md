@@ -74,3 +74,5 @@ Built, deployed, and running on Firebase Hosting with Apple Pay registered. Fron
 [CloudFare](https://www.cloudflare.com/)
 [Firebase](https://firebase.google.com/)
 
+## License 
+[MIT](https://github.com/itsreallyhex/NVS/blob/dev/LICENSE)
