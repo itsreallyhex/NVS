@@ -6,20 +6,32 @@
 <title>Night Void | الصفحة الرئيسية</title>
 <link rel="icon" type="image/png" href="Assets/favicon.png">
 <link rel="apple-touch-icon" href="Assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap">
 <style>
   :root {
-    --bg: #0a0a14;
-    --bg2: #11111f;
-    --card: #16162a;
-    --card-hover: #1c1c36;
+    --bg: #07060f;
+    --bg2: #0f0e1d;
+    --card: #15142a;
+    --card-hover: #1c1a38;
     --accent: #8b5cf6;
     --accent2: #6d28d9;
+    --accent3: #22d3ee;
+    --accent-soft: #a78bfa;
     --glow: rgba(139, 92, 246, 0.35);
-    --text: #e8e6f5;
-    --muted: #9b97b8;
+    --grad-text: linear-gradient(100deg, #c4b5fd, #f0abfc 45%, #818cf8);
+    --text: #ece9fb;
+    --muted: #a09bc0;
     --success: #34d399;
-    --border: #2a2a4a;
+    --border: #272545;
+    --border-soft: rgba(167, 139, 250, 0.14);
     --discord: #5865f2;
+    --r-sm: 10px;
+    --r-md: 14px;
+    --r-lg: 18px;
+    --shadow-md: 0 12px 34px rgba(0, 0, 0, 0.45);
+    --ring: 0 0 0 3px rgba(139, 92, 246, 0.45);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -34,20 +46,60 @@
   }
   ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
+  html { scroll-behavior: smooth; }
   body {
-    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+    font-family: "Tajawal", "Segoe UI", Tahoma, Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    letter-spacing: 0.1px;
+  }
+  ::selection { background: rgba(139, 92, 246, 0.35); color: #fff; }
+  :focus-visible { outline: 2px solid var(--accent-soft); outline-offset: 2px; border-radius: 6px; }
+  .btn:focus-visible { outline-offset: 3px; box-shadow: var(--ring); }
+
+  /* ===== سُدُم وأضواء الفضاء في الخلفية ===== */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(60% 50% at 78% -10%, rgba(139, 92, 246, 0.22), transparent 60%),
+      radial-gradient(50% 45% at 12% 8%, rgba(34, 211, 238, 0.12), transparent 55%),
+      radial-gradient(55% 50% at 50% 110%, rgba(109, 40, 217, 0.18), transparent 60%);
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.4;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(167, 139, 250, 0.035) 1px, transparent 1px);
+    background-size: 64px 64px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
   }
 
   /* ===== النجوم في الخلفية ===== */
   .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
-  .star { position: absolute; background: #fff; border-radius: 50%; animation: twinkle 3s infinite ease-in-out; }
+  .star { position: absolute; background: #fff; border-radius: 50%; animation: twinkle 3s infinite ease-in-out; box-shadow: 0 0 6px rgba(196, 181, 253, 0.5); }
   @keyframes twinkle {
-    0%, 100% { opacity: 0.2; }
-    50% { opacity: 1; }
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 0.85; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .star { animation: none; opacity: 0.5; }
+    .hero h1 .grad, .badge::before, .hero .orb { animation: none; }
+    * { scroll-behavior: auto !important; }
   }
 
   main, header, footer { position: relative; z-index: 1; }
@@ -57,13 +109,21 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 5%;
-    background: rgba(17, 17, 31, 0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
+    padding: 14px 5%;
+    background: rgba(11, 10, 22, 0.72);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border-bottom: 1px solid var(--border-soft);
     position: sticky;
     top: 0;
     z-index: 50;
+  }
+  header::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.6), rgba(34, 211, 238, 0.4), transparent);
   }
 
   .logo {
@@ -108,43 +168,9 @@
   }
   nav a.discord-link:hover { background: #4752c4; box-shadow: 0 0 14px rgba(88, 101, 242, 0.5); }
 
-  /* ===== الواجهة الرئيسية ===== */
-  .hero {
-    text-align: center;
-    padding: 110px 5% 80px;
-    background: radial-gradient(ellipse at 50% -20%, rgba(139, 92, 246, 0.25), transparent 60%);
-  }
-  .badge {
-    display: inline-block;
-    background: rgba(139, 92, 246, 0.15);
-    border: 1px solid var(--accent);
-    color: #c4b5fd;
-    padding: 6px 18px;
-    border-radius: 999px;
-    font-size: 0.85rem;
-    margin-bottom: 22px;
-  }
-  .hero h1 {
-    font-size: clamp(2.2rem, 6vw, 3.6rem);
-    margin-bottom: 18px;
-    line-height: 1.3;
-  }
-  .hero h1 .grad {
-    background: linear-gradient(90deg, #a78bfa, #f0abfc, #818cf8);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  .hero p {
-    color: var(--muted);
-    font-size: 1.15rem;
-    max-width: 640px;
-    margin: 0 auto 36px;
-    line-height: 1.9;
-  }
-
-  .hero-actions { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+  /* ===== الأزرار ===== */
   .btn {
+    position: relative;
     display: inline-flex;
     align-items: center;
     gap: 9px;
@@ -156,22 +182,101 @@
     padding: 14px 32px;
     border-radius: 12px;
     border: none;
-    transition: all 0.2s;
+    overflow: hidden;
+    transition: transform 0.18s ease, box-shadow 0.2s ease, background 0.2s ease;
   }
+  .btn:active { transform: scale(0.98); }
   .btn-primary {
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     color: #fff;
-    box-shadow: 0 0 18px var(--glow);
+    box-shadow: 0 6px 22px rgba(139, 92, 246, 0.45);
   }
-  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 0 30px var(--glow); }
+  .btn-primary::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 50% 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.22), transparent);
+    pointer-events: none;
+  }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 34px rgba(139, 92, 246, 0.65); }
   .btn-discord {
     background: var(--discord);
     color: #fff;
-    box-shadow: 0 0 18px rgba(88, 101, 242, 0.35);
+    box-shadow: 0 6px 18px rgba(88, 101, 242, 0.35);
   }
-  .btn-discord:hover { transform: translateY(-3px); background: #4752c4; box-shadow: 0 0 30px rgba(88, 101, 242, 0.5); }
+  .btn-discord:hover { transform: translateY(-3px); background: #4752c4; box-shadow: 0 12px 30px rgba(88, 101, 242, 0.5); }
   .dc-ico { width: 1.2em; height: 1.2em; vertical-align: -0.18em; }
-  .discord-cta .icon svg { width: 3rem; height: 3rem; }
+  .ico { width: 1.15em; height: 1.15em; flex: 0 0 auto; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vertical-align: -0.18em; }
+
+  /* ===== الواجهة الرئيسية ===== */
+  .hero {
+    position: relative;
+    text-align: center;
+    padding: 120px 5% 80px;
+  }
+  .hero .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: -1;
+    animation: floatOrb 9s ease-in-out infinite;
+  }
+  .hero .orb.o1 { width: 300px; height: 300px; background: rgba(139, 92, 246, 0.55); top: 6%; right: 10%; }
+  .hero .orb.o2 { width: 240px; height: 240px; background: rgba(34, 211, 238, 0.32); bottom: 4%; left: 12%; animation-delay: -3s; }
+  @keyframes floatOrb {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-26px) scale(1.08); }
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(167, 139, 250, 0.45);
+    color: #d6cbff;
+    padding: 7px 18px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 24px;
+    box-shadow: inset 0 0 18px rgba(139, 92, 246, 0.12);
+    backdrop-filter: blur(6px);
+  }
+  .badge::before {
+    content: "";
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent3);
+    box-shadow: 0 0 8px var(--accent3);
+    animation: pulseDot 1.8s ease-in-out infinite;
+  }
+  @keyframes pulseDot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.7); } }
+  .hero h1 {
+    font-size: clamp(2.2rem, 6vw, 3.6rem);
+    font-weight: 900;
+    margin-bottom: 18px;
+    line-height: 1.3;
+    letter-spacing: -0.5px;
+  }
+  .hero h1 .grad {
+    background: var(--grad-text);
+    background-size: 220% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradShift 6s ease-in-out infinite;
+  }
+  @keyframes gradShift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+  .hero p {
+    color: var(--muted);
+    font-size: 1.15rem;
+    max-width: 640px;
+    margin: 0 auto 36px;
+    line-height: 1.9;
+  }
+  .hero-actions { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
 
   /* ===== المميزات ===== */
   .features {
@@ -183,20 +288,43 @@
     gap: 22px;
   }
   .feature {
-    background: var(--card);
+    position: relative;
+    background: linear-gradient(165deg, rgba(28, 26, 52, 0.72), rgba(15, 14, 29, 0.55));
     border: 1px solid var(--border);
     border-radius: 16px;
-    padding: 28px 24px;
+    padding: 30px 24px;
     text-align: center;
-    transition: all 0.25s;
+    backdrop-filter: blur(6px);
+    overflow: hidden;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .feature::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 18%; right: 18%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-soft), transparent);
+    opacity: 0;
+    transition: opacity 0.25s ease;
   }
   .feature:hover {
-    background: var(--card-hover);
-    border-color: var(--accent);
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 20px var(--glow);
+    border-color: rgba(167, 139, 250, 0.55);
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md), 0 0 26px var(--glow);
   }
-  .feature .icon { font-size: 2.6rem; display: block; margin-bottom: 14px; }
+  .feature:hover::before { opacity: 1; }
+  .feature .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px; height: 64px;
+    margin-bottom: 16px;
+    border-radius: var(--r-md);
+    background: rgba(139, 92, 246, 0.12);
+    border: 1px solid var(--border-soft);
+    color: var(--accent-soft);
+  }
+  .feature .icon svg { width: 30px; height: 30px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   .feature h3 { font-size: 1.1rem; margin-bottom: 10px; }
   .feature p { color: var(--muted); font-size: 0.92rem; line-height: 1.8; }
 
@@ -207,24 +335,47 @@
     padding: 0 5%;
   }
   .discord-cta .box {
-    background: linear-gradient(135deg, rgba(88, 101, 242, 0.15), rgba(139, 92, 246, 0.1));
-    border: 1px solid var(--discord);
+    position: relative;
+    background: linear-gradient(135deg, rgba(88, 101, 242, 0.18), rgba(139, 92, 246, 0.1));
+    border: 1px solid rgba(88, 101, 242, 0.5);
     border-radius: 20px;
-    padding: 44px 30px;
+    padding: 48px 30px;
     text-align: center;
+    overflow: hidden;
   }
-  .discord-cta .icon { font-size: 3rem; display: block; margin-bottom: 14px; }
+  .discord-cta .box::before {
+    content: "";
+    position: absolute;
+    top: -40%; left: 50%;
+    width: 280px; height: 280px;
+    transform: translateX(-50%);
+    background: radial-gradient(circle, rgba(88, 101, 242, 0.35), transparent 70%);
+    filter: blur(20px);
+    pointer-events: none;
+  }
+  .discord-cta .box > * { position: relative; }
+  .discord-cta .icon { display: block; margin-bottom: 16px; }
+  .discord-cta .icon svg { width: 3.2rem; height: 3.2rem; color: var(--discord); filter: drop-shadow(0 0 12px rgba(88, 101, 242, 0.6)); }
   .discord-cta h2 { font-size: 1.6rem; margin-bottom: 12px; }
   .discord-cta p { color: var(--muted); margin-bottom: 26px; line-height: 1.8; }
+  .discord-cta .btn { justify-content: center; }
 
   /* ===== الفوتر ===== */
   footer {
+    position: relative;
     text-align: center;
-    padding: 30px 5%;
+    padding: 32px 5%;
     color: var(--muted);
     font-size: 0.85rem;
-    border-top: 1px solid var(--border);
-    background: var(--bg2);
+    border-top: 1px solid var(--border-soft);
+    background: linear-gradient(180deg, transparent, rgba(15, 14, 29, 0.6));
+  }
+  footer::before {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; top: -1px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), transparent);
   }
   footer a { color: var(--accent); text-decoration: none; }
   footer a:hover { text-decoration: underline; }
@@ -232,6 +383,7 @@
   @media (max-width: 640px) {
     nav a { padding: 8px 12px; font-size: 0.85rem; }
     .logo { font-size: 1.15rem; }
+    .hero { padding: 80px 5% 60px; }
   }
 </style>
 </head>
@@ -254,39 +406,41 @@
 <main>
 
   <div class="hero">
-    <div class="badge">✨ أهلاً بك في عالم Night Void</div>
+    <span class="orb o1" aria-hidden="true"></span>
+    <span class="orb o2" aria-hidden="true"></span>
+    <div class="badge">أهلاً بك في عالم Night Void</div>
     <h1>مرحباً بك في <span class="grad">Night Void</span></h1>
     <p>وجهتك الأولى لكل ما يخص ديسكورد — برمجة بوتات احترافية وبناء سيرفرات متكاملة من الصفر. جودة عالية، أسعار منافسة، ودعم مستمر.</p>
     <div class="hero-actions">
-      <a class="btn btn-primary" href="night-void-store.html">🛒 تصفح المتجر</a>
+      <a class="btn btn-primary" href="night-void-store.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> تصفح المتجر</a>
       <a class="btn btn-discord" href="https://discord.gg/sAakXRRudu" target="_blank" rel="noopener"><svg class="dc-ico" viewBox="0 0 127.14 96.36" fill="currentColor" aria-hidden="true"><path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.9-72.15ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"/></svg> انضم لسيرفرنا</a>
     </div>
   </div>
 
   <section class="features">
     <div class="feature">
-      <span class="icon">🤖</span>
+      <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg></span>
       <h3>برمجة بوتات ديسكورد</h3>
       <p>بوتات حماية، تذاكر، ألعاب، وحتى بوتات مخصصة بالكامل حسب فكرتك.</p>
     </div>
     <div class="feature">
-      <span class="icon">🏰</span>
+      <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg></span>
       <h3>بناء سيرفرات من الصفر</h3>
       <p>سيرفر متكامل وجاهز: رتب، رومات منظمة، حماية، وتصميم احترافي يناسب مجتمعك.</p>
     </div>
     <div class="feature">
-      <span class="icon">⚡</span>
-      <h3>تسليم سريع </h3>
+      <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+      <h3>تسليم سريع</h3>
       <p>ننفذ طلبك بأسرع وقت وبأعلى جودة ممكنه!</p>
     </div>
   </section>
 
   <section class="discord-cta">
     <div class="box">
-      <span class="icon"><svg viewBox="0 0 127.14 96.36" fill="currentColor" aria-hidden="true" style="color: var(--discord);"><path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.9-72.15ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"/></svg></span>
+      <span class="icon"><svg viewBox="0 0 127.14 96.36" fill="currentColor" aria-hidden="true"><path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.9-72.15ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"/></svg></span>
       <h2>انضم إلى مجتمعنا على ديسكورد!</h2>
       <p>كن جزءاً من عائلة Night Void — عروض حصرية، دعم مباشر، وفعاليات مستمرة بانتظارك.</p>
-      <a class="btn btn-discord" href="https://discord.gg/sAakXRRudu" target="_blank" rel="noopener">الانضمام الآن 🚀</a>
+      <a class="btn btn-discord" href="https://discord.gg/sAakXRRudu" target="_blank" rel="noopener"><svg class="dc-ico" viewBox="0 0 127.14 96.36" fill="currentColor" aria-hidden="true"><path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.9-72.15ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"/></svg> الانضمام الآن</a>
     </div>
   </section>
 </main>

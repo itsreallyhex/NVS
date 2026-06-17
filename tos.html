@@ -6,18 +6,28 @@
 <title>شروط الخدمة | Night Void</title>
 <link rel="icon" type="image/png" href="Assets/favicon.png">
 <link rel="apple-touch-icon" href="Assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap">
 <style>
   :root {
-    --bg: #0a0a14;
-    --bg2: #11111f;
-    --card: #16162a;
+    --bg: #07060f;
+    --bg2: #0f0e1d;
+    --card: #15142a;
     --accent: #8b5cf6;
     --accent2: #6d28d9;
+    --accent3: #22d3ee;
+    --accent-soft: #a78bfa;
     --glow: rgba(139, 92, 246, 0.35);
-    --text: #e8e6f5;
-    --muted: #9b97b8;
-    --border: #2a2a4a;
+    --grad-text: linear-gradient(100deg, #c4b5fd, #f0abfc 45%, #818cf8);
+    --text: #ece9fb;
+    --muted: #a09bc0;
+    --border: #272545;
+    --border-soft: rgba(167, 139, 250, 0.14);
     --discord: #5865f2;
+    --r-md: 14px;
+    --shadow-md: 0 12px 34px rgba(0, 0, 0, 0.45);
+    --ring: 0 0 0 3px rgba(139, 92, 246, 0.45);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -32,20 +42,59 @@
   }
   ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
+  html { scroll-behavior: smooth; }
   body {
-    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+    font-family: "Tajawal", "Segoe UI", Tahoma, Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    letter-spacing: 0.1px;
+  }
+  ::selection { background: rgba(139, 92, 246, 0.35); color: #fff; }
+  :focus-visible { outline: 2px solid var(--accent-soft); outline-offset: 2px; border-radius: 6px; }
+
+  /* ===== سُدُم وأضواء الفضاء في الخلفية ===== */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(60% 50% at 78% -10%, rgba(139, 92, 246, 0.2), transparent 60%),
+      radial-gradient(50% 45% at 12% 8%, rgba(34, 211, 238, 0.1), transparent 55%),
+      radial-gradient(55% 50% at 50% 110%, rgba(109, 40, 217, 0.16), transparent 60%);
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.4;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(167, 139, 250, 0.035) 1px, transparent 1px);
+    background-size: 64px 64px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
   }
 
   /* ===== النجوم في الخلفية ===== */
   .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
-  .star { position: absolute; background: #fff; border-radius: 50%; animation: twinkle 3s infinite ease-in-out; }
+  .star { position: absolute; background: #fff; border-radius: 50%; animation: twinkle 3s infinite ease-in-out; box-shadow: 0 0 6px rgba(196, 181, 253, 0.5); }
   @keyframes twinkle {
-    0%, 100% { opacity: 0.2; }
-    50% { opacity: 1; }
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 0.85; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .star { animation: none; opacity: 0.5; }
+    .tos-head h1 .grad { animation: none; }
+    * { scroll-behavior: auto !important; }
   }
 
   main, header, footer { position: relative; z-index: 1; }
@@ -55,13 +104,21 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 5%;
-    background: rgba(17, 17, 31, 0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
+    padding: 14px 5%;
+    background: rgba(11, 10, 22, 0.72);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border-bottom: 1px solid var(--border-soft);
     position: sticky;
     top: 0;
     z-index: 50;
+  }
+  header::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.6), rgba(34, 211, 238, 0.4), transparent);
   }
   .logo {
     display: flex;
@@ -90,40 +147,69 @@
     transition: all 0.2s;
   }
   nav a:hover { color: var(--text); background: var(--card); }
+  nav a.active {
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    box-shadow: 0 0 14px var(--glow);
+  }
   nav a.discord-link { color: #fff; background: var(--discord); display: flex; align-items: center; gap: 7px; }
-  nav a.discord-link:hover { background: #4752c4; }
+  nav a.discord-link:hover { background: #4752c4; box-shadow: 0 0 14px rgba(88, 101, 242, 0.5); }
   .dc-ico { width: 1.2em; height: 1.2em; vertical-align: -0.18em; }
 
   /* ===== محتوى الشروط ===== */
-  .tos-wrap { max-width: 860px; margin: 0 auto; padding: 60px 5% 80px; }
-  .tos-head { text-align: center; margin-bottom: 40px; }
+  .tos-wrap { max-width: 860px; margin: 0 auto; padding: 70px 5% 80px; }
+  .tos-head { text-align: center; margin-bottom: 44px; }
   .tos-head h1 {
-    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-size: clamp(1.9rem, 4.5vw, 2.8rem);
+    font-weight: 900;
     margin-bottom: 12px;
+    letter-spacing: -0.4px;
   }
   .tos-head h1 .grad {
-    background: linear-gradient(90deg, #a78bfa, #f0abfc, #818cf8);
+    background: var(--grad-text);
+    background-size: 220% auto;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    animation: gradShift 6s ease-in-out infinite;
   }
-  .tos-head p { color: var(--muted); font-size: 0.95rem; }
+  @keyframes gradShift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+  .tos-head p { color: var(--muted); font-size: 0.95rem; line-height: 1.8; }
 
   /* ===== بطاقات البنود ===== */
   section.term {
-    background: var(--card);
-    border: 1px solid var(--border);
+    position: relative;
+    background: linear-gradient(165deg, rgba(28, 26, 52, 0.6), rgba(15, 14, 29, 0.45));
+    border: 1px solid var(--border-soft);
     border-radius: 16px;
     padding: 26px 28px;
     margin-bottom: 18px;
+    backdrop-filter: blur(6px);
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  section.term:hover {
+    transform: translateY(-3px);
+    border-color: rgba(167, 139, 250, 0.4);
+    box-shadow: var(--shadow-md);
   }
   section.term h2 {
-    font-size: 1.15rem;
+    font-size: 1.18rem;
     margin-bottom: 12px;
     color: #c4b5fd;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    font-weight: 800;
+  }
+  /* عمود وهج متدرّج قبل عنوان البند */
+  section.term h2::before {
+    content: "";
+    width: 4px;
+    align-self: stretch;
+    min-height: 1.2em;
+    border-radius: 999px;
+    background: linear-gradient(180deg, var(--accent-soft), var(--accent2));
+    box-shadow: 0 0 10px var(--glow);
   }
   section.term p, section.term li {
     color: var(--muted);
@@ -132,30 +218,39 @@
   }
   section.term ul { padding-right: 22px; margin-top: 6px; }
   section.term b { color: var(--text); }
-  section.term a { color: var(--accent); text-decoration: none; }
+  section.term a { color: var(--accent-soft); text-decoration: none; font-weight: 600; }
   section.term a:hover { text-decoration: underline; }
 
   /* ===== ملاحظة الموافقة ===== */
   .agree-note {
     background: rgba(139, 92, 246, 0.1);
-    border: 1px solid var(--accent);
-    color: #c4b5fd;
-    border-radius: 12px;
-    padding: 16px 20px;
+    border: 1px solid rgba(167, 139, 250, 0.5);
+    color: #d6cbff;
+    border-radius: 14px;
+    padding: 18px 22px;
     text-align: center;
     line-height: 1.9;
-    font-size: 0.92rem;
-    margin-top: 26px;
+    font-size: 0.95rem;
+    margin-top: 28px;
+    box-shadow: inset 0 0 26px rgba(139, 92, 246, 0.12);
   }
 
   /* ===== الفوتر ===== */
   footer {
+    position: relative;
     text-align: center;
-    padding: 30px 5%;
+    padding: 32px 5%;
     color: var(--muted);
     font-size: 0.85rem;
-    border-top: 1px solid var(--border);
-    background: var(--bg2);
+    border-top: 1px solid var(--border-soft);
+    background: linear-gradient(180deg, transparent, rgba(15, 14, 29, 0.6));
+  }
+  footer::before {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; top: -1px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), transparent);
   }
   footer a { color: var(--accent); text-decoration: none; }
   footer a:hover { text-decoration: underline; }
@@ -177,6 +272,7 @@
   <nav>
     <a href="index.html">الرئيسية</a>
     <a href="night-void-store.html">المتجر</a>
+    <a href="tos.html" class="active">الشروط</a>
     <a href="https://discord.gg/sAakXRRudu" target="_blank" rel="noopener" class="discord-link"><svg class="dc-ico" viewBox="0 0 127.14 96.36" fill="currentColor" aria-hidden="true"><path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.9-72.15ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"/></svg> ديسكورد</a>
   </nav>
 </header>
