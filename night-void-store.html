@@ -776,6 +776,8 @@
   @keyframes bootPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
   /* لوحة اختيار الإيموجي لرسالة الإغلاق */
+  .perm-check { display: flex; align-items: center; gap: 9px; margin-bottom: 9px; cursor: pointer; line-height: 1.5; }
+  .perm-check input { width: 18px; height: 18px; flex: 0 0 auto; cursor: pointer; accent-color: var(--accent, #8b5cf6); }
   .emoji-picker { display: flex; flex-wrap: wrap; gap: 6px; }
   .emoji-picker button {
     font-size: 18px;
@@ -1074,8 +1076,9 @@
         <label>يوزر الديسكورد 💬 (سنفتح معك تذكرة من خلاله)</label>
         <input type="text" id="checkoutDiscord" placeholder="username" style="direction: ltr; text-align: right;">
       </div>
+      <div class="pv-note" id="ordersBlockNote" style="display: none; color: #fb7185; border-color: rgba(248,113,113,.4); background: rgba(248,113,113,.08);"></div>
       <button class="btn btn-primary btn-block" id="checkoutBtn" onclick="confirmCheckout()">إتمام الطلب 🛒</button>
-      <p class="pv-note">ستظهر لك نافذة مراجعة لتأكيد الطلب قبل إرساله</p>
+      <p class="pv-note" id="checkoutHint">ستظهر لك نافذة مراجعة لتأكيد الطلب قبل إرساله</p>
     </div>
   </div>
 </div>
@@ -1099,6 +1102,7 @@
     <div id="adminPanel">
       <h2>لوحة التحكم ⚙️</h2>
       <p class="sub">كل تعديل يُحفظ في قاعدة البيانات ويظهر للزوار فوراً</p>
+      <div class="pv-note" id="adminPermsNote" style="display: none; color: #fbbf24; border-color: rgba(251,191,36,.4); background: rgba(251,191,36,.08);"></div>
       <div class="form-msg" id="adminPanelMsg"></div>
 
       <div id="seedBox" style="display:none;">
@@ -1108,18 +1112,21 @@
       <h3 style="margin: 4px 0 6px;">الأقسام 📂</h3>
       <p class="sub" style="margin-bottom: 4px;">عدّل اسم أو وصف أي قسم ثم اضغط حفظ — أو احذفه مع كل منتجاته</p>
       <div id="adminCats"></div>
-      <div class="admin-grid" style="margin-top: 12px;">
-        <div class="field">
-          <label>اسم القسم الجديد</label>
-          <input id="apNewCatTitle" placeholder="مثال: 🎨 تصاميم وشعارات">
+      <div id="addCatBox">
+        <div class="admin-grid" style="margin-top: 12px;">
+          <div class="field">
+            <label>اسم القسم الجديد</label>
+            <input id="apNewCatTitle" placeholder="مثال: 🎨 تصاميم وشعارات">
+          </div>
+          <div class="field">
+            <label>وصف القسم (اختياري)</label>
+            <input id="apNewCatSub" placeholder="وصف قصير يظهر تحت العنوان">
+          </div>
         </div>
-        <div class="field">
-          <label>وصف القسم (اختياري)</label>
-          <input id="apNewCatSub" placeholder="وصف قصير يظهر تحت العنوان">
-        </div>
+        <button class="btn btn-ghost btn-block" onclick="adminAddCat()">➕ إضافة قسم جديد</button>
       </div>
-      <button class="btn btn-ghost btn-block" onclick="adminAddCat()">➕ إضافة قسم جديد</button>
 
+      <div id="productFormBox">
       <h3 style="margin: 26px 0 6px;">إضافة / تعديل منتج 🛒</h3>
       <div class="admin-grid">
         <div class="field">
@@ -1163,6 +1170,7 @@
       </div>
       <button class="btn btn-primary btn-block" id="addProductBtn" onclick="adminSaveProduct()">➕ إضافة المنتج</button>
       <button class="btn btn-ghost btn-block" id="cancelEditBtn" style="display:none; margin-top: 8px;" onclick="adminCancelEdit()">✖ إلغاء التعديل</button>
+      </div>
 
       <h3 style="margin: 26px 0 6px;">المنتجات الحالية</h3>
       <p class="sub" style="margin-bottom: 4px;">عدّل الخصم أو حالة التوفر ثم اضغط حفظ — أو عدّل/احذف المنتج بالكامل</p>
@@ -1194,6 +1202,7 @@
     <h2>شكراً لك! تم استلام طلبك</h2>
     <p class="sub" id="thanksOrderId" style="margin-bottom: 10px;"></p>
     <div class="thanks-note" id="thanksNote1"></div>
+    <div class="pv-note" id="payBlockNote" style="display: none; color: #fb7185; border-color: rgba(248,113,113,.4); background: rgba(248,113,113,.08);"></div>
     <button class="btn btn-primary btn-block" id="payNowBtn" onclick="openPay()" style="margin-top: 4px;">💳 ادفع الآن — دفع إلكتروني</button>
     <p class="sub" style="margin: 10px 0 4px;">أو أكمل الدفع عبر التحويل المحلي:</p>
     <div class="thanks-note" id="thanksNote2" style="border-color: rgba(96, 165, 250, 0.45); background: rgba(96, 165, 250, 0.1); color: #60a5fa;"></div>
@@ -1246,6 +1255,52 @@
     <button class="btn btn-danger btn-block" id="closedToggleBtn" onclick="publishClosed(true)">🚫 إغلاق الموقع برسالتي</button>
     <button class="btn btn-ghost btn-block" style="margin-top: 8px;" id="openSiteBtn" onclick="publishClosed(false)">✅ فتح الموقع</button>
     <p class="pv-note">إغلاق كامل: يُخفي كل المنتجات والصفحات عن الزوار ويعرض رسالتك فقط. مختلف عن "تحت الصيانة".</p>
+
+    <h3 style="margin: 26px 0 6px;">إيقاف الطلبات / الدفع ⛔</h3>
+    <p class="sub" style="margin-bottom: 10px;">أوقف <b>استقبال الطلبات</b> و/أو <b>الدفع الإلكتروني</b> مؤقتاً برسالة تشرح السبب — مفتاحان مستقلّان، فعّل أيّهما تبي أو الاثنين. المتجر يبقى ظاهراً، لكن الزائر ما يقدر يطلب/يدفع. أنت والإدارة ما تتأثرون.</p>
+
+    <div class="cart-total">
+      <span>استقبال الطلبات:</span>
+      <span class="amount" id="ordersBlockLabel">...</span>
+    </div>
+    <div class="field">
+      <label>رسالة إيقاف الطلبات</label>
+      <textarea id="ordersBlockMsgInput" rows="2" placeholder="اكتب سبب إيقاف الطلبات..."></textarea>
+    </div>
+    <div class="field">
+      <label>رسائل جاهزة — اضغط لاستخدامها</label>
+      <div id="ordersBlockPresets" style="display: flex; flex-direction: column; gap: 6px;"></div>
+    </div>
+    <button class="btn btn-danger btn-block" id="ordersBlockToggleBtn" onclick="publishOrdersBlock(true)">⛔ إيقاف استقبال الطلبات</button>
+    <button class="btn btn-ghost btn-block" style="margin-top: 8px;" id="ordersUnblockBtn" onclick="publishOrdersBlock(false)">✅ استئناف استقبال الطلبات</button>
+
+    <div class="cart-total" style="margin-top: 20px;">
+      <span>الدفع الإلكتروني:</span>
+      <span class="amount" id="payBlockLabel">...</span>
+    </div>
+    <div class="field">
+      <label>رسالة إيقاف الدفع</label>
+      <textarea id="payBlockMsgInput" rows="2" placeholder="اكتب سبب إيقاف الدفع..."></textarea>
+    </div>
+    <div class="field">
+      <label>رسائل جاهزة — اضغط لاستخدامها</label>
+      <div id="payBlockPresets" style="display: flex; flex-direction: column; gap: 6px;"></div>
+    </div>
+    <button class="btn btn-danger btn-block" id="payBlockToggleBtn" onclick="publishPayBlock(true)">⛔ إيقاف الدفع الإلكتروني</button>
+    <button class="btn btn-ghost btn-block" style="margin-top: 8px;" id="payUnblockBtn" onclick="publishPayBlock(false)">✅ استئناف الدفع الإلكتروني</button>
+    <p class="pv-note">إيقاف الدفع يخفي زر «ادفع الآن» ويعرض رسالتك مكانه. إيقاف الطلبات يمنع إتمام الطلب من السلة. يشتغلان معاً أو كلٌّ لحاله.</p>
+
+    <h3 style="margin: 26px 0 6px;">صلاحيات المسؤولين 🛡️</h3>
+    <p class="sub" style="margin-bottom: 10px;">تحكّم بما يقدر المسؤولون (غيرك) يسوونه. ألغِ التحديد لإيقاف الصلاحية. أنت كمالك تملك كل الصلاحيات دائماً. <b>محمية في قواعد الأمان</b> — مو بس إخفاء أزرار.</p>
+    <div class="field">
+      <label class="perm-check"><input type="checkbox" id="permEditCatalog"> <span>✏️ تعديل المتجر — إضافة وتعديل المنتجات والأقسام والأسعار والخصومات</span></label>
+      <label class="perm-check"><input type="checkbox" id="permDeleteCatalog"> <span>🗑 حذف المنتجات والأقسام</span></label>
+      <label class="perm-check"><input type="checkbox" id="permChangeStatus"> <span>🔄 تغيير حالة الطلبات</span></label>
+      <label class="perm-check"><input type="checkbox" id="permMarkPaid"> <span>💰 تعليم الطلبات كمدفوعة / غير مدفوعة</span></label>
+      <label class="perm-check"><input type="checkbox" id="permDeleteOrders"> <span>🗑 حذف الطلبات</span></label>
+      <label class="perm-check"><input type="checkbox" id="permAssign"> <span>👤 تكليف الفريق على الطلبات</span></label>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="saveAdminPerms()">💾 حفظ صلاحيات المسؤولين</button>
 
     <h3 style="margin: 26px 0 6px;">الرسالة العامة 📢</h3>
     <p class="sub" style="margin-bottom: 10px;">شريط يظهر أعلى الموقع لجميع الزوار — يدعم التنسيق: **عريض** *مائل* `كود`</p>
@@ -1426,6 +1481,14 @@ function isOwner() {
   return !!auth.currentUser && auth.currentUser.uid === OWNER_UID;
 }
 
+// صلاحيات المسؤولين (غير المالك) — يتحكّم فيها المالك من لوحته. الافتراضي: كل شي مسموح.
+// المالك دايماً يملك كل الصلاحيات. هذي الواجهة بس؛ الحارس الحقيقي قواعد Firestore (adminCan).
+let adminPerms = { editCatalog: true, deleteCatalog: true, changeStatus: true, markPaid: true, deleteOrders: true, assign: true };
+function canAdmin(perm) {
+  return isOwner() || adminPerms[perm] !== false;
+}
+function permDenied() { toast("⛔ المالك أوقف هذه الصلاحية عنك"); }
+
 // أعضاء الفريق اللي نقدر نكلّفهم — بس يوزرات ديسكورد (ما نعرض للعميل إيميل ولا UID)
 const TEAM = [
   { uid: "kwbLZoAcamgD20RtZYUdt5fbmyo1", name: "itsreallyhex" },
@@ -1548,6 +1611,24 @@ const CLOSED_DEFAULTS = {
 };
 let closedMsgData = { title: CLOSED_DEFAULTS.title, msg: CLOSED_DEFAULTS.msg };
 
+// إيقاف الطلبات / الدفع مؤقتاً برسالة من المالك — مفتاحان مستقلّان، كلٍّ يتفعّل لحاله.
+// الزائر العادي ما يقدر يطلب/يدفع وقت الإيقاف ويشوف رسالة المالك — أنت والإدارة ما تتأثرون.
+const BLOCK_DEFAULTS = {
+  orders: "استقبال الطلبات متوقّف مؤقتاً — حاول لاحقاً 🙏",
+  pay: "الدفع الإلكتروني متوقّف مؤقتاً — حاول لاحقاً 🙏",
+};
+let ordersBlocked = false, ordersBlockMsg = BLOCK_DEFAULTS.orders;
+let payBlocked = false, payBlockMsg = BLOCK_DEFAULTS.pay;
+// رسائل جاهزة يضغط عليها المالك بدل ما يكتب
+const ORDER_BLOCK_PRESETS = [
+  "🔧 نقوم حالياً باختبار نظام الطلبات — استقبال الطلبات متوقّف مؤقتاً",
+  "⚠️ نواجه مشكلة في نظام الطلبات — نعمل على حلّها، حاول لاحقاً",
+];
+const PAY_BLOCK_PRESETS = [
+  "🔧 نقوم حالياً باختبار نظام الدفع — الدفع متوقّف مؤقتاً",
+  "⚠️ نواجه مشكلة في نظام الدفع — نعمل على حلّها، حاول لاحقاً",
+];
+
 // إيموجيات جاهزة لرسالة الإغلاق — تنحط في آخر حقل ضغط عليه المالك (العنوان أو النص)
 const CLOSED_EMOJIS = ["🚫","🔧","🌙","✨","⏰","🛠️","💜","🔒","⚠️","📢","🎉","❤️","🙏","👀","🔥","💎","🕐","📅","✅","🌟"];
 let closedActiveField = "closedMsgInput";
@@ -1659,6 +1740,79 @@ function renderOwnerPanel() {
     siteLabel.style.color = "var(--success)";
     closedBtn.textContent = "🚫 إغلاق الموقع برسالتي";
   }
+
+  // إيقاف الطلبات / الدفع
+  renderBlockSection({
+    blocked: ordersBlocked, msg: ordersBlockMsg, def: BLOCK_DEFAULTS.orders, presets: ORDER_BLOCK_PRESETS,
+    msgInputId: "ordersBlockMsgInput", presetsId: "ordersBlockPresets", labelId: "ordersBlockLabel",
+    toggleBtnId: "ordersBlockToggleBtn", unblockBtnId: "ordersUnblockBtn",
+    onLabel: "🟢 يستقبل الطلبات", setText: "⛔ إيقاف استقبال الطلبات",
+  });
+  renderBlockSection({
+    blocked: payBlocked, msg: payBlockMsg, def: BLOCK_DEFAULTS.pay, presets: PAY_BLOCK_PRESETS,
+    msgInputId: "payBlockMsgInput", presetsId: "payBlockPresets", labelId: "payBlockLabel",
+    toggleBtnId: "payBlockToggleBtn", unblockBtnId: "payUnblockBtn",
+    onLabel: "🟢 الدفع شغّال", setText: "⛔ إيقاف الدفع الإلكتروني",
+  });
+
+  // صلاحيات المسؤولين — التحديد = مسموح
+  document.getElementById("permEditCatalog").checked   = adminPerms.editCatalog;
+  document.getElementById("permDeleteCatalog").checked = adminPerms.deleteCatalog;
+  document.getElementById("permChangeStatus").checked  = adminPerms.changeStatus;
+  document.getElementById("permMarkPaid").checked      = adminPerms.markPaid;
+  document.getElementById("permDeleteOrders").checked  = adminPerms.deleteOrders;
+  document.getElementById("permAssign").checked        = adminPerms.assign;
+}
+
+// المالك يحفظ صلاحيات المسؤولين — التحديد = مسموح، إلغاؤه = ممنوع
+async function saveAdminPerms() {
+  if (!isOwner()) return;
+  const v = {
+    adminEditCatalog:   document.getElementById("permEditCatalog").checked,
+    adminDeleteCatalog: document.getElementById("permDeleteCatalog").checked,
+    adminChangeStatus:  document.getElementById("permChangeStatus").checked,
+    adminMarkPaid:      document.getElementById("permMarkPaid").checked,
+    adminDeleteOrders:  document.getElementById("permDeleteOrders").checked,
+    adminAssign:        document.getElementById("permAssign").checked,
+  };
+  try {
+    await setDoc(doc(db, "settings", "store"), v, { merge: true });
+    adminPerms = {
+      editCatalog: v.adminEditCatalog, deleteCatalog: v.adminDeleteCatalog,
+      changeStatus: v.adminChangeStatus, markPaid: v.adminMarkPaid,
+      deleteOrders: v.adminDeleteOrders, assign: v.adminAssign,
+    };
+    toast("✅ تم حفظ صلاحيات المسؤولين");
+  } catch {
+    toast("⚠ تعذر حفظ الصلاحيات");
+  }
+}
+
+// يعبّي قسم إيقاف (طلبات أو دفع) في لوحة المالك: الرسالة + الأزرار الجاهزة + حالة المفتاح
+function renderBlockSection(o) {
+  document.getElementById(o.msgInputId).value = o.msg === o.def ? "" : o.msg;
+  const presetsWrap = document.getElementById(o.presetsId);
+  presetsWrap.innerHTML = "";
+  o.presets.forEach(p => {
+    const b = document.createElement("button");
+    b.className = "btn btn-ghost btn-sm";
+    b.style.cssText = "justify-content: flex-start; text-align: right; white-space: normal; line-height: 1.6;";
+    b.textContent = p;
+    b.onclick = () => { document.getElementById(o.msgInputId).value = p; };
+    presetsWrap.appendChild(b);
+  });
+  const label = document.getElementById(o.labelId);
+  const toggleBtn = document.getElementById(o.toggleBtnId);
+  document.getElementById(o.unblockBtnId).style.display = o.blocked ? "block" : "none";
+  if (o.blocked) {
+    label.textContent = "⛔ موقوف مؤقتاً";
+    label.style.color = "#fb7185";
+    toggleBtn.textContent = "🔄 تحديث رسالة الإيقاف";
+  } else {
+    label.textContent = o.onLabel;
+    label.style.color = "var(--success)";
+    toggleBtn.textContent = o.setText;
+  }
 }
 
 function openOwner() {
@@ -1711,6 +1865,65 @@ async function publishClosed(enable) {
     toast("⚠ تعذر تغيير حالة الموقع");
   } finally {
     btn.disabled = false;
+  }
+}
+
+// المالك يوقف/يستأنف استقبال الطلبات برسالة من عنده
+async function publishOrdersBlock(enable) {
+  if (!isOwner()) return;
+  const msg = document.getElementById("ordersBlockMsgInput").value.trim();
+  const btn = document.getElementById("ordersBlockToggleBtn");
+  btn.disabled = true;
+  try {
+    await setDoc(doc(db, "settings", "store"), {
+      ordersBlocked: enable,
+      ordersBlockMsg: msg || BLOCK_DEFAULTS.orders,
+    }, { merge: true });
+    ordersBlocked = enable;
+    ordersBlockMsg = msg || BLOCK_DEFAULTS.orders;
+    renderOwnerPanel();
+    if (document.getElementById("cartOverlay").classList.contains("open")) renderCart();
+    toast(enable ? "⛔ تم إيقاف استقبال الطلبات" : "✅ عاد استقبال الطلبات للجميع");
+  } catch {
+    toast("⚠ تعذر تغيير حالة الطلبات");
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// المالك يوقف/يستأنف الدفع الإلكتروني برسالة من عنده
+async function publishPayBlock(enable) {
+  if (!isOwner()) return;
+  const msg = document.getElementById("payBlockMsgInput").value.trim();
+  const btn = document.getElementById("payBlockToggleBtn");
+  btn.disabled = true;
+  try {
+    await setDoc(doc(db, "settings", "store"), {
+      payBlocked: enable,
+      payBlockMsg: msg || BLOCK_DEFAULTS.pay,
+    }, { merge: true });
+    payBlocked = enable;
+    payBlockMsg = msg || BLOCK_DEFAULTS.pay;
+    renderOwnerPanel();
+    applyPayBlockUI();
+    if (document.getElementById("ordersOverlay").classList.contains("open")) openOrders();
+    toast(enable ? "⛔ تم إيقاف الدفع الإلكتروني" : "✅ عاد الدفع الإلكتروني للجميع");
+  } catch {
+    toast("⚠ تعذر تغيير حالة الدفع");
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// يطبّق حالة إيقاف الدفع على نافذة الشكر: يخفي زر الدفع ويعرض رسالة المالك مكانه (الإدارة تتخطى)
+function applyPayBlockUI() {
+  const blocked = payBlocked && !isAdmin();
+  const btn = document.getElementById("payNowBtn");
+  const note = document.getElementById("payBlockNote");
+  if (btn) btn.style.display = blocked ? "none" : "";
+  if (note) {
+    note.textContent = "🚫 " + payBlockMsg;
+    note.style.display = blocked ? "block" : "none";
   }
 }
 
@@ -1792,6 +2005,19 @@ async function loadStore() {
     closedMsgData = {
       title: settings.closedTitle || CLOSED_DEFAULTS.title,
       msg: settings.closedMsg || CLOSED_DEFAULTS.msg,
+    };
+    ordersBlocked = settings.ordersBlocked === true;
+    ordersBlockMsg = settings.ordersBlockMsg || BLOCK_DEFAULTS.orders;
+    payBlocked = settings.payBlocked === true;
+    payBlockMsg = settings.payBlockMsg || BLOCK_DEFAULTS.pay;
+    // صلاحيات المسؤولين — أي حقل غير موجود أو ليس false = مسموح
+    adminPerms = {
+      editCatalog:   settings.adminEditCatalog   !== false,
+      deleteCatalog: settings.adminDeleteCatalog !== false,
+      changeStatus:  settings.adminChangeStatus  !== false,
+      markPaid:      settings.adminMarkPaid       !== false,
+      deleteOrders:  settings.adminDeleteOrders   !== false,
+      assign:        settings.adminAssign         !== false,
     };
     announce = {
       enabled: settings.announceEnabled === true,
@@ -2102,6 +2328,14 @@ function renderCart() {
   document.getElementById("cartTotal").textContent = total + " ر.س";
   footer.style.display = "block";
 
+  // إيقاف الطلبات: نخفي زر الإتمام ونعرض رسالة المالك (الإدارة تتخطى)
+  const ordersBlk = ordersBlocked && !isAdmin();
+  const obNote = document.getElementById("ordersBlockNote");
+  obNote.textContent = "🚫 " + ordersBlockMsg;
+  obNote.style.display = ordersBlk ? "block" : "none";
+  document.getElementById("checkoutBtn").style.display = ordersBlk ? "none" : "";
+  document.getElementById("checkoutHint").style.display = ordersBlk ? "none" : "";
+
   const discordInput = document.getElementById("checkoutDiscord");
   if (!discordInput.value && myDiscord) discordInput.value = myDiscord;
 }
@@ -2109,6 +2343,10 @@ function renderCart() {
 function confirmCheckout() {
   if (maintenanceOn && !isAdmin()) {
     toast("🔧 المتجر تحت الصيانة حالياً — عد لاحقاً");
+    return;
+  }
+  if (ordersBlocked && !isAdmin()) {
+    toast("🚫 " + ordersBlockMsg);
     return;
   }
   const user = auth.currentUser;
@@ -2151,6 +2389,7 @@ function closeThanks() { document.getElementById("thanksOverlay").classList.remo
 let lastOrder = null;
 
 function openPay() {
+  if (payBlocked && !isAdmin()) return toast("🚫 " + payBlockMsg);
   if (!lastOrder) return toast("⚠ لا يوجد طلب للدفع");
   if (!lastOrder.rawId) return toast("⚠ تعذر تحديد الطلب — افتح «طلباتي» واضغط ادفع الآن من هناك");
   if (typeof Moyasar === "undefined") return toast("⚠ تعذر تحميل بوابة الدفع — تحقق من اتصالك");
@@ -2193,6 +2432,7 @@ function closePay() {
 async function placeOrder() {
   const user = auth.currentUser;
   if (!user) return;
+  if (ordersBlocked && !isAdmin()) { toast("🚫 " + ordersBlockMsg); return; }
   const cart = getCart().filter(i => allProducts.some(p => p.id === i.id));
   if (cart.length === 0) return;
 
@@ -2236,6 +2476,7 @@ async function placeOrder() {
     document.getElementById("thanksOrderId").innerHTML =
       `رقم طلبك: <b style="color: #a78bfa;">#${fmtId(ref.id)}</b> — احفظه واذكره في التذكرة`;
     applyThanks();
+    applyPayBlockUI();
     document.getElementById("thanksOverlay").classList.add("open");
   } catch {
     toast("⚠ تعذر إرسال الطلب — حاول مجدداً");
@@ -2334,7 +2575,9 @@ async function openOrders() {
              </div>` : ""}
         ${o.moyasarPaymentId ? `<div class="order-date" style="margin-top: 6px; cursor: pointer; direction: ltr; unicode-bidi: embed; text-align: right;" title="معرّف دفعتك في ميسر — اضغط للنسخ" data-copy="${esc(o.moyasarPaymentId)}">💳 معرّف الدفعة: <code>${esc(o.moyasarPaymentId)}</code></div>` : ""}
         ${!o.paid && !["مكتمل", "ملغي"].includes(o.status)
-          ? `<button class="btn btn-primary btn-block btn-sm" style="margin-top: 10px;" data-pay="${o.id}" data-total="${o.total}">💳 ادفع الآن — دفع إلكتروني</button>`
+          ? ((payBlocked && !isAdmin())
+              ? `<p class="pv-note" style="margin-top: 10px; color: #fb7185; border-color: rgba(248,113,113,.4); background: rgba(248,113,113,.08);">🚫 ${esc(payBlockMsg)}</p>`
+              : `<button class="btn btn-primary btn-block btn-sm" style="margin-top: 10px;" data-pay="${o.id}" data-total="${o.total}">💳 ادفع الآن — دفع إلكتروني</button>`)
           : ""}
         ${CANCELLABLE_STATUSES.includes(o.status)
           ? (o.paid
@@ -2407,6 +2650,7 @@ function compressImage(file) {
 
 async function adminAddCat() {
   if (!isAdmin()) return;
+  if (!canAdmin("editCatalog")) return permDenied();
   const title = document.getElementById("apNewCatTitle").value.trim();
   const sub = document.getElementById("apNewCatSub").value.trim();
   if (!title) return showMsg("adminPanelMsg", "⚠ اكتب اسم القسم أولاً", "error");
@@ -2426,6 +2670,7 @@ async function adminAddCat() {
 
 async function adminSaveCat(id) {
   if (!isAdmin()) return;
+  if (!canAdmin("editCatalog")) return permDenied();
   const title = document.getElementById("cat-title-" + id).value.trim();
   const sub = document.getElementById("cat-sub-" + id).value.trim();
   if (!title) return toast("⚠ اسم القسم لا يمكن أن يكون فارغاً");
@@ -2443,6 +2688,7 @@ async function adminSaveCat(id) {
 
 async function adminDeleteCat(id) {
   if (!isAdmin()) return;
+  if (!canAdmin("deleteCatalog")) return permDenied();
   const gone = allCats.find(c => c.id === id) || {};
   const count = allProducts.filter(p => p.cat === id).length;
   try {
@@ -2488,6 +2734,7 @@ function adminCancelEdit() {
 
 async function adminSaveProduct() {
   if (!isAdmin()) return;
+  if (!canAdmin("editCatalog")) return permDenied();
   const cat   = document.getElementById("apCat").value;
   const icon  = document.getElementById("apIcon").value.trim();
   const name  = document.getElementById("apName").value.trim();
@@ -2558,6 +2805,7 @@ async function adminSaveProduct() {
 
 async function adminDeleteProduct(id) {
   if (!isAdmin()) return;
+  if (!canAdmin("deleteCatalog")) return permDenied();
   const gone = allProducts.find(p => p.id === id) || {};
   try {
     await deleteDoc(doc(db, "products", id));
@@ -2573,6 +2821,7 @@ async function adminDeleteProduct(id) {
 
 async function adminSaveRow(id) {
   if (!isAdmin()) return;
+  if (!canAdmin("editCatalog")) return permDenied();
   const before = allProducts.find(p => p.id === id) || {};
   const saleVal = Math.max(0, Math.min(90, Number(document.getElementById("sale-" + id).value) || 0));
   const statusVal = document.getElementById("status-" + id).value;
@@ -2594,16 +2843,42 @@ async function adminSaveRow(id) {
   }
 }
 
+// يبيّن للمسؤول وش الصلاحيات اللي وقفها المالك عنه، ويخفي نماذج الإضافة الممنوعة
+function applyAdminPermsNote() {
+  const ed = canAdmin("editCatalog");
+  document.getElementById("addCatBox").style.display = ed ? "" : "none";
+  document.getElementById("productFormBox").style.display = ed ? "" : "none";
+
+  const denied = [];
+  if (!canAdmin("editCatalog"))   denied.push("تعديل المتجر");
+  if (!canAdmin("deleteCatalog")) denied.push("حذف المنتجات/الأقسام");
+  if (!canAdmin("changeStatus"))  denied.push("تغيير حالة الطلبات");
+  if (!canAdmin("markPaid"))      denied.push("تعليم الطلبات كمدفوعة");
+  if (!canAdmin("deleteOrders"))  denied.push("حذف الطلبات");
+  if (!canAdmin("assign"))        denied.push("تكليف الفريق");
+  const note = document.getElementById("adminPermsNote");
+  if (denied.length && !isOwner()) {
+    note.textContent = "🛡️ المالك أوقف عنك: " + denied.join("، ") + ".";
+    note.style.display = "block";
+  } else {
+    note.style.display = "none";
+  }
+}
+
 function renderAdminAll() {
+  const ed = canAdmin("editCatalog");   // إضافة/تعديل المنتجات والأقسام
+  const del = canAdmin("deleteCatalog"); // حذف المنتجات والأقسام
+  applyAdminPermsNote();
+
   document.getElementById("seedBox").style.display =
-    (allCats.length === 0 && allProducts.length === 0) ? "block" : "none";
+    (allCats.length === 0 && allProducts.length === 0 && ed) ? "block" : "none";
 
   document.getElementById("adminCats").innerHTML = allCats.map(c => `
     <div class="admin-row">
-      <input class="cat-input" id="cat-title-${c.id}" value="${esc(c.title)}" placeholder="اسم القسم">
-      <input class="cat-input" id="cat-sub-${c.id}" value="${esc(c.sub || "")}" placeholder="الوصف">
-      <button class="btn btn-primary btn-sm" data-savecat="${c.id}">حفظ</button>
-      <button class="btn btn-danger btn-sm" data-delcat="${c.id}">حذف</button>
+      <input class="cat-input" id="cat-title-${c.id}" value="${esc(c.title)}" placeholder="اسم القسم" ${ed ? "" : "disabled"}>
+      <input class="cat-input" id="cat-sub-${c.id}" value="${esc(c.sub || "")}" placeholder="الوصف" ${ed ? "" : "disabled"}>
+      ${ed ? `<button class="btn btn-primary btn-sm" data-savecat="${c.id}">حفظ</button>` : ""}
+      ${del ? `<button class="btn btn-danger btn-sm" data-delcat="${c.id}">حذف</button>` : ""}
     </div>`).join("");
 
   document.getElementById("apCat").innerHTML = allCats
@@ -2613,15 +2888,15 @@ function renderAdminAll() {
     <div class="admin-row">
       <span>${esc(p.icon || "🛒")}</span>
       <span class="ar-name">${esc(p.name)} — ${finalPrice(p)} ر.س ${p.sale > 0 ? `<small>(خصم ${esc(p.sale)}%)</small>` : ""}</span>
-      <input class="sale-input" type="number" min="0" max="90" id="sale-${p.id}" value="${p.sale || 0}" title="نسبة الخصم %">
-      <select class="status-select" id="status-${p.id}" title="حالة التوفر">
+      <input class="sale-input" type="number" min="0" max="90" id="sale-${p.id}" value="${p.sale || 0}" title="نسبة الخصم %" ${ed ? "" : "disabled"}>
+      <select class="status-select" id="status-${p.id}" title="حالة التوفر" ${ed ? "" : "disabled"}>
         <option value="available" ${!p.status || p.status === "available" ? "selected" : ""}>متوفر</option>
         <option value="out" ${p.status === "out" ? "selected" : ""}>نفذت الكمية</option>
         <option value="unavailable" ${p.status === "unavailable" ? "selected" : ""}>غير متوفر حالياً</option>
       </select>
-      <button class="btn btn-primary btn-sm" data-saverow="${p.id}">حفظ</button>
-      <button class="btn btn-ghost btn-sm" data-edit="${p.id}">تعديل</button>
-      <button class="btn btn-danger btn-sm" data-del="${p.id}">حذف</button>
+      ${ed ? `<button class="btn btn-primary btn-sm" data-saverow="${p.id}">حفظ</button>
+      <button class="btn btn-ghost btn-sm" data-edit="${p.id}">تعديل</button>` : ""}
+      ${del ? `<button class="btn btn-danger btn-sm" data-del="${p.id}">حذف</button>` : ""}
     </div>`).join("");
 
   document.querySelectorAll("[data-savecat]").forEach(b => b.onclick = () => adminSaveCat(b.dataset.savecat));
@@ -2717,14 +2992,16 @@ function renderAdminOrders() {
           <span class="order-total">الإجمالي: ${o.total} ر.س</span>
           ${(o.status === "مكتمل" && !isOwner())
             ? `<span class="status-badge done" title="الطلب مكتمل — الحالة مقفلة">🔒 الحالة مقفلة</span>`
-            : `<select class="status-select" id="ostatus-${o.id}">
-                ${ORDER_STATUSES.map(s => `<option ${o.status === s ? "selected" : ""}>${s}</option>`).join("")}
-              </select>
-              <button class="btn btn-primary btn-sm" data-ostatus="${o.id}">حفظ</button>`}
-          ${canEditAssignment(o) ? `<button class="btn btn-ghost btn-sm" data-oassign="${o.id}">👤 تكليف</button>` : ""}
+            : (canAdmin("changeStatus")
+                ? `<select class="status-select" id="ostatus-${o.id}">
+                    ${ORDER_STATUSES.map(s => `<option ${o.status === s ? "selected" : ""}>${s}</option>`).join("")}
+                  </select>
+                  <button class="btn btn-primary btn-sm" data-ostatus="${o.id}">حفظ</button>`
+                : "")}
+          ${(canEditAssignment(o) && canAdmin("assign")) ? `<button class="btn btn-ghost btn-sm" data-oassign="${o.id}">👤 تكليف</button>` : ""}
           <button class="btn btn-ghost btn-sm" data-olog="${o.id}">📋 السجل</button>
-          <button class="btn ${o.paid ? "btn-ghost" : "btn-primary"} btn-sm" data-opaid="${o.id}" data-paidval="${o.paid ? "0" : "1"}">${o.paid ? "↩ تغير مدفوع" : "💰 تعليم كمدفوع"}</button>
-          <button class="btn btn-danger btn-sm" data-odel="${o.id}">🗑 حذف</button>
+          ${canAdmin("markPaid") ? `<button class="btn ${o.paid ? "btn-ghost" : "btn-primary"} btn-sm" data-opaid="${o.id}" data-paidval="${o.paid ? "0" : "1"}">${o.paid ? "↩ تغير مدفوع" : "💰 تعليم كمدفوع"}</button>` : ""}
+          ${canAdmin("deleteOrders") ? `<button class="btn btn-danger btn-sm" data-odel="${o.id}">🗑 حذف</button>` : ""}
         </div>
       </div>`).join("");
 
@@ -2741,6 +3018,7 @@ function renderAdminOrders() {
 
 async function adminDeleteOrder(orderId) {
   if (!isAdmin()) return;
+  if (!canAdmin("deleteOrders")) return permDenied();
   if (!confirm("هل أنت متأكد من حذف هذا الطلب نهائياً؟ لا يمكن التراجع.")) return;
   try {
     await deleteDoc(doc(db, "orders", orderId));
@@ -2753,6 +3031,7 @@ async function adminDeleteOrder(orderId) {
 
 async function adminSetOrderStatus(orderId) {
   if (!isAdmin()) return;
+  if (!canAdmin("changeStatus")) return permDenied();
   const sel = document.getElementById("ostatus-" + orderId);
   if (!sel) return;
   const order = adminOrdersCache.find(o => o.id === orderId);
@@ -2821,6 +3100,7 @@ async function saveAssignment() {
   const orderId = assignOrderId;
   if (!orderId) return;
   const o = adminOrdersCache.find(x => x.id === orderId);
+  if (!canAdmin("assign")) return permDenied();
   if (!o || !canEditAssignment(o)) { toast("⛔ لا تملك صلاحية تعديل التكليف"); return; }
   const checked = [...document.querySelectorAll("#assignList input:checked")];
   if (checked.length > 3) { toast("⚠ الحد الأقصى 3 أعضاء"); return; }
@@ -2995,6 +3275,7 @@ function dangerConfirm(title, text, confirmLabel = "تأكيد") {
 
 async function adminTogglePaid(orderId, makePaid) {
   if (!isAdmin()) return;
+  if (!canAdmin("markPaid")) return permDenied();
   const order = adminOrdersCache.find(o => o.id === orderId) || {};
   try {
     const batch = writeBatch(db);
@@ -3014,6 +3295,7 @@ async function adminTogglePaid(orderId, makePaid) {
 // نعبّي المتجر بالمنتجات الافتراضية (للتجربة بس)
 async function seedDefaults() {
   if (!isAdmin()) return;
+  if (!canAdmin("editCatalog")) return permDenied();
   const seedCats = [
     { id: "bots",    title: "🤖 برمجة بوتات ديسكورد",  sub: "بوتات مخصصة حسب طلبك، مبرمجة باحترافية وبدون أخطاء", order: 1 },
     { id: "servers", title: "🏰 بناء سيرفرات من الصفر", sub: "سيرفر متكامل: رتب، رومات، حماية، تصميم — جاهز للانطلاق", order: 2 },
@@ -3073,6 +3355,7 @@ Object.assign(window, {
   openOrders, closeOrders, cancelMyOrder,
   openAdmin, closeAdmin, openAdminOrders, closeAdminOrders,
   openOwner, closeOwner, toggleMaintenance, publishClosed, publishAnnounce, publishThanks,
+  publishOrdersBlock, publishPayBlock, saveAdminPerms,
   adminAddCat, adminSaveProduct, adminCancelEdit, seedDefaults,
   closeAssign, saveAssignment, closeOrderLog,
   openActivityLog, closeActivityLog, exportActivityLogCSV,
