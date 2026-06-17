@@ -128,6 +128,7 @@
     .boot-logo { animation: none; }
     .hero .orb { animation: none; }
     .hero-chev { animation: none; }
+    .menu-dropdown { animation: none; }
     * { scroll-behavior: auto !important; }
   }
 
@@ -139,9 +140,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 14px 5%;
-    background: rgba(11, 10, 22, 0.72);
-    backdrop-filter: blur(16px) saturate(140%);
-    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    background: rgba(11, 10, 22, 0.96);
     border-bottom: 1px solid var(--border-soft);
     position: sticky;
     top: 0;
@@ -201,6 +200,35 @@
   .header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .welcome-user { color: var(--muted); font-size: 0.9rem; }
   .welcome-user b { color: var(--accent); }
+
+  /* ===== قائمة الهمبرغر (اللوحات) ===== */
+  .menu { position: relative; }
+  .menu-toggle { padding: 10px 12px; }
+  .menu-toggle .ico { width: 1.35em; height: 1.35em; }
+  .menu-dropdown {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 0;
+    min-width: 232px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    background: linear-gradient(180deg, rgba(28, 26, 52, 0.9), rgba(15, 14, 29, 0.92));
+    border: 1px solid var(--border-soft);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-lg), 0 0 0 1px rgba(0, 0, 0, 0.4);
+    z-index: 60;
+    animation: menuPop 0.16s ease-out;
+  }
+  .menu-dropdown.open { display: flex; }
+  @keyframes menuPop {
+    from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  /* الأزرار داخل القائمة تمتد بعرض كامل ونصها للبداية */
+  .menu-dropdown .btn { width: 100%; justify-content: flex-start; }
+  .menu-sep { height: 1px; background: var(--border-soft); margin: 2px 0; }
 
   /* ===== الأزرار ===== */
   .btn {
@@ -267,7 +295,8 @@
   }
   .ico-lg { width: 1.4em; height: 1.4em; }
 
-  .cart-btn { position: relative; }
+  /* القائمة المنبثقة للسلة تطلع برّا حدود الزر — نلغي القص اللي ورثناه من .btn */
+  .cart-btn { position: relative; overflow: visible; }
   .cart-count {
     position: absolute;
     top: -8px;
@@ -343,7 +372,6 @@
     font-weight: 500;
     margin-bottom: 24px;
     box-shadow: inset 0 0 18px rgba(139, 92, 246, 0.12);
-    backdrop-filter: blur(6px);
   }
   /* نقطة نبض حية داخل الشارة */
   .badge::before {
@@ -375,7 +403,6 @@
     border-radius: var(--r-md);
     padding: 24px 20px;
     text-align: center;
-    backdrop-filter: blur(6px);
     transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
   }
   .step:hover { transform: translateY(-4px); border-color: rgba(167, 139, 250, 0.45); box-shadow: var(--shadow-md); }
@@ -461,7 +488,6 @@
     gap: 12px;
     transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
     cursor: pointer;
-    backdrop-filter: blur(6px);
     overflow: hidden;
   }
   /* خط وهج علوي يضيء عند المرور */
@@ -542,9 +568,7 @@
   .overlay {
     position: fixed;
     inset: 0;
-    background: rgba(5, 4, 12, 0.7);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(5, 4, 12, 0.88);
     display: none;
     align-items: center;
     justify-content: center;
@@ -1139,15 +1163,23 @@
   </nav>
   <div class="header-actions">
     <span class="welcome-user" id="welcomeUser" style="display:none;">مرحباً، <b id="usernameDisplay"></b></span>
-    <button class="btn btn-ghost" id="ownerBtn" style="display:none;" onclick="openOwner()"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l4 5 5-7 5 7 4-5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg> المالك</button>
-    <button class="btn btn-ghost" id="adminBtn" style="display:none;" onclick="openAdmin()"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> الإدارة</button>
-    <button class="btn btn-ghost" id="ordersBtn" style="display:none;" onclick="openOrders()"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 9.4 7.5 4.21M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg> طلباتي</button>
     <button class="btn btn-ghost cart-btn" onclick="openCart()">
       <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> السلة
       <span class="cart-count" id="cartCount" style="display:none;">0</span>
     </button>
     <button class="btn btn-primary" id="authBtn" onclick="openAuth('login')"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5M15 12H3"/></svg> تسجيل الدخول</button>
-    <button class="btn btn-danger" id="logoutBtn" style="display:none;" onclick="logout()"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg> خروج</button>
+    <div class="menu" id="menu">
+      <button class="btn btn-ghost menu-toggle" id="menuToggle" style="display:none;" onclick="toggleMenu()" aria-label="القائمة" aria-haspopup="true" aria-expanded="false">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="menu-dropdown" id="menuDropdown">
+        <button class="btn btn-ghost" id="ownerBtn" style="display:none;" onclick="closeMenu(); openOwner()"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l4 5 5-7 5 7 4-5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg> المالك</button>
+        <button class="btn btn-ghost" id="adminBtn" style="display:none;" onclick="closeMenu(); openAdmin()"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> الإدارة</button>
+        <button class="btn btn-ghost" id="ordersBtn" style="display:none;" onclick="closeMenu(); openOrders()"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 9.4 7.5 4.21M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg> طلباتي</button>
+        <div class="menu-sep"></div>
+        <button class="btn btn-danger" id="logoutBtn" style="display:none;" onclick="closeMenu(); logout()"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg> خروج</button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -1762,7 +1794,7 @@ function applyAnnounce() {
 // ===== رسالة الشكر بعد الطلب (المالك يقدر يعدّلها من لوحته) =====
 const THANKS_DEFAULTS = {
   note1: "⚠️ **خطوة أخيرة ضرورية لإتمام طلبك:** يجب عليك الدخول إلى **سيرفرنا في الديسكورد** وفتح تذكرة 🎟️ وذكر رقم طلبك حتى نتمكن من التواصل معك وإتمام الدفع والتنفيذ. الطلب لا يكتمل بدون هذه الخطوة!",
-  note2: "⏳ **قد يستغرق تنفيذ طلبك أسبوعاً أو أكثر** حسب نوع وحجم الخدمة.\n💳 نقبل حالياً **التحويل المحلي فقط** لإتمام الدفع.",
+  note2: "⏳ **قد يستغرق تنفيذ طلبك من يومين الى اسبوع أو أكثر** حسب نوع وحجم الخدمة.",
 };
 let thanksMsg = { note1: THANKS_DEFAULTS.note1, note2: THANKS_DEFAULTS.note2 };
 
@@ -2408,9 +2440,32 @@ function updateAuthUI() {
   document.getElementById("ordersBtn").style.display   = user ? "inline-flex" : "none";
   document.getElementById("adminBtn").style.display    = isAdmin() ? "inline-flex" : "none";
   document.getElementById("ownerBtn").style.display    = isOwner() ? "inline-flex" : "none";
+  // الهمبرغر يظهر فقط لما يكون فيه مستخدم مسجّل (يضم اللوحات + خروج)
+  document.getElementById("menuToggle").style.display  = user ? "inline-flex" : "none";
+  if (!user) closeMenu();
   if (user) document.getElementById("usernameDisplay").textContent = user.displayName || user.email;
   applyMaintenance();
 }
+
+// ===== قائمة الهمبرغر =====
+function openMenu() {
+  document.getElementById("menuDropdown").classList.add("open");
+  document.getElementById("menuToggle").setAttribute("aria-expanded", "true");
+}
+function closeMenu() {
+  const d = document.getElementById("menuDropdown");
+  if (d) d.classList.remove("open");
+  const t = document.getElementById("menuToggle");
+  if (t) t.setAttribute("aria-expanded", "false");
+}
+function toggleMenu() {
+  document.getElementById("menuDropdown").classList.contains("open") ? closeMenu() : openMenu();
+}
+// نسكّر القائمة لو ضغط برّاها
+document.addEventListener("click", e => {
+  const menu = document.getElementById("menu");
+  if (menu && !menu.contains(e.target)) closeMenu();
+});
 
 let myDiscord = "";
 
@@ -3532,6 +3587,7 @@ async function seedDefaults() {
 
 document.addEventListener("keydown", e => {
   if (e.key !== "Escape") return;
+  closeMenu();
   const open = [...document.querySelectorAll(".overlay.open")];
   if (open.length) open[open.length - 1].classList.remove("open");
 });
@@ -3563,6 +3619,7 @@ Object.assign(window, {
   closeAssign, saveAssignment, closeOrderLog,
   openActivityLog, closeActivityLog, exportActivityLogCSV,
   dismissApplePayNote,
+  toggleMenu, closeMenu,
 });
 
 // لمن نرجع من بوابة الدفع: نطلّع رسالة بس وما نكتب أي حالة دفع.
