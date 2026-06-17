@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -33,7 +34,7 @@
     --border-soft: rgba(167, 139, 250, 0.14);
     --discord: #5865f2;
 
-    /* مقاييس الزوايا والظلال والمسافات */
+    /* مقاسات جاهزة للحواف والظلال والمسافات نستعملها بكل مكان */
     --r-sm: 10px;
     --r-md: 14px;
     --r-lg: 18px;
@@ -68,10 +69,10 @@
     letter-spacing: 0.1px;
   }
 
-  /* تحديد النص بلون الهوية */
+  /* لمن تحدّد نص يطلع بلون الموقع */
   ::selection { background: rgba(139, 92, 246, 0.35); color: #fff; }
 
-  /* حلقة تركيز واضحة للتنقّل بلوحة المفاتيح (وصول) */
+  /* حلقة تركيز واضحة لمن تتنقّل بلوحة المفاتيح — عشان الوصول */
   :focus-visible {
     outline: 2px solid var(--accent-soft);
     outline-offset: 2px;
@@ -91,7 +92,7 @@
       radial-gradient(50% 45% at 12% 8%, rgba(34, 211, 238, 0.12), transparent 55%),
       radial-gradient(55% 50% at 50% 110%, rgba(109, 40, 217, 0.18), transparent 60%);
   }
-  /* شبكة خافتة جداً تعطي إحساس العمق */
+  /* شبكة خفيفة مرة تعطي إحساس بالعمق */
   body::after {
     content: "";
     position: fixed;
@@ -146,7 +147,7 @@
     top: 0;
     z-index: 50;
   }
-  /* خط وهج رفيع أسفل الشريط العلوي */
+  /* خط وهج رفيع تحت الشريط العلوي */
   header::after {
     content: "";
     position: absolute;
@@ -226,7 +227,7 @@
     from { opacity: 0; transform: translateY(-8px) scale(0.97); }
     to { opacity: 1; transform: translateY(0) scale(1); }
   }
-  /* الأزرار داخل القائمة تمتد بعرض كامل ونصها للبداية */
+  /* الأزرار اللي جوّا القائمة تاخذ العرض كامل ونصها يبدأ من الجهة */
   .menu-dropdown .btn { width: 100%; justify-content: flex-start; }
   .menu-sep { height: 1px; background: var(--border-soft); margin: 2px 0; }
 
@@ -254,7 +255,7 @@
     color: #fff;
     box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
   }
-  /* لمعة زجاجية أعلى الزر الأساسي */
+  /* لمعة زجاجية فوق الزر الأساسي */
   .btn-primary::before {
     content: "";
     position: absolute;
@@ -282,7 +283,7 @@
   .btn-sm { padding: 6px 12px !important; font-size: 0.8rem !important; }
   .dc-ico { width: 1.2em; height: 1.2em; vertical-align: -0.18em; }
 
-  /* أيقونات SVG موحّدة بدل الإيموجي في الواجهة — ترث لون النص وتتمدد مع حجم الخط */
+  /* أيقونات SVG موحّدة بدل الإيموجي — تاخذ لون النص وتكبر وتصغر مع حجم الخط */
   .ico {
     width: 1.15em; height: 1.15em;
     flex: 0 0 auto;
@@ -320,7 +321,7 @@
     text-align: center;
     padding: 96px 5% 72px;
   }
-  /* كرات وهج عائمة تعطي الواجهة عمقاً سينمائياً */
+  /* كرات وهج طايرة تعطي الواجهة عمق سينمائي */
   .hero .orb {
     position: absolute;
     border-radius: 50%;
@@ -373,7 +374,7 @@
     margin-bottom: 24px;
     box-shadow: inset 0 0 18px rgba(139, 92, 246, 0.12);
   }
-  /* نقطة نبض حية داخل الشارة */
+  /* نقطة تنبض جوّا الشارة */
   .badge::before {
     content: "";
     width: 7px; height: 7px;
@@ -433,7 +434,7 @@
     gap: 14px;
     letter-spacing: -0.3px;
   }
-  /* عمود وهج متدرّج قبل عنوان القسم */
+  /* عمود وهج متدرّج يجي قبل عنوان القسم */
   .section-title::before {
     content: "";
     width: 5px;
@@ -490,7 +491,7 @@
     cursor: pointer;
     overflow: hidden;
   }
-  /* خط وهج علوي يضيء عند المرور */
+  /* خط وهج فوق يضيء لمن تمرّ عليه */
   .card::before {
     content: "";
     position: absolute;
@@ -1140,6 +1141,118 @@
     .header-actions .btn { padding: 8px 14px; font-size: 0.85rem; }
     nav.main-nav a { padding: 8px 12px; font-size: 0.85rem; }
   }
+
+  /* =========================================================================
+     ستايل "ناعم ومرحّب" مخصّص: السلة + الطلبات + اللوحات (الإدارة/المالك) بس.
+     نطبّقه عبر كلاس .soft على هالنوافذ فقط — باقي الموقع يضل بثيمه الأصلي.
+     حواف دائرية كبيرة + مسافات مريحة + ظلال وهج ناعمة + تدرّجات لطيفة.
+     (بدون backdrop-filter عشان ما نرجّع اللاق.)
+     ========================================================================= */
+
+  /* النافذة: حواف دائرية كبيرة + تدرّج لطيف + ظل وهج ناعم */
+  .soft .modal {
+    border-radius: 26px;
+    border: 1px solid var(--border-soft);
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(139, 92, 246, 0.16), transparent 60%),
+      linear-gradient(180deg, rgba(36, 33, 66, 0.7), rgba(18, 16, 33, 0.88));
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5), 0 0 60px rgba(139, 92, 246, 0.14);
+    padding: 34px;
+  }
+  @media (min-width: 768px) {
+    .soft .modal.owner-modal,
+    .soft .modal.admin-modal { padding: 40px 46px; }
+  }
+  .soft .modal h2 { font-weight: 800; letter-spacing: -0.3px; }
+  .soft .modal h3 { font-weight: 800; }
+
+  /* زر الإغلاق: دائري وناعم */
+  .soft .close-x {
+    border-radius: 50%;
+    border: 1px solid var(--border-soft);
+    background: rgba(167, 139, 250, 0.08);
+  }
+  .soft .close-x:hover { background: rgba(244, 63, 94, 0.14); color: var(--danger); border-color: rgba(244, 63, 94, 0.4); }
+
+  /* الأزرار: حبوب (pills) بظل وهج ناعم وحركة لطيفة عند المرور */
+  .soft .btn {
+    border-radius: 999px;
+    font-weight: 700;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+  .soft .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    box-shadow: 0 10px 26px rgba(139, 92, 246, 0.4);
+  }
+  .soft .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(139, 92, 246, 0.52); }
+  .soft .btn-ghost {
+    border-radius: 999px;
+    background: rgba(167, 139, 250, 0.08);
+    border: 1px solid var(--border-soft);
+  }
+  .soft .btn-ghost:hover { transform: translateY(-2px); border-color: var(--accent); color: var(--accent-soft); background: rgba(139, 92, 246, 0.12); }
+  .soft .btn-danger { border-radius: 999px; box-shadow: 0 10px 26px rgba(244, 63, 94, 0.32); }
+  .soft .btn-danger:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(244, 63, 94, 0.42); }
+  .soft .btn-discord:hover { transform: translateY(-2px); }
+
+  /* الحقول: حواف دائرية ومسافة مريحة وتركيز بوهج خفيف */
+  .soft .field input,
+  .soft .field select,
+  .soft .field textarea {
+    border-radius: 14px;
+    border: 1px solid var(--border-soft);
+    background: rgba(10, 9, 20, 0.5);
+    padding: 13px 16px;
+  }
+  .soft .field input:focus,
+  .soft .field select:focus,
+  .soft .field textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.16);
+  }
+  .soft .pv-note { border-radius: 14px; }
+  .soft .orders-summary { border-radius: 16px; border: 1px solid rgba(139, 92, 246, 0.35); }
+
+  /* ===== السلة ===== */
+  .soft .cart-item { border-bottom: 1px solid var(--border-soft); padding: 16px 0; }
+  .soft .qty-controls button {
+    border-radius: 10px;
+    border: 1px solid var(--border-soft);
+    transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+  }
+  .soft .qty-controls button:hover { background: rgba(139, 92, 246, 0.18); border-color: var(--accent); transform: translateY(-1px); }
+  .soft .applepay-note { border-radius: 16px; background: rgba(167, 139, 250, 0.06); border: 1px solid var(--border-soft); }
+  .soft .applepay-logo { border-radius: 8px; }
+
+  /* ===== الطلبات (طلباتي + إدارة الطلبات) ===== */
+  .soft .order-card {
+    border-radius: 18px;
+    border: 1px solid var(--border-soft);
+    background: linear-gradient(165deg, rgba(36, 33, 66, 0.5), rgba(18, 16, 33, 0.42));
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+  }
+  .soft .order-item { border-radius: 12px; background: rgba(10, 9, 20, 0.42); }
+  .soft .status-badge { border-radius: 999px; }
+
+  /* ===== أدوات إدارة الطلبات (تكليف + سجلات) ===== */
+  .soft .ao-assignees { border-radius: 14px; }
+  .soft .assign-row { border-radius: 14px; transition: border-color 0.18s ease, background 0.18s ease; }
+  .soft .assign-row:hover { background: rgba(139, 92, 246, 0.08); }
+  .soft .assignee-box { border-radius: 14px; }
+  .soft .assignee-box .assignee-names span { border-radius: 999px; }
+  .soft .log-row { border-bottom: 1px solid var(--border-soft); }
+  .soft .log-row .log-order { border-radius: 8px; }
+
+  /* ===== اللوحات (الإدارة + المالك) ===== */
+  .soft .admin-row { border-bottom: 1px solid var(--border-soft); padding: 12px 0; }
+  .soft .admin-row input.sale-input,
+  .soft .admin-row input.cat-input,
+  .soft .admin-row select.status-select {
+    border-radius: 10px;
+    border: 1px solid var(--border-soft);
+  }
+  .soft .emoji-picker button { border-radius: 10px; border: 1px solid var(--border-soft); }
 </style>
 </head>
 <body>
@@ -1292,7 +1405,7 @@
   </div>
 </div>
 
-<div class="overlay" id="cartOverlay">
+<div class="overlay soft" id="cartOverlay">
   <div class="modal wide">
     <button class="close-x" onclick="closeCart()">✕</button>
     <h2>سلة المشتريات 🛒</h2>
@@ -1322,7 +1435,7 @@
   <div class="modal" id="productModal"></div>
 </div>
 
-<div class="overlay" id="ordersOverlay">
+<div class="overlay soft" id="ordersOverlay">
   <div class="modal wide">
     <button class="close-x" onclick="closeOrders()">✕</button>
     <h2>طلباتي 📦</h2>
@@ -1331,7 +1444,7 @@
   </div>
 </div>
 
-<div class="overlay" id="adminOverlay">
+<div class="overlay soft" id="adminOverlay">
   <div class="modal admin-modal">
     <button class="close-x" onclick="closeAdmin()">✕</button>
     <div id="adminPanel">
@@ -1457,7 +1570,7 @@
   </div>
 </div>
 
-<div class="overlay" id="ownerOverlay">
+<div class="overlay soft" id="ownerOverlay">
   <div class="modal owner-modal">
     <button class="close-x" onclick="closeOwner()">✕</button>
     <h2>لوحة المالك 👑</h2>
@@ -1574,7 +1687,7 @@
   </div>
 </div>
 
-<div class="overlay" id="adminOrdersOverlay">
+<div class="overlay soft" id="adminOrdersOverlay">
   <div class="modal orders-modal">
     <button class="close-x" onclick="closeAdminOrders()">✕</button>
     <h2>إدارة الطلبات 📦</h2>
@@ -1588,7 +1701,7 @@
   </div>
 </div>
 
-<div class="overlay" id="assignOverlay">
+<div class="overlay soft" id="assignOverlay">
   <div class="modal" style="max-width: 380px;">
     <button class="close-x" onclick="closeAssign()">✕</button>
     <h2 style="font-size: 1.25rem;">👤 تكليف فريق العمل</h2>
@@ -1598,7 +1711,7 @@
   </div>
 </div>
 
-<div class="overlay" id="logOverlay">
+<div class="overlay soft" id="logOverlay">
   <div class="modal wide">
     <button class="close-x" onclick="closeOrderLog()">✕</button>
     <h2>📋 سجل الطلب</h2>
@@ -1607,7 +1720,7 @@
   </div>
 </div>
 
-<div class="overlay" id="activityLogOverlay">
+<div class="overlay soft" id="activityLogOverlay">
   <div class="modal orders-modal">
     <button class="close-x" onclick="closeActivityLog()">✕</button>
     <h2>📋 سجل نشاط الطلبات الكامل</h2>
@@ -1627,6 +1740,18 @@
   </div>
 </div>
 
+<div class="overlay" id="verifyOverlay">
+  <div class="modal" style="text-align:center;">
+    <div style="font-size:3.4rem; margin:6px 0;">📧</div>
+    <h2>فعّل بريدك الإلكتروني</h2>
+    <p class="sub">أرسلنا رابط تأكيد إلى <b id="verifyEmail" style="color:#a78bfa; direction:ltr; unicode-bidi:embed;"></b>. افتح الرابط ثم ارجع واضغط «تحقّقت».</p>
+    <div class="thanks-note" style="text-align:right;">📌 إن ما وصلك الإيميل، شيّك على مجلد الرسائل غير المرغوبة (Spam). الرابط يفعّل حسابك مرة وحدة بس.</div>
+    <button class="btn btn-primary btn-block" id="verifyCheckBtn" onclick="checkVerified()">✅ تحقّقت — تابع</button>
+    <button class="btn btn-ghost btn-block" id="verifyResendBtn" style="margin-top:8px;" onclick="resendVerification()">إعادة إرسال الرابط 📧</button>
+    <button class="btn btn-danger btn-block" id="verifyLogoutBtn" style="margin-top:8px;" onclick="verifyLogout()">تسجيل الخروج</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <footer>
@@ -1638,7 +1763,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail
+  signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail, sendEmailVerification
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 import {
   getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc,
@@ -2383,8 +2508,9 @@ async function register() {
     });
     myDiscord = discord;
     updateAuthUI();
-    showMsg("registerMsg", "✅ تم إنشاء الحساب بنجاح!", "ok");
-    setTimeout(() => { closeAuth(); toast(`أهلاً بك يا ${username} 🌙`); }, 1000);
+    await sendVerification(true);
+    showMsg("registerMsg", "✅ تم إنشاء الحساب — فعّل بريدك علشان تكمّل", "ok");
+    setTimeout(() => { closeAuth(); openVerify(); }, 800);
   } catch (e) {
     showMsg("registerMsg", authError(e), "error");
   } finally {
@@ -2402,6 +2528,12 @@ async function login() {
   btn.disabled = true;
   try {
     const cred = await signInWithEmailAndPassword(auth, email, password);
+    if (!cred.user.emailVerified) {
+      await sendVerification(true);
+      showMsg("loginMsg", "📧 لازم تأكّد بريدك أول — أرسلنا لك رابط التأكيد", "ok");
+      setTimeout(() => { closeAuth(); openVerify(); }, 700);
+      return;
+    }
     showMsg("loginMsg", "✅ تم تسجيل الدخول بنجاح!", "ok");
     setTimeout(() => {
       closeAuth();
@@ -2467,16 +2599,111 @@ document.addEventListener("click", e => {
   if (menu && !menu.contains(e.target)) closeMenu();
 });
 
+// ===== تأكيد البريد الإلكتروني (رابط تفعيل + كولداون 30 ثانية لإعادة الإرسال) =====
+let verifCooldownUntil = parseInt(localStorage.getItem("nv_verif_cooldown") || "0", 10) || 0;
+let verifTimer = null;
+
+function openVerify() {
+  const u = auth.currentUser;
+  if (!u) return;
+  document.getElementById("verifyEmail").textContent = u.email || "";
+  document.getElementById("verifyOverlay").classList.add("open");
+  startVerifTick();
+}
+function closeVerify() {
+  document.getElementById("verifyOverlay").classList.remove("open");
+  stopVerifTick();
+}
+
+// نرسل رابط التفعيل. force=true يتجاهل الكولداون (أول إرسال بعد التسجيل/الدخول).
+async function sendVerification(force = false) {
+  const u = auth.currentUser;
+  if (!u) return;
+  if (!force && Date.now() < verifCooldownUntil) return;
+  try {
+    await sendEmailVerification(u);
+    verifCooldownUntil = Date.now() + 30000; // 30 ثانية بين كل إرسال
+    localStorage.setItem("nv_verif_cooldown", String(verifCooldownUntil));
+    updateResendBtn();
+    toast("📧 أرسلنا لك رابط التأكيد — شيّك على بريدك (وحتى السبام)");
+  } catch (e) {
+    if (e && e.code === "auth/too-many-requests") {
+      // ميسر/فايربيس صدّنا — نطوّل الكولداون شوي
+      verifCooldownUntil = Date.now() + 60000;
+      localStorage.setItem("nv_verif_cooldown", String(verifCooldownUntil));
+      updateResendBtn();
+      toast("⏳ محاولات كثيرة — انتظر دقيقة وعيد المحاولة");
+    } else {
+      toast("⚠ تعذّر إرسال الرابط — حاول بعد شوي");
+    }
+  }
+}
+function resendVerification() { sendVerification(false); }
+
+function updateResendBtn() {
+  const btn = document.getElementById("verifyResendBtn");
+  if (!btn) return;
+  const remain = Math.ceil((verifCooldownUntil - Date.now()) / 1000);
+  if (remain > 0) {
+    btn.disabled = true;
+    btn.textContent = `إعادة إرسال الرابط بعد ${remain} ثانية`;
+  } else {
+    btn.disabled = false;
+    btn.textContent = "إعادة إرسال الرابط 📧";
+  }
+}
+function startVerifTick() {
+  stopVerifTick();
+  updateResendBtn();
+  verifTimer = setInterval(updateResendBtn, 1000);
+}
+function stopVerifTick() {
+  if (verifTimer) { clearInterval(verifTimer); verifTimer = null; }
+}
+
+// نعيد تحميل بيانات المستخدم ونتأكد هل فعّل بريده
+async function checkVerified() {
+  const u = auth.currentUser;
+  if (!u) { closeVerify(); return; }
+  const btn = document.getElementById("verifyCheckBtn");
+  btn.disabled = true;
+  const old = btn.textContent;
+  btn.textContent = "جارٍ التحقق...";
+  try {
+    await u.reload();
+    if (auth.currentUser && auth.currentUser.emailVerified) {
+      // إجباري: نجدّد التوكن علشان claim الـ email_verified يوصل لقواعد Firestore،
+      // وإلا بتظل القواعد ترفض الكتابة مع إن البريد تفعّل فعلاً.
+      await auth.currentUser.getIdToken(true);
+      closeVerify();
+      updateAuthUI();
+      toast("✅ تم تفعيل بريدك — أهلاً فيك 🌙");
+    } else {
+      toast("⚠ بريدك لسا ما تفعّل — افتح الرابط في إيميلك ثم اضغط «تحقّقت»");
+    }
+  } catch {
+    toast("⚠ صار خطأ بالتحقق — حاول مرة ثانية");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = old;
+  }
+}
+function verifyLogout() { closeVerify(); logout(); }
+
 let myDiscord = "";
 
 onAuthStateChanged(auth, async user => {
   updateAuthUI();
   myDiscord = "";
   if (user) {
+    if (!user.emailVerified) openVerify();
+    else closeVerify();
     try {
       const snap = await getDoc(doc(db, "users", user.uid));
       if (snap.exists()) myDiscord = snap.data().discord || "";
     } catch {}
+  } else {
+    closeVerify();
   }
 });
 
@@ -2491,6 +2718,11 @@ function addToCart(productId) {
   if (!auth.currentUser) {
     openAuth("login");
     toast("⚠ يجب تسجيل الدخول أولاً لإضافة منتجات للسلة");
+    return;
+  }
+  if (!auth.currentUser.emailVerified) {
+    openVerify();
+    toast("📧 فعّل بريدك الإلكتروني أول");
     return;
   }
   const p = allProducts.find(p => p.id === productId);
@@ -2612,6 +2844,11 @@ function confirmCheckout() {
     openAuth("login");
     return;
   }
+  if (!user.emailVerified) {
+    openVerify();
+    toast("📧 فعّل بريدك الإلكتروني أول");
+    return;
+  }
   const cart = getCart().filter(i => allProducts.some(p => p.id === i.id));
   if (cart.length === 0) return;
 
@@ -2690,6 +2927,7 @@ function closePay() {
 async function placeOrder() {
   const user = auth.currentUser;
   if (!user) return;
+  if (!user.emailVerified) { openVerify(); toast("📧 فعّل بريدك الإلكتروني أول"); return; }
   if (ordersBlocked && !isAdmin()) { toast("🚫 " + ordersBlockMsg); return; }
   const cart = getCart().filter(i => allProducts.some(p => p.id === i.id));
   if (cart.length === 0) return;
@@ -3589,7 +3827,11 @@ document.addEventListener("keydown", e => {
   if (e.key !== "Escape") return;
   closeMenu();
   const open = [...document.querySelectorAll(".overlay.open")];
-  if (open.length) open[open.length - 1].classList.remove("open");
+  if (!open.length) return;
+  const top = open[open.length - 1];
+  // شاشة تأكيد البريد إجبارية — ما تنسكّر بزر Escape
+  if (top.id === "verifyOverlay") return;
+  top.classList.remove("open");
 });
 
 function createStars() {
@@ -3620,6 +3862,7 @@ Object.assign(window, {
   openActivityLog, closeActivityLog, exportActivityLogCSV,
   dismissApplePayNote,
   toggleMenu, closeMenu,
+  checkVerified, resendVerification, verifyLogout,
 });
 
 // لمن نرجع من بوابة الدفع: نطلّع رسالة بس وما نكتب أي حالة دفع.

@@ -2,10 +2,21 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // المسؤولون = الحسابات أصحاب هذه الـ UIDs فقط
+    // تأكيد البريد (التحقق بخطوتين): البريد متأكَّد منه ولا لا.
+    // request.auth.token.email_verified جايّة جوّه توكن موقّع من فايربيس —
+    // ما يقدر أحد يزوّرها من أدوات المطوّر (Dev Tools). هذا هو الفرض الحقيقي للـ 2FA:
+    // حتى لو شال المستخدم شاشة التأكيد من الواجهة، الخادم يرفض أي كتابة بدون بريد متأكَّد.
+    function isVerified() {
+      return request.auth != null
+        && request.auth.token.email_verified == true;
+    }
+
+    // المسؤولون = الحسابات أصحاب هذه الـ UIDs فقط — وبشرط تأكيد البريد.
+    // حتى الأدمن لا يتخطّى التحقق بخطوتين: لو بريده مو متأكَّد، يصير مثل أي زائر.
     // انسخ الـ UID من: Firebase Console → Authentication → Users
     function isAdmin() {
       return request.auth != null
+        && isVerified()
         && request.auth.uid in [
           "kwbLZoAcamgD20RtZYUdt5fbmyo1", // Hex (itsreallyhex)
           "0zbVZGDbgWdTrfh42oJ7UBC24X23" // n_22j
@@ -41,9 +52,11 @@ service cloud.firestore {
       allow delete: if isAdmin() && (isOwner() || adminCan("adminDeleteCatalog"));
     }
 
-    // المالك = حساب Hex فقط
+    // المالك = حساب Hex فقط — وبشرط تأكيد البريد كمان.
+    // المالك نفسه ما يتخطّى الـ 2FA: بدون بريد متأكَّد ما يقدر يكتب أي شي إداري.
     function isOwner() {
       return request.auth != null
+        && isVerified()
         && request.auth.uid == "kwbLZoAcamgD20RtZYUdt5fbmyo1";
     }
 
@@ -93,6 +106,8 @@ service cloud.firestore {
     // - حذف: المسؤول فقط
     match /orders/{id} {
       allow create: if request.auth != null
+        // التحقق بخطوتين إجباري: ما أحد ينشئ طلب وبريده مو متأكَّد — حتى من Dev Tools.
+        && isVerified()
         && request.resource.data.uid == request.auth.uid
         && request.resource.data.email == request.auth.token.email
         && request.resource.data.total is number
@@ -134,6 +149,7 @@ service cloud.firestore {
           && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(["assignees", "assigneeNames"])
             || adminCan("adminAssign")))
         || (request.auth != null
+          && isVerified()
           && resource.data.uid == request.auth.uid
           && resource.data.status in ["قيد المراجعة", "قيد الانتظار"]
           && resource.data.paid != true
