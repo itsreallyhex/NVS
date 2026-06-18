@@ -2,10 +2,21 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // المسؤولون = الحسابات أصحاب هذه الـ UIDs فقط
+    // تأكيد البريد (التحقق بخطوتين): البريد متأكَّد منه ولا لا.
+    // request.auth.token.email_verified جايّة جوّه توكن موقّع من فايربيس —
+    // ما يقدر أحد يزوّرها من أدوات المطوّر (Dev Tools). هذا هو الفرض الحقيقي للـ 2FA:
+    // حتى لو شال المستخدم شاشة التأكيد من الواجهة، الخادم يرفض أي كتابة بدون بريد متأكَّد.
+    function isVerified() {
+      return request.auth != null
+        && request.auth.token.email_verified == true;
+    }
+
+    // المسؤولون = الحسابات أصحاب هذه الـ UIDs فقط — وبشرط تأكيد البريد.
+    // حتى الأدمن لا يتخطّى التحقق بخطوتين: لو بريده مو متأكَّد، يصير مثل أي زائر.
     // انسخ الـ UID من: Firebase Console → Authentication → Users
     function isAdmin() {
       return request.auth != null
+        && isVerified()
         && request.auth.uid in [
           "kwbLZoAcamgD20RtZYUdt5fbmyo1", // Hex (itsreallyhex)
           "0zbVZGDbgWdTrfh42oJ7UBC24X23" // n_22j
@@ -19,22 +30,42 @@ service cloud.firestore {
         && request.auth.uid == "5u4NpNAAvDM1YWPj4zm2FlNAcP43";
     }
 
-    // الأقسام: أي شخص يقرأ — المسؤول فقط يعدّل
+    // صلاحية مسؤول يتحكّم فيها المالك من إعداداته. الافتراضي = مسموح (true) —
+    // لو الحقل مو موجود أو وثيقة الإعدادات مفقودة ما نمنع شي (نحافظ على السلوك القديم).
+    // المالك يتخطّى كل هذا (له فرع مستقل في كل قاعدة). كل تقييم يكلّف قراءة وحدة للإعدادات.
+    function adminCan(perm) {
+      return !exists(/databases/$(database)/documents/settings/store)
+        || get(/databases/$(database)/documents/settings/store).data.get(perm, true) == true;
+    }
+
+    // الأقسام: أي شخص يقرأ — المسؤول يعدّل (إذا سمح له المالك)، المالك دائماً
     match /cats/{id} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow create, update: if isAdmin() && (isOwner() || adminCan("adminEditCatalog"));
+      allow delete: if isAdmin() && (isOwner() || adminCan("adminDeleteCatalog"));
     }
 
-    // المنتجات: أي شخص يقرأ — المسؤول فقط يعدّل
+    // المنتجات: أي شخص يقرأ — المسؤول يعدّل (إذا سمح له المالك)، المالك دائماً
     match /products/{id} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow create, update: if isAdmin() && (isOwner() || adminCan("adminEditCatalog"));
+      allow delete: if isAdmin() && (isOwner() || adminCan("adminDeleteCatalog"));
     }
 
-    // المالك = حساب Hex فقط
+    // المالك = حساب Hex فقط — وبشرط تأكيد البريد كمان.
+    // المالك نفسه ما يتخطّى الـ 2FA: بدون بريد متأكَّد ما يقدر يكتب أي شي إداري.
     function isOwner() {
       return request.auth != null
+        && isVerified()
         && request.auth.uid == "kwbLZoAcamgD20RtZYUdt5fbmyo1";
+    }
+
+    // هل استقبال الطلبات موقوف الآن؟ نقرأها من إعدادات المتجر — يفرضها الخادم
+    // فما يقدر أحد يتخطّاها من أدوات المطوّر. لو الوثيقة مو موجودة نعتبره غير موقوف
+    // (آمن: ما نمنع الطلبات بالغلط). كل محاولة إنشاء طلب تكلّف قراءة وحدة لهذي الوثيقة.
+    function ordersBlockedNow() {
+      return exists(/databases/$(database)/documents/settings/store)
+        && get(/databases/$(database)/documents/settings/store).data.get("ordersBlocked", false) == true;
     }
 
     // إعدادات المتجر (وضع الصيانة وغيرها):
@@ -49,7 +80,23 @@ service cloud.firestore {
     match /users/{uid} {
       allow read: if request.auth != null
         && (request.auth.uid == uid || isAdmin());
-      allow write: if request.auth != null && request.auth.uid == uid;
+
+      // الإنشاء (وقت التسجيل): الحقول الأربعة المعروفة فقط، البريد يطابق هوية الحساب،
+      // وحد على طول الاسم/اليوزر. يمنع حقن حقول غريبة من البداية.
+      allow create: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(["username", "discord", "email", "createdAt"])
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.username is string && request.resource.data.username.size() <= 40
+        && request.resource.data.discord is string && request.resource.data.discord.size() <= 40;
+
+      // التعديل: الاسم ويوزر الديسكورد فقط — ما يقدر يضيف حقول زي isAdmin/role،
+      // ولا يكتب نصوص ضخمة. (التحديث في المتجر يدمج discord فقط.)
+      allow update: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["username", "discord"])
+        && request.resource.data.username is string && request.resource.data.username.size() <= 40
+        && request.resource.data.discord is string && request.resource.data.discord.size() <= 40;
     }
 
     // الطلبات:
@@ -59,6 +106,8 @@ service cloud.firestore {
     // - حذف: المسؤول فقط
     match /orders/{id} {
       allow create: if request.auth != null
+        // التحقق بخطوتين إجباري: ما أحد ينشئ طلب وبريده مو متأكَّد — حتى من Dev Tools.
+        && isVerified()
         && request.resource.data.uid == request.auth.uid
         && request.resource.data.email == request.auth.token.email
         && request.resource.data.total is number
@@ -67,7 +116,10 @@ service cloud.firestore {
         && request.resource.data.items.size() <= 50
         && request.resource.data.status == "قيد المراجعة"
         // لا يجوز للعميل إنشاء طلب مُعلَّم كمدفوع — الدفع يؤكَّد من الخادم/الإدارة فقط
-        && request.resource.data.get('paid', false) == false;
+        && request.resource.data.get('paid', false) == false
+        // إيقاف الطلبات: لو المالك موقف الاستقبال، ما أحد يقدر ينشئ طلب — حتى من أدوات
+        // المطوّر. الإدارة تتخطى (تقدر تطلب للاختبار وقت الإيقاف).
+        && (isAdmin() || !ordersBlockedNow());
       allow read: if request.auth != null
         && (resource.data.uid == request.auth.uid || isAdmin() || isWorker());
       // التعديل:
@@ -88,17 +140,26 @@ service cloud.firestore {
             && request.resource.data.diff(resource.data).affectedKeys().hasAny(["status"]))
           && !(request.resource.data.diff(resource.data).affectedKeys().hasAny(["assignees", "assigneeNames"])
             && (resource.data.status == "مكتمل"
-              || request.auth.uid in resource.data.get("assignees", []))))
+              || request.auth.uid in resource.data.get("assignees", [])))
+          // صلاحيات يتحكّم فيها المالك: كل نوع تعديل يتطلّب صلاحيته (المالك يتخطّى أصلاً بفرعه فوق)
+          && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(["status"])
+            || adminCan("adminChangeStatus"))
+          && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(["paid", "paidAt", "moyasarPaymentId"])
+            || adminCan("adminMarkPaid"))
+          && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(["assignees", "assigneeNames"])
+            || adminCan("adminAssign")))
         || (request.auth != null
+          && isVerified()
           && resource.data.uid == request.auth.uid
           && resource.data.status in ["قيد المراجعة", "قيد الانتظار"]
           && resource.data.paid != true
           && request.resource.data.status == "ملغي"
           && request.resource.data.diff(resource.data).affectedKeys()
               .hasOnly(["status", "cancelledBy"]));
-      // الحذف: الإدارة دائماً — أو الـ Worker للطلبات غير المدفوعة "قيد المراجعة" فقط
-      // (التنظيف التلقائي بعد 4 أيام). لا يحذف الـ Worker أي طلب مدفوع أو قيد التنفيذ أو مكتمل.
-      allow delete: if isAdmin()
+      // الحذف: المالك دائماً، والمسؤول إذا سمح له المالك — أو الـ Worker للطلبات غير
+      // المدفوعة "قيد المراجعة" فقط (التنظيف التلقائي بعد 4 أيام). لا يحذف الـ Worker
+      // أي طلب مدفوع أو قيد التنفيذ أو مكتمل.
+      allow delete: if (isAdmin() && (isOwner() || adminCan("adminDeleteOrders")))
         || (isWorker()
           && resource.data.paid != true
           && resource.data.status == "قيد المراجعة");

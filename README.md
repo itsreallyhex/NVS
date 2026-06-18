@@ -1,4 +1,5 @@
 # Night Void Store (NVS)
+> Claude Code was used in major part when building this project
 
 A Discord-services store I built and shipped: people browse services, order from the site, and pay either by card/Apple Pay or local transfer. It's a static front-end on Firebase with a Cloudflare Worker doing the part that actually has to be trusted — confirming payments.
 

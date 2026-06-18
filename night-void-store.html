@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -6,24 +7,42 @@
 <title>متجر Night Void | خدمات ديسكورد</title>
 <link rel="icon" type="image/png" href="Assets/favicon.png">
 <link rel="apple-touch-icon" href="Assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap">
 <link rel="stylesheet" href="https://cdn.moyasar.com/mpf/1.16.0/moyasar.css">
 <script src="https://cdn.moyasar.com/mpf/1.16.0/moyasar.js"></script>
 <style>
   /* ===== المتغيرات (ألوان وثيم الموقع) ===== */
   :root {
-    --bg: #0a0a14;
-    --bg2: #11111f;
-    --card: #16162a;
-    --card-hover: #1c1c36;
+    --bg: #07060f;
+    --bg2: #0f0e1d;
+    --card: #15142a;
+    --card-hover: #1c1a38;
     --accent: #8b5cf6;
     --accent2: #6d28d9;
+    --accent3: #22d3ee;          /* وهج النيبولا الثانوي (سماوي) */
+    --accent-soft: #a78bfa;
     --glow: rgba(139, 92, 246, 0.35);
-    --text: #e8e6f5;
-    --muted: #9b97b8;
+    --grad: linear-gradient(135deg, #8b5cf6, #6d28d9);
+    --grad-text: linear-gradient(100deg, #c4b5fd, #f0abfc 45%, #818cf8);
+    --text: #ece9fb;
+    --muted: #a09bc0;
     --danger: #f43f5e;
     --success: #34d399;
-    --border: #2a2a4a;
+    --border: #272545;
+    --border-soft: rgba(167, 139, 250, 0.14);
     --discord: #5865f2;
+
+    /* مقاسات جاهزة للحواف والظلال والمسافات نستعملها بكل مكان */
+    --r-sm: 10px;
+    --r-md: 14px;
+    --r-lg: 18px;
+    --r-xl: 24px;
+    --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.35);
+    --shadow-md: 0 12px 34px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.55);
+    --ring: 0 0 0 3px rgba(139, 92, 246, 0.45);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -40,19 +59,61 @@
   ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
   body {
-    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+    font-family: "Tajawal", "Segoe UI", Tahoma, Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    letter-spacing: 0.1px;
+  }
+
+  /* لمن تحدّد نص يطلع بلون الموقع */
+  ::selection { background: rgba(139, 92, 246, 0.35); color: #fff; }
+
+  /* حلقة تركيز واضحة لمن تتنقّل بلوحة المفاتيح — عشان الوصول */
+  :focus-visible {
+    outline: 2px solid var(--accent-soft);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  .btn:focus-visible { outline-offset: 3px; box-shadow: var(--ring); }
+
+  /* ===== سُدُم وأضواء الفضاء في الخلفية ===== */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(60% 50% at 78% -10%, rgba(139, 92, 246, 0.22), transparent 60%),
+      radial-gradient(50% 45% at 12% 8%, rgba(34, 211, 238, 0.12), transparent 55%),
+      radial-gradient(55% 50% at 50% 110%, rgba(109, 40, 217, 0.18), transparent 60%);
+  }
+  /* شبكة خفيفة مرة تعطي إحساس بالعمق */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.4;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(167, 139, 250, 0.035) 1px, transparent 1px);
+    background-size: 64px 64px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
   }
 
   /* ===== النجوم في الخلفية ===== */
   .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; transform: translateZ(0); }
-  .star { position: absolute; background: #fff; border-radius: 50%; animation: twinkle 3s infinite ease-in-out; }
+  .star { position: absolute; background: #fff; border-radius: 50%; animation: twinkle 3s infinite ease-in-out; box-shadow: 0 0 6px rgba(196, 181, 253, 0.5); }
   @keyframes twinkle {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 0.7; }
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 0.85; }
   }
   /* أثناء فتح أي نافذة منبثقة نوقف وميض النجوم: طبقة الـ blur خلف النافذة
      تُعيد رسم الشاشة كاملةً مع كل وميضة، وهو ما يسبّب التقطيع على شاشات الكمبيوتر الكبيرة.
@@ -63,6 +124,13 @@
   @media (prefers-reduced-motion: reduce) {
     .star { animation: none; opacity: 0.5; }
     .modal { animation: none; }
+    .hero h1 .grad { animation: none; }
+    .badge::before { animation: none; }
+    .boot-logo { animation: none; }
+    .hero .orb { animation: none; }
+    .hero-chev { animation: none; }
+    .menu-dropdown { animation: none; }
+    * { scroll-behavior: auto !important; }
   }
 
   main, header, footer { position: relative; z-index: 1; }
@@ -72,12 +140,20 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 5%;
-    background: rgba(15, 15, 27, 0.96);
-    border-bottom: 1px solid var(--border);
+    padding: 14px 5%;
+    background: rgba(11, 10, 22, 0.96);
+    border-bottom: 1px solid var(--border-soft);
     position: sticky;
     top: 0;
     z-index: 50;
+  }
+  /* خط وهج رفيع تحت الشريط العلوي */
+  header::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.6), rgba(34, 211, 238, 0.4), transparent);
   }
 
   .logo {
@@ -126,8 +202,38 @@
   .welcome-user { color: var(--muted); font-size: 0.9rem; }
   .welcome-user b { color: var(--accent); }
 
+  /* ===== قائمة الهمبرغر (اللوحات) ===== */
+  .menu { position: relative; }
+  .menu-toggle { padding: 10px 12px; }
+  .menu-toggle .ico { width: 1.35em; height: 1.35em; }
+  .menu-dropdown {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 0;
+    min-width: 232px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    background: linear-gradient(180deg, rgba(28, 26, 52, 0.9), rgba(15, 14, 29, 0.92));
+    border: 1px solid var(--border-soft);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-lg), 0 0 0 1px rgba(0, 0, 0, 0.4);
+    z-index: 60;
+    animation: menuPop 0.16s ease-out;
+  }
+  .menu-dropdown.open { display: flex; }
+  @keyframes menuPop {
+    from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  /* الأزرار اللي جوّا القائمة تاخذ العرض كامل ونصها يبدأ من الجهة */
+  .menu-dropdown .btn { width: 100%; justify-content: flex-start; }
+  .menu-sep { height: 1px; background: var(--border-soft); margin: 2px 0; }
+
   /* ===== الأزرار ===== */
   .btn {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -137,17 +243,27 @@
     text-decoration: none;
     font-family: inherit;
     font-size: 0.95rem;
-    font-weight: 600;
+    font-weight: 700;
     padding: 10px 20px;
-    border-radius: 10px;
-    transition: all 0.2s;
+    border-radius: var(--r-sm);
+    overflow: hidden;
+    transition: transform 0.18s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
   }
+  .btn:active { transform: translateY(0) scale(0.98); }
   .btn-primary {
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     color: #fff;
-    box-shadow: 0 0 18px var(--glow);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
   }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 28px var(--glow); }
+  /* لمعة زجاجية فوق الزر الأساسي */
+  .btn-primary::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 50% 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.22), transparent);
+    pointer-events: none;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(139, 92, 246, 0.6); }
   .btn-discord {
     background: var(--discord);
     color: #fff;
@@ -155,11 +271,11 @@
   }
   .btn-discord:hover { transform: translateY(-2px); background: #4752c4; box-shadow: 0 0 24px rgba(88, 101, 242, 0.5); }
   .btn-ghost {
-    background: transparent;
+    background: rgba(167, 139, 250, 0.06);
     color: var(--text);
     border: 1px solid var(--border);
   }
-  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent-soft); background: rgba(139, 92, 246, 0.12); transform: translateY(-2px); }
   .btn-danger { background: var(--danger); color: #fff; }
   .btn-block { width: 100%; }
   .btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -167,7 +283,21 @@
   .btn-sm { padding: 6px 12px !important; font-size: 0.8rem !important; }
   .dc-ico { width: 1.2em; height: 1.2em; vertical-align: -0.18em; }
 
-  .cart-btn { position: relative; }
+  /* أيقونات SVG موحّدة بدل الإيموجي — تاخذ لون النص وتكبر وتصغر مع حجم الخط */
+  .ico {
+    width: 1.15em; height: 1.15em;
+    flex: 0 0 auto;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vertical-align: -0.18em;
+  }
+  .ico-lg { width: 1.4em; height: 1.4em; }
+
+  /* القائمة المنبثقة للسلة تطلع برّا حدود الزر — نلغي القص اللي ورثناه من .btn */
+  .cart-btn { position: relative; overflow: visible; }
   .cart-count {
     position: absolute;
     top: -8px;
@@ -187,39 +317,76 @@
 
   /* ===== الواجهة الرئيسية ===== */
   .hero {
+    position: relative;
     text-align: center;
-    padding: 90px 5% 70px;
-    background: radial-gradient(ellipse at 50% -20%, rgba(139, 92, 246, 0.25), transparent 60%);
+    padding: 96px 5% 72px;
+  }
+  /* كرات وهج طايرة تعطي الواجهة عمق سينمائي */
+  .hero .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: -1;
+    animation: floatOrb 9s ease-in-out infinite;
+  }
+  .hero .orb.o1 { width: 280px; height: 280px; background: rgba(139, 92, 246, 0.55); top: 4%; right: 8%; }
+  .hero .orb.o2 { width: 220px; height: 220px; background: rgba(34, 211, 238, 0.35); bottom: 0; left: 10%; animation-delay: -3s; }
+  @keyframes floatOrb {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-26px) scale(1.08); }
   }
   .hero h1 {
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    margin-bottom: 16px;
-    line-height: 1.3;
+    font-size: clamp(2.1rem, 5.4vw, 3.5rem);
+    font-weight: 900;
+    margin-bottom: 18px;
+    line-height: 1.28;
+    letter-spacing: -0.5px;
   }
   .hero h1 .grad {
-    background: linear-gradient(90deg, #a78bfa, #f0abfc, #818cf8);
+    background: var(--grad-text);
+    background-size: 220% auto;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    animation: gradShift 6s ease-in-out infinite;
   }
+  @keyframes gradShift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
   .hero p {
     color: var(--muted);
     font-size: 1.15rem;
-    max-width: 620px;
-    margin: 0 auto 30px;
-    line-height: 1.8;
+    max-width: 640px;
+    margin: 0 auto 32px;
+    line-height: 1.9;
   }
   .badge {
-    display: inline-block;
-    background: rgba(139, 92, 246, 0.15);
-    border: 1px solid var(--accent);
-    color: #c4b5fd;
-    padding: 6px 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(167, 139, 250, 0.45);
+    color: #d6cbff;
+    padding: 7px 18px;
     border-radius: 999px;
     font-size: 0.85rem;
-    margin-bottom: 22px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    box-shadow: inset 0 0 18px rgba(139, 92, 246, 0.12);
   }
+  /* نقطة تنبض جوّا الشارة */
+  .badge::before {
+    content: "";
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent3);
+    box-shadow: 0 0 8px var(--accent3);
+    animation: pulseDot 1.8s ease-in-out infinite;
+  }
+  @keyframes pulseDot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.7); } }
   .hero-actions { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+  .hero-chev { animation: chevBounce 1.6s ease-in-out infinite; }
+  @keyframes chevBounce { 0%,100% { transform: translateY(-1px); } 50% { transform: translateY(3px); } }
 
   /* ===== خطوات الطلب ===== */
   .how-to {
@@ -231,36 +398,53 @@
     gap: 16px;
   }
   .step {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 20px;
+    position: relative;
+    background: linear-gradient(160deg, rgba(30, 27, 56, 0.6), rgba(15, 14, 29, 0.4));
+    border: 1px solid var(--border-soft);
+    border-radius: var(--r-md);
+    padding: 24px 20px;
     text-align: center;
+    transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
   }
+  .step:hover { transform: translateY(-4px); border-color: rgba(167, 139, 250, 0.45); box-shadow: var(--shadow-md); }
   .step .num {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 34px; height: 34px;
+    width: 40px; height: 40px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     color: #fff;
     font-weight: 800;
-    margin-bottom: 10px;
+    font-size: 1.05rem;
+    margin-bottom: 12px;
+    box-shadow: 0 0 0 6px rgba(139, 92, 246, 0.1), 0 6px 16px rgba(139, 92, 246, 0.4);
   }
-  .step h4 { font-size: 0.98rem; margin-bottom: 6px; }
-  .step p { color: var(--muted); font-size: 0.85rem; line-height: 1.7; }
+  .step h4 { font-size: 1.02rem; margin-bottom: 7px; }
+  .step p { color: var(--muted); font-size: 0.88rem; line-height: 1.75; }
 
   /* ===== أقسام المنتجات والبطاقات ===== */
   section.products { padding: 40px 5% 80px; max-width: 1200px; margin: 0 auto; }
   .section-title {
-    font-size: 1.7rem;
-    margin: 40px 0 8px;
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin: 48px 0 8px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 14px;
+    letter-spacing: -0.3px;
   }
-  .section-sub { color: var(--muted); margin-bottom: 26px; }
+  /* عمود وهج متدرّج يجي قبل عنوان القسم */
+  .section-title::before {
+    content: "";
+    width: 5px;
+    align-self: stretch;
+    min-height: 1.4em;
+    border-radius: 999px;
+    background: linear-gradient(180deg, var(--accent-soft), var(--accent2));
+    box-shadow: 0 0 12px var(--glow);
+  }
+  .section-sub { color: var(--muted); margin-bottom: 26px; line-height: 1.7; }
   .section-note {
     background: rgba(251, 191, 36, 0.1);
     border: 1px solid rgba(251, 191, 36, 0.45);
@@ -295,36 +479,57 @@
   }
 
   .card {
-    background: var(--card);
+    position: relative;
+    background: linear-gradient(165deg, rgba(28, 26, 52, 0.72), rgba(15, 14, 29, 0.55));
     border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 24px;
+    border-radius: var(--r-lg);
+    padding: 22px;
     display: flex;
     flex-direction: column;
     gap: 12px;
-    transition: all 0.25s;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
     cursor: pointer;
+    overflow: hidden;
+  }
+  /* خط وهج فوق يضيء لمن تمرّ عليه */
+  .card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 12%; right: 12%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-soft), transparent);
+    opacity: 0;
+    transition: opacity 0.25s ease;
   }
   .card:hover {
-    background: var(--card-hover);
-    border-color: var(--accent);
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 20px var(--glow);
+    border-color: rgba(167, 139, 250, 0.55);
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md), 0 0 26px var(--glow);
   }
-  .card .icon { font-size: 2.4rem; }
-  .card h3 { font-size: 1.15rem; }
-  .card p { color: var(--muted); font-size: 0.92rem; line-height: 1.7; flex: 1; }
+  .card:hover::before { opacity: 1; }
+  .card .icon {
+    font-size: 2.4rem;
+    width: 58px; height: 58px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--r-md);
+    background: rgba(139, 92, 246, 0.12);
+    border: 1px solid var(--border-soft);
+  }
+  .card h3 { font-size: 1.18rem; font-weight: 700; }
+  .card p { color: var(--muted); font-size: 0.92rem; line-height: 1.75; flex: 1; }
   .card .price-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 6px;
+    margin-top: 8px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-soft);
     gap: 10px;
   }
   .card .price {
-    font-size: 1.3rem;
+    font-size: 1.35rem;
     font-weight: 800;
-    color: #a78bfa;
+    color: #c4b5fd;
     white-space: nowrap;
   }
   .card .price small { font-size: 0.8rem; color: var(--muted); font-weight: 400; }
@@ -364,7 +569,7 @@
   .overlay {
     position: fixed;
     inset: 0;
-    background: rgba(8, 8, 16, 0.88);
+    background: rgba(5, 4, 12, 0.88);
     display: none;
     align-items: center;
     justify-content: center;
@@ -374,19 +579,23 @@
   .overlay.open { display: flex; }
 
   .modal {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 18px;
+    position: relative;
+    background:
+      linear-gradient(180deg, rgba(28, 26, 52, 0.55), transparent 40%),
+      var(--bg2);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--r-xl);
     padding: 32px;
     width: 100%;
     max-width: 440px;
     max-height: 85vh;
     overflow-y: auto;
     overscroll-behavior: contain;
-    animation: pop 0.16s ease-out;
+    box-shadow: var(--shadow-lg), 0 0 0 1px rgba(0,0,0,0.4);
+    animation: pop 0.2s cubic-bezier(0.22, 1, 0.36, 1);
   }
   /* نقفل تمرير الصفحة خلف أي نافذة منبثقة + نحجز مكان شريط التمرير عشان الصفحة ما "تنط" لمن تفتح */
-  html { scrollbar-gutter: stable; }
+  html { scrollbar-gutter: stable; scroll-behavior: smooth; }
   body:has(.overlay.open) { overflow: hidden; }
   .modal.wide { max-width: 560px; }
   .modal.owner-modal { max-width: 720px; }
@@ -407,21 +616,28 @@
   }
   .orders-summary b { color: #fff; }
   @keyframes pop {
-    from { transform: translateY(8px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    from { transform: translateY(14px) scale(0.97); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
   }
   .modal h2 { margin: 6px 0; font-size: 1.4rem; }
   .modal .sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; }
 
   .close-x {
     float: left;
-    background: none;
-    border: none;
+    width: 34px; height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-soft);
+    border-radius: 50%;
     color: var(--muted);
-    font-size: 1.3rem;
+    font-size: 1.1rem;
+    line-height: 1;
     cursor: pointer;
+    transition: color 0.18s, background 0.18s, border-color 0.18s;
   }
-  .close-x:hover { color: var(--danger); }
+  .close-x:hover { color: var(--danger); background: rgba(244, 63, 94, 0.12); border-color: rgba(244, 63, 94, 0.4); }
 
   /* ===== نافذة عرض المنتج ===== */
   .pv-img {
@@ -456,22 +672,24 @@
 
   /* ===== الحقول والنماذج ===== */
   .field { margin-bottom: 16px; }
-  .field label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 6px; }
+  .field label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 7px; font-weight: 500; }
   .field input, .field select, .field textarea {
     width: 100%;
-    background: var(--card);
+    background: rgba(10, 9, 20, 0.6);
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: var(--r-sm);
     padding: 12px 14px;
     color: var(--text);
     font-family: inherit;
     font-size: 0.95rem;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
   }
+  .field input:hover, .field select:hover, .field textarea:hover { border-color: rgba(167, 139, 250, 0.4); }
   .field input:focus, .field select:focus, .field textarea:focus {
     outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+    background: rgba(10, 9, 20, 0.85);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.18);
   }
   .field input[type="file"] { padding: 9px 14px; cursor: pointer; }
   .field input[type="file"]::file-selector-button {
@@ -776,6 +994,8 @@
   @keyframes bootPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
   /* لوحة اختيار الإيموجي لرسالة الإغلاق */
+  .perm-check { display: flex; align-items: center; gap: 9px; margin-bottom: 9px; cursor: pointer; line-height: 1.5; }
+  .perm-check input { width: 18px; height: 18px; flex: 0 0 auto; cursor: pointer; accent-color: var(--accent, #8b5cf6); }
   .emoji-picker { display: flex; flex-wrap: wrap; gap: 6px; }
   .emoji-picker button {
     font-size: 18px;
@@ -895,12 +1115,20 @@
 
   /* ===== الفوتر ===== */
   footer {
+    position: relative;
     text-align: center;
-    padding: 30px 5%;
+    padding: 32px 5%;
     color: var(--muted);
     font-size: 0.85rem;
-    border-top: 1px solid var(--border);
-    background: var(--bg2);
+    border-top: 1px solid var(--border-soft);
+    background: linear-gradient(180deg, transparent, rgba(15, 14, 29, 0.6));
+  }
+  footer::before {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; top: -1px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), transparent);
   }
   footer a { color: var(--accent); text-decoration: none; }
   footer a:hover { text-decoration: underline; }
@@ -913,6 +1141,118 @@
     .header-actions .btn { padding: 8px 14px; font-size: 0.85rem; }
     nav.main-nav a { padding: 8px 12px; font-size: 0.85rem; }
   }
+
+  /* =========================================================================
+     ستايل "ناعم ومرحّب" مخصّص: السلة + الطلبات + اللوحات (الإدارة/المالك) بس.
+     نطبّقه عبر كلاس .soft على هالنوافذ فقط — باقي الموقع يضل بثيمه الأصلي.
+     حواف دائرية كبيرة + مسافات مريحة + ظلال وهج ناعمة + تدرّجات لطيفة.
+     (بدون backdrop-filter عشان ما نرجّع اللاق.)
+     ========================================================================= */
+
+  /* النافذة: حواف دائرية كبيرة + تدرّج لطيف + ظل وهج ناعم */
+  .soft .modal {
+    border-radius: 26px;
+    border: 1px solid var(--border-soft);
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(139, 92, 246, 0.16), transparent 60%),
+      linear-gradient(180deg, rgba(36, 33, 66, 0.7), rgba(18, 16, 33, 0.88));
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5), 0 0 60px rgba(139, 92, 246, 0.14);
+    padding: 34px;
+  }
+  @media (min-width: 768px) {
+    .soft .modal.owner-modal,
+    .soft .modal.admin-modal { padding: 40px 46px; }
+  }
+  .soft .modal h2 { font-weight: 800; letter-spacing: -0.3px; }
+  .soft .modal h3 { font-weight: 800; }
+
+  /* زر الإغلاق: دائري وناعم */
+  .soft .close-x {
+    border-radius: 50%;
+    border: 1px solid var(--border-soft);
+    background: rgba(167, 139, 250, 0.08);
+  }
+  .soft .close-x:hover { background: rgba(244, 63, 94, 0.14); color: var(--danger); border-color: rgba(244, 63, 94, 0.4); }
+
+  /* الأزرار: حبوب (pills) بظل وهج ناعم وحركة لطيفة عند المرور */
+  .soft .btn {
+    border-radius: 999px;
+    font-weight: 700;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+  .soft .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    box-shadow: 0 10px 26px rgba(139, 92, 246, 0.4);
+  }
+  .soft .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(139, 92, 246, 0.52); }
+  .soft .btn-ghost {
+    border-radius: 999px;
+    background: rgba(167, 139, 250, 0.08);
+    border: 1px solid var(--border-soft);
+  }
+  .soft .btn-ghost:hover { transform: translateY(-2px); border-color: var(--accent); color: var(--accent-soft); background: rgba(139, 92, 246, 0.12); }
+  .soft .btn-danger { border-radius: 999px; box-shadow: 0 10px 26px rgba(244, 63, 94, 0.32); }
+  .soft .btn-danger:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(244, 63, 94, 0.42); }
+  .soft .btn-discord:hover { transform: translateY(-2px); }
+
+  /* الحقول: حواف دائرية ومسافة مريحة وتركيز بوهج خفيف */
+  .soft .field input,
+  .soft .field select,
+  .soft .field textarea {
+    border-radius: 14px;
+    border: 1px solid var(--border-soft);
+    background: rgba(10, 9, 20, 0.5);
+    padding: 13px 16px;
+  }
+  .soft .field input:focus,
+  .soft .field select:focus,
+  .soft .field textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.16);
+  }
+  .soft .pv-note { border-radius: 14px; }
+  .soft .orders-summary { border-radius: 16px; border: 1px solid rgba(139, 92, 246, 0.35); }
+
+  /* ===== السلة ===== */
+  .soft .cart-item { border-bottom: 1px solid var(--border-soft); padding: 16px 0; }
+  .soft .qty-controls button {
+    border-radius: 10px;
+    border: 1px solid var(--border-soft);
+    transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+  }
+  .soft .qty-controls button:hover { background: rgba(139, 92, 246, 0.18); border-color: var(--accent); transform: translateY(-1px); }
+  .soft .applepay-note { border-radius: 16px; background: rgba(167, 139, 250, 0.06); border: 1px solid var(--border-soft); }
+  .soft .applepay-logo { border-radius: 8px; }
+
+  /* ===== الطلبات (طلباتي + إدارة الطلبات) ===== */
+  .soft .order-card {
+    border-radius: 18px;
+    border: 1px solid var(--border-soft);
+    background: linear-gradient(165deg, rgba(36, 33, 66, 0.5), rgba(18, 16, 33, 0.42));
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+  }
+  .soft .order-item { border-radius: 12px; background: rgba(10, 9, 20, 0.42); }
+  .soft .status-badge { border-radius: 999px; }
+
+  /* ===== أدوات إدارة الطلبات (تكليف + سجلات) ===== */
+  .soft .ao-assignees { border-radius: 14px; }
+  .soft .assign-row { border-radius: 14px; transition: border-color 0.18s ease, background 0.18s ease; }
+  .soft .assign-row:hover { background: rgba(139, 92, 246, 0.08); }
+  .soft .assignee-box { border-radius: 14px; }
+  .soft .assignee-box .assignee-names span { border-radius: 999px; }
+  .soft .log-row { border-bottom: 1px solid var(--border-soft); }
+  .soft .log-row .log-order { border-radius: 8px; }
+
+  /* ===== اللوحات (الإدارة + المالك) ===== */
+  .soft .admin-row { border-bottom: 1px solid var(--border-soft); padding: 12px 0; }
+  .soft .admin-row input.sale-input,
+  .soft .admin-row input.cat-input,
+  .soft .admin-row select.status-select {
+    border-radius: 10px;
+    border: 1px solid var(--border-soft);
+  }
+  .soft .emoji-picker button { border-radius: 10px; border: 1px solid var(--border-soft); }
 </style>
 </head>
 <body>
@@ -936,15 +1276,23 @@
   </nav>
   <div class="header-actions">
     <span class="welcome-user" id="welcomeUser" style="display:none;">مرحباً، <b id="usernameDisplay"></b></span>
-    <button class="btn btn-ghost" id="ownerBtn" style="display:none;" onclick="openOwner()">👑 المالك</button>
-    <button class="btn btn-ghost" id="adminBtn" style="display:none;" onclick="openAdmin()">⚙️ الإدارة</button>
-    <button class="btn btn-ghost" id="ordersBtn" style="display:none;" onclick="openOrders()">📦 طلباتي</button>
     <button class="btn btn-ghost cart-btn" onclick="openCart()">
-      🛒 السلة
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> السلة
       <span class="cart-count" id="cartCount" style="display:none;">0</span>
     </button>
-    <button class="btn btn-primary" id="authBtn" onclick="openAuth('login')">تسجيل الدخول</button>
-    <button class="btn btn-danger" id="logoutBtn" style="display:none;" onclick="logout()">خروج</button>
+    <button class="btn btn-primary" id="authBtn" onclick="openAuth('login')"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5M15 12H3"/></svg> تسجيل الدخول</button>
+    <div class="menu" id="menu">
+      <button class="btn btn-ghost menu-toggle" id="menuToggle" style="display:none;" onclick="toggleMenu()" aria-label="القائمة" aria-haspopup="true" aria-expanded="false">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="menu-dropdown" id="menuDropdown">
+        <button class="btn btn-ghost" id="ownerBtn" style="display:none;" onclick="closeMenu(); openOwner()"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l4 5 5-7 5 7 4-5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg> المالك</button>
+        <button class="btn btn-ghost" id="adminBtn" style="display:none;" onclick="closeMenu(); openAdmin()"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> الإدارة</button>
+        <button class="btn btn-ghost" id="ordersBtn" style="display:none;" onclick="closeMenu(); openOrders()"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 9.4 7.5 4.21M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg> طلباتي</button>
+        <div class="menu-sep"></div>
+        <button class="btn btn-danger" id="logoutBtn" style="display:none;" onclick="closeMenu(); logout()"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg> خروج</button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -970,11 +1318,13 @@
   </div>
 
   <div class="hero">
-    <div class="badge">✨ متجر خدمات ديسكورد الاحترافي</div>
+    <span class="orb o1" aria-hidden="true"></span>
+    <span class="orb o2" aria-hidden="true"></span>
+    <div class="badge">متجر خدمات ديسكورد الاحترافي</div>
     <h1>متجر <span class="grad">Night Void</span><br>كل ما تحتاجه لسيرفر ديسكورد مميز</h1>
-    <p>نقدم خدمات برمجة بوتات ديسكورد وبناء السيرفرات من الصفر بأعلى جودة وأفضل الأسعار. اطلب من الموقع وأكمل الدفع داخل سيرفرنا عبر التذاكر. 🚀</p>
+    <p>نقدم خدمات برمجة بوتات ديسكورد وبناء السيرفرات من الصفر بأعلى جودة وأفضل الأسعار. اطلب من الموقع وأكمل الدفع داخل سيرفرنا عبر التذاكر.</p>
     <div class="hero-actions">
-      <button class="btn btn-primary" onclick="document.getElementById('storeSections').scrollIntoView({behavior:'smooth'})">تصفح الخدمات ⬇</button>
+      <button class="btn btn-primary" onclick="document.getElementById('storeSections').scrollIntoView({behavior:'smooth'})">تصفح الخدمات <svg class="ico hero-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
       <a class="btn btn-discord" href="https://discord.gg/sAakXRRudu" target="_blank" rel="noopener"><svg class="dc-ico" viewBox="0 0 127.14 96.36" fill="currentColor" aria-hidden="true"><path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.9-72.15ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"/></svg> انضم للسيرفر</a>
     </div>
   </div>
@@ -1055,7 +1405,7 @@
   </div>
 </div>
 
-<div class="overlay" id="cartOverlay">
+<div class="overlay soft" id="cartOverlay">
   <div class="modal wide">
     <button class="close-x" onclick="closeCart()">✕</button>
     <h2>سلة المشتريات 🛒</h2>
@@ -1074,8 +1424,9 @@
         <label>يوزر الديسكورد 💬 (سنفتح معك تذكرة من خلاله)</label>
         <input type="text" id="checkoutDiscord" placeholder="username" style="direction: ltr; text-align: right;">
       </div>
+      <div class="pv-note" id="ordersBlockNote" style="display: none; color: #fb7185; border-color: rgba(248,113,113,.4); background: rgba(248,113,113,.08);"></div>
       <button class="btn btn-primary btn-block" id="checkoutBtn" onclick="confirmCheckout()">إتمام الطلب 🛒</button>
-      <p class="pv-note">ستظهر لك نافذة مراجعة لتأكيد الطلب قبل إرساله</p>
+      <p class="pv-note" id="checkoutHint">ستظهر لك نافذة مراجعة لتأكيد الطلب قبل إرساله</p>
     </div>
   </div>
 </div>
@@ -1084,7 +1435,7 @@
   <div class="modal" id="productModal"></div>
 </div>
 
-<div class="overlay" id="ordersOverlay">
+<div class="overlay soft" id="ordersOverlay">
   <div class="modal wide">
     <button class="close-x" onclick="closeOrders()">✕</button>
     <h2>طلباتي 📦</h2>
@@ -1093,12 +1444,13 @@
   </div>
 </div>
 
-<div class="overlay" id="adminOverlay">
+<div class="overlay soft" id="adminOverlay">
   <div class="modal admin-modal">
     <button class="close-x" onclick="closeAdmin()">✕</button>
     <div id="adminPanel">
       <h2>لوحة التحكم ⚙️</h2>
       <p class="sub">كل تعديل يُحفظ في قاعدة البيانات ويظهر للزوار فوراً</p>
+      <div class="pv-note" id="adminPermsNote" style="display: none; color: #fbbf24; border-color: rgba(251,191,36,.4); background: rgba(251,191,36,.08);"></div>
       <div class="form-msg" id="adminPanelMsg"></div>
 
       <div id="seedBox" style="display:none;">
@@ -1108,18 +1460,21 @@
       <h3 style="margin: 4px 0 6px;">الأقسام 📂</h3>
       <p class="sub" style="margin-bottom: 4px;">عدّل اسم أو وصف أي قسم ثم اضغط حفظ — أو احذفه مع كل منتجاته</p>
       <div id="adminCats"></div>
-      <div class="admin-grid" style="margin-top: 12px;">
-        <div class="field">
-          <label>اسم القسم الجديد</label>
-          <input id="apNewCatTitle" placeholder="مثال: 🎨 تصاميم وشعارات">
+      <div id="addCatBox">
+        <div class="admin-grid" style="margin-top: 12px;">
+          <div class="field">
+            <label>اسم القسم الجديد</label>
+            <input id="apNewCatTitle" placeholder="مثال: 🎨 تصاميم وشعارات">
+          </div>
+          <div class="field">
+            <label>وصف القسم (اختياري)</label>
+            <input id="apNewCatSub" placeholder="وصف قصير يظهر تحت العنوان">
+          </div>
         </div>
-        <div class="field">
-          <label>وصف القسم (اختياري)</label>
-          <input id="apNewCatSub" placeholder="وصف قصير يظهر تحت العنوان">
-        </div>
+        <button class="btn btn-ghost btn-block" onclick="adminAddCat()">➕ إضافة قسم جديد</button>
       </div>
-      <button class="btn btn-ghost btn-block" onclick="adminAddCat()">➕ إضافة قسم جديد</button>
 
+      <div id="productFormBox">
       <h3 style="margin: 26px 0 6px;">إضافة / تعديل منتج 🛒</h3>
       <div class="admin-grid">
         <div class="field">
@@ -1163,6 +1518,7 @@
       </div>
       <button class="btn btn-primary btn-block" id="addProductBtn" onclick="adminSaveProduct()">➕ إضافة المنتج</button>
       <button class="btn btn-ghost btn-block" id="cancelEditBtn" style="display:none; margin-top: 8px;" onclick="adminCancelEdit()">✖ إلغاء التعديل</button>
+      </div>
 
       <h3 style="margin: 26px 0 6px;">المنتجات الحالية</h3>
       <p class="sub" style="margin-bottom: 4px;">عدّل الخصم أو حالة التوفر ثم اضغط حفظ — أو عدّل/احذف المنتج بالكامل</p>
@@ -1194,6 +1550,7 @@
     <h2>شكراً لك! تم استلام طلبك</h2>
     <p class="sub" id="thanksOrderId" style="margin-bottom: 10px;"></p>
     <div class="thanks-note" id="thanksNote1"></div>
+    <div class="pv-note" id="payBlockNote" style="display: none; color: #fb7185; border-color: rgba(248,113,113,.4); background: rgba(248,113,113,.08);"></div>
     <button class="btn btn-primary btn-block" id="payNowBtn" onclick="openPay()" style="margin-top: 4px;">💳 ادفع الآن — دفع إلكتروني</button>
     <p class="sub" style="margin: 10px 0 4px;">أو أكمل الدفع عبر التحويل المحلي:</p>
     <div class="thanks-note" id="thanksNote2" style="border-color: rgba(96, 165, 250, 0.45); background: rgba(96, 165, 250, 0.1); color: #60a5fa;"></div>
@@ -1213,7 +1570,7 @@
   </div>
 </div>
 
-<div class="overlay" id="ownerOverlay">
+<div class="overlay soft" id="ownerOverlay">
   <div class="modal owner-modal">
     <button class="close-x" onclick="closeOwner()">✕</button>
     <h2>لوحة المالك 👑</h2>
@@ -1246,6 +1603,52 @@
     <button class="btn btn-danger btn-block" id="closedToggleBtn" onclick="publishClosed(true)">🚫 إغلاق الموقع برسالتي</button>
     <button class="btn btn-ghost btn-block" style="margin-top: 8px;" id="openSiteBtn" onclick="publishClosed(false)">✅ فتح الموقع</button>
     <p class="pv-note">إغلاق كامل: يُخفي كل المنتجات والصفحات عن الزوار ويعرض رسالتك فقط. مختلف عن "تحت الصيانة".</p>
+
+    <h3 style="margin: 26px 0 6px;">إيقاف الطلبات / الدفع ⛔</h3>
+    <p class="sub" style="margin-bottom: 10px;">أوقف <b>استقبال الطلبات</b> و/أو <b>الدفع الإلكتروني</b> مؤقتاً برسالة تشرح السبب — مفتاحان مستقلّان، فعّل أيّهما تبي أو الاثنين. المتجر يبقى ظاهراً، لكن الزائر ما يقدر يطلب/يدفع. أنت والإدارة ما تتأثرون.</p>
+
+    <div class="cart-total">
+      <span>استقبال الطلبات:</span>
+      <span class="amount" id="ordersBlockLabel">...</span>
+    </div>
+    <div class="field">
+      <label>رسالة إيقاف الطلبات</label>
+      <textarea id="ordersBlockMsgInput" rows="2" placeholder="اكتب سبب إيقاف الطلبات..."></textarea>
+    </div>
+    <div class="field">
+      <label>رسائل جاهزة — اضغط لاستخدامها</label>
+      <div id="ordersBlockPresets" style="display: flex; flex-direction: column; gap: 6px;"></div>
+    </div>
+    <button class="btn btn-danger btn-block" id="ordersBlockToggleBtn" onclick="publishOrdersBlock(true)">⛔ إيقاف استقبال الطلبات</button>
+    <button class="btn btn-ghost btn-block" style="margin-top: 8px;" id="ordersUnblockBtn" onclick="publishOrdersBlock(false)">✅ استئناف استقبال الطلبات</button>
+
+    <div class="cart-total" style="margin-top: 20px;">
+      <span>الدفع الإلكتروني:</span>
+      <span class="amount" id="payBlockLabel">...</span>
+    </div>
+    <div class="field">
+      <label>رسالة إيقاف الدفع</label>
+      <textarea id="payBlockMsgInput" rows="2" placeholder="اكتب سبب إيقاف الدفع..."></textarea>
+    </div>
+    <div class="field">
+      <label>رسائل جاهزة — اضغط لاستخدامها</label>
+      <div id="payBlockPresets" style="display: flex; flex-direction: column; gap: 6px;"></div>
+    </div>
+    <button class="btn btn-danger btn-block" id="payBlockToggleBtn" onclick="publishPayBlock(true)">⛔ إيقاف الدفع الإلكتروني</button>
+    <button class="btn btn-ghost btn-block" style="margin-top: 8px;" id="payUnblockBtn" onclick="publishPayBlock(false)">✅ استئناف الدفع الإلكتروني</button>
+    <p class="pv-note">إيقاف الدفع يخفي زر «ادفع الآن» ويعرض رسالتك مكانه. إيقاف الطلبات يمنع إتمام الطلب من السلة. يشتغلان معاً أو كلٌّ لحاله.</p>
+
+    <h3 style="margin: 26px 0 6px;">صلاحيات المسؤولين 🛡️</h3>
+    <p class="sub" style="margin-bottom: 10px;">تحكّم بما يقدر المسؤولون (غيرك) يسوونه. ألغِ التحديد لإيقاف الصلاحية. أنت كمالك تملك كل الصلاحيات دائماً. <b>محمية في قواعد الأمان</b> — مو بس إخفاء أزرار.</p>
+    <div class="field">
+      <label class="perm-check"><input type="checkbox" id="permEditCatalog"> <span>✏️ تعديل المتجر — إضافة وتعديل المنتجات والأقسام والأسعار والخصومات</span></label>
+      <label class="perm-check"><input type="checkbox" id="permDeleteCatalog"> <span>🗑 حذف المنتجات والأقسام</span></label>
+      <label class="perm-check"><input type="checkbox" id="permChangeStatus"> <span>🔄 تغيير حالة الطلبات</span></label>
+      <label class="perm-check"><input type="checkbox" id="permMarkPaid"> <span>💰 تعليم الطلبات كمدفوعة / غير مدفوعة</span></label>
+      <label class="perm-check"><input type="checkbox" id="permDeleteOrders"> <span>🗑 حذف الطلبات</span></label>
+      <label class="perm-check"><input type="checkbox" id="permAssign"> <span>👤 تكليف الفريق على الطلبات</span></label>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="saveAdminPerms()">💾 حفظ صلاحيات المسؤولين</button>
 
     <h3 style="margin: 26px 0 6px;">الرسالة العامة 📢</h3>
     <p class="sub" style="margin-bottom: 10px;">شريط يظهر أعلى الموقع لجميع الزوار — يدعم التنسيق: **عريض** *مائل* `كود`</p>
@@ -1284,7 +1687,7 @@
   </div>
 </div>
 
-<div class="overlay" id="adminOrdersOverlay">
+<div class="overlay soft" id="adminOrdersOverlay">
   <div class="modal orders-modal">
     <button class="close-x" onclick="closeAdminOrders()">✕</button>
     <h2>إدارة الطلبات 📦</h2>
@@ -1298,7 +1701,7 @@
   </div>
 </div>
 
-<div class="overlay" id="assignOverlay">
+<div class="overlay soft" id="assignOverlay">
   <div class="modal" style="max-width: 380px;">
     <button class="close-x" onclick="closeAssign()">✕</button>
     <h2 style="font-size: 1.25rem;">👤 تكليف فريق العمل</h2>
@@ -1308,7 +1711,7 @@
   </div>
 </div>
 
-<div class="overlay" id="logOverlay">
+<div class="overlay soft" id="logOverlay">
   <div class="modal wide">
     <button class="close-x" onclick="closeOrderLog()">✕</button>
     <h2>📋 سجل الطلب</h2>
@@ -1317,7 +1720,7 @@
   </div>
 </div>
 
-<div class="overlay" id="activityLogOverlay">
+<div class="overlay soft" id="activityLogOverlay">
   <div class="modal orders-modal">
     <button class="close-x" onclick="closeActivityLog()">✕</button>
     <h2>📋 سجل نشاط الطلبات الكامل</h2>
@@ -1337,6 +1740,18 @@
   </div>
 </div>
 
+<div class="overlay" id="verifyOverlay">
+  <div class="modal" style="text-align:center;">
+    <div style="font-size:3.4rem; margin:6px 0;">📧</div>
+    <h2>فعّل بريدك الإلكتروني</h2>
+    <p class="sub">أرسلنا رابط تأكيد إلى <b id="verifyEmail" style="color:#a78bfa; direction:ltr; unicode-bidi:embed;"></b>. افتح الرابط ثم ارجع واضغط «تحقّقت».</p>
+    <div class="thanks-note" style="text-align:right;">📌 إن ما وصلك الإيميل، شيّك على مجلد الرسائل غير المرغوبة (Spam). الرابط يفعّل حسابك مرة وحدة بس.</div>
+    <button class="btn btn-primary btn-block" id="verifyCheckBtn" onclick="checkVerified()">✅ تحقّقت — تابع</button>
+    <button class="btn btn-ghost btn-block" id="verifyResendBtn" style="margin-top:8px;" onclick="resendVerification()">إعادة إرسال الرابط 📧</button>
+    <button class="btn btn-danger btn-block" id="verifyLogoutBtn" style="margin-top:8px;" onclick="verifyLogout()">تسجيل الخروج</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <footer>
@@ -1348,7 +1763,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail
+  signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail, sendEmailVerification
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 import {
   getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc,
@@ -1426,6 +1841,14 @@ function isOwner() {
   return !!auth.currentUser && auth.currentUser.uid === OWNER_UID;
 }
 
+// صلاحيات المسؤولين (غير المالك) — يتحكّم فيها المالك من لوحته. الافتراضي: كل شي مسموح.
+// المالك دايماً يملك كل الصلاحيات. هذي الواجهة بس؛ الحارس الحقيقي قواعد Firestore (adminCan).
+let adminPerms = { editCatalog: true, deleteCatalog: true, changeStatus: true, markPaid: true, deleteOrders: true, assign: true };
+function canAdmin(perm) {
+  return isOwner() || adminPerms[perm] !== false;
+}
+function permDenied() { toast("⛔ المالك أوقف هذه الصلاحية عنك"); }
+
 // أعضاء الفريق اللي نقدر نكلّفهم — بس يوزرات ديسكورد (ما نعرض للعميل إيميل ولا UID)
 const TEAM = [
   { uid: "kwbLZoAcamgD20RtZYUdt5fbmyo1", name: "itsreallyhex" },
@@ -1496,7 +1919,7 @@ function applyAnnounce() {
 // ===== رسالة الشكر بعد الطلب (المالك يقدر يعدّلها من لوحته) =====
 const THANKS_DEFAULTS = {
   note1: "⚠️ **خطوة أخيرة ضرورية لإتمام طلبك:** يجب عليك الدخول إلى **سيرفرنا في الديسكورد** وفتح تذكرة 🎟️ وذكر رقم طلبك حتى نتمكن من التواصل معك وإتمام الدفع والتنفيذ. الطلب لا يكتمل بدون هذه الخطوة!",
-  note2: "⏳ **قد يستغرق تنفيذ طلبك أسبوعاً أو أكثر** حسب نوع وحجم الخدمة.\n💳 نقبل حالياً **التحويل المحلي فقط** لإتمام الدفع.",
+  note2: "⏳ **قد يستغرق تنفيذ طلبك من يومين الى اسبوع أو أكثر** حسب نوع وحجم الخدمة.",
 };
 let thanksMsg = { note1: THANKS_DEFAULTS.note1, note2: THANKS_DEFAULTS.note2 };
 
@@ -1547,6 +1970,24 @@ const CLOSED_DEFAULTS = {
   msg: "نعتذر، الموقع مغلق حالياً. تابعونا في سيرفر الديسكورد لمعرفة موعد العودة. 🌙",
 };
 let closedMsgData = { title: CLOSED_DEFAULTS.title, msg: CLOSED_DEFAULTS.msg };
+
+// إيقاف الطلبات / الدفع مؤقتاً برسالة من المالك — مفتاحان مستقلّان، كلٍّ يتفعّل لحاله.
+// الزائر العادي ما يقدر يطلب/يدفع وقت الإيقاف ويشوف رسالة المالك — أنت والإدارة ما تتأثرون.
+const BLOCK_DEFAULTS = {
+  orders: "استقبال الطلبات متوقّف مؤقتاً — حاول لاحقاً 🙏",
+  pay: "الدفع الإلكتروني متوقّف مؤقتاً — حاول لاحقاً 🙏",
+};
+let ordersBlocked = false, ordersBlockMsg = BLOCK_DEFAULTS.orders;
+let payBlocked = false, payBlockMsg = BLOCK_DEFAULTS.pay;
+// رسائل جاهزة يضغط عليها المالك بدل ما يكتب
+const ORDER_BLOCK_PRESETS = [
+  "🔧 نقوم حالياً باختبار نظام الطلبات — استقبال الطلبات متوقّف مؤقتاً",
+  "⚠️ نواجه مشكلة في نظام الطلبات — نعمل على حلّها، حاول لاحقاً",
+];
+const PAY_BLOCK_PRESETS = [
+  "🔧 نقوم حالياً باختبار نظام الدفع — الدفع متوقّف مؤقتاً",
+  "⚠️ نواجه مشكلة في نظام الدفع — نعمل على حلّها، حاول لاحقاً",
+];
 
 // إيموجيات جاهزة لرسالة الإغلاق — تنحط في آخر حقل ضغط عليه المالك (العنوان أو النص)
 const CLOSED_EMOJIS = ["🚫","🔧","🌙","✨","⏰","🛠️","💜","🔒","⚠️","📢","🎉","❤️","🙏","👀","🔥","💎","🕐","📅","✅","🌟"];
@@ -1659,6 +2100,79 @@ function renderOwnerPanel() {
     siteLabel.style.color = "var(--success)";
     closedBtn.textContent = "🚫 إغلاق الموقع برسالتي";
   }
+
+  // إيقاف الطلبات / الدفع
+  renderBlockSection({
+    blocked: ordersBlocked, msg: ordersBlockMsg, def: BLOCK_DEFAULTS.orders, presets: ORDER_BLOCK_PRESETS,
+    msgInputId: "ordersBlockMsgInput", presetsId: "ordersBlockPresets", labelId: "ordersBlockLabel",
+    toggleBtnId: "ordersBlockToggleBtn", unblockBtnId: "ordersUnblockBtn",
+    onLabel: "🟢 يستقبل الطلبات", setText: "⛔ إيقاف استقبال الطلبات",
+  });
+  renderBlockSection({
+    blocked: payBlocked, msg: payBlockMsg, def: BLOCK_DEFAULTS.pay, presets: PAY_BLOCK_PRESETS,
+    msgInputId: "payBlockMsgInput", presetsId: "payBlockPresets", labelId: "payBlockLabel",
+    toggleBtnId: "payBlockToggleBtn", unblockBtnId: "payUnblockBtn",
+    onLabel: "🟢 الدفع شغّال", setText: "⛔ إيقاف الدفع الإلكتروني",
+  });
+
+  // صلاحيات المسؤولين — التحديد = مسموح
+  document.getElementById("permEditCatalog").checked   = adminPerms.editCatalog;
+  document.getElementById("permDeleteCatalog").checked = adminPerms.deleteCatalog;
+  document.getElementById("permChangeStatus").checked  = adminPerms.changeStatus;
+  document.getElementById("permMarkPaid").checked      = adminPerms.markPaid;
+  document.getElementById("permDeleteOrders").checked  = adminPerms.deleteOrders;
+  document.getElementById("permAssign").checked        = adminPerms.assign;
+}
+
+// المالك يحفظ صلاحيات المسؤولين — التحديد = مسموح، إلغاؤه = ممنوع
+async function saveAdminPerms() {
+  if (!isOwner()) return;
+  const v = {
+    adminEditCatalog:   document.getElementById("permEditCatalog").checked,
+    adminDeleteCatalog: document.getElementById("permDeleteCatalog").checked,
+    adminChangeStatus:  document.getElementById("permChangeStatus").checked,
+    adminMarkPaid:      document.getElementById("permMarkPaid").checked,
+    adminDeleteOrders:  document.getElementById("permDeleteOrders").checked,
+    adminAssign:        document.getElementById("permAssign").checked,
+  };
+  try {
+    await setDoc(doc(db, "settings", "store"), v, { merge: true });
+    adminPerms = {
+      editCatalog: v.adminEditCatalog, deleteCatalog: v.adminDeleteCatalog,
+      changeStatus: v.adminChangeStatus, markPaid: v.adminMarkPaid,
+      deleteOrders: v.adminDeleteOrders, assign: v.adminAssign,
+    };
+    toast("✅ تم حفظ صلاحيات المسؤولين");
+  } catch {
+    toast("⚠ تعذر حفظ الصلاحيات");
+  }
+}
+
+// يعبّي قسم إيقاف (طلبات أو دفع) في لوحة المالك: الرسالة + الأزرار الجاهزة + حالة المفتاح
+function renderBlockSection(o) {
+  document.getElementById(o.msgInputId).value = o.msg === o.def ? "" : o.msg;
+  const presetsWrap = document.getElementById(o.presetsId);
+  presetsWrap.innerHTML = "";
+  o.presets.forEach(p => {
+    const b = document.createElement("button");
+    b.className = "btn btn-ghost btn-sm";
+    b.style.cssText = "justify-content: flex-start; text-align: right; white-space: normal; line-height: 1.6;";
+    b.textContent = p;
+    b.onclick = () => { document.getElementById(o.msgInputId).value = p; };
+    presetsWrap.appendChild(b);
+  });
+  const label = document.getElementById(o.labelId);
+  const toggleBtn = document.getElementById(o.toggleBtnId);
+  document.getElementById(o.unblockBtnId).style.display = o.blocked ? "block" : "none";
+  if (o.blocked) {
+    label.textContent = "⛔ موقوف مؤقتاً";
+    label.style.color = "#fb7185";
+    toggleBtn.textContent = "🔄 تحديث رسالة الإيقاف";
+  } else {
+    label.textContent = o.onLabel;
+    label.style.color = "var(--success)";
+    toggleBtn.textContent = o.setText;
+  }
 }
 
 function openOwner() {
@@ -1711,6 +2225,65 @@ async function publishClosed(enable) {
     toast("⚠ تعذر تغيير حالة الموقع");
   } finally {
     btn.disabled = false;
+  }
+}
+
+// المالك يوقف/يستأنف استقبال الطلبات برسالة من عنده
+async function publishOrdersBlock(enable) {
+  if (!isOwner()) return;
+  const msg = document.getElementById("ordersBlockMsgInput").value.trim();
+  const btn = document.getElementById("ordersBlockToggleBtn");
+  btn.disabled = true;
+  try {
+    await setDoc(doc(db, "settings", "store"), {
+      ordersBlocked: enable,
+      ordersBlockMsg: msg || BLOCK_DEFAULTS.orders,
+    }, { merge: true });
+    ordersBlocked = enable;
+    ordersBlockMsg = msg || BLOCK_DEFAULTS.orders;
+    renderOwnerPanel();
+    if (document.getElementById("cartOverlay").classList.contains("open")) renderCart();
+    toast(enable ? "⛔ تم إيقاف استقبال الطلبات" : "✅ عاد استقبال الطلبات للجميع");
+  } catch {
+    toast("⚠ تعذر تغيير حالة الطلبات");
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// المالك يوقف/يستأنف الدفع الإلكتروني برسالة من عنده
+async function publishPayBlock(enable) {
+  if (!isOwner()) return;
+  const msg = document.getElementById("payBlockMsgInput").value.trim();
+  const btn = document.getElementById("payBlockToggleBtn");
+  btn.disabled = true;
+  try {
+    await setDoc(doc(db, "settings", "store"), {
+      payBlocked: enable,
+      payBlockMsg: msg || BLOCK_DEFAULTS.pay,
+    }, { merge: true });
+    payBlocked = enable;
+    payBlockMsg = msg || BLOCK_DEFAULTS.pay;
+    renderOwnerPanel();
+    applyPayBlockUI();
+    if (document.getElementById("ordersOverlay").classList.contains("open")) openOrders();
+    toast(enable ? "⛔ تم إيقاف الدفع الإلكتروني" : "✅ عاد الدفع الإلكتروني للجميع");
+  } catch {
+    toast("⚠ تعذر تغيير حالة الدفع");
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// يطبّق حالة إيقاف الدفع على نافذة الشكر: يخفي زر الدفع ويعرض رسالة المالك مكانه (الإدارة تتخطى)
+function applyPayBlockUI() {
+  const blocked = payBlocked && !isAdmin();
+  const btn = document.getElementById("payNowBtn");
+  const note = document.getElementById("payBlockNote");
+  if (btn) btn.style.display = blocked ? "none" : "";
+  if (note) {
+    note.textContent = "🚫 " + payBlockMsg;
+    note.style.display = blocked ? "block" : "none";
   }
 }
 
@@ -1792,6 +2365,19 @@ async function loadStore() {
     closedMsgData = {
       title: settings.closedTitle || CLOSED_DEFAULTS.title,
       msg: settings.closedMsg || CLOSED_DEFAULTS.msg,
+    };
+    ordersBlocked = settings.ordersBlocked === true;
+    ordersBlockMsg = settings.ordersBlockMsg || BLOCK_DEFAULTS.orders;
+    payBlocked = settings.payBlocked === true;
+    payBlockMsg = settings.payBlockMsg || BLOCK_DEFAULTS.pay;
+    // صلاحيات المسؤولين — أي حقل غير موجود أو ليس false = مسموح
+    adminPerms = {
+      editCatalog:   settings.adminEditCatalog   !== false,
+      deleteCatalog: settings.adminDeleteCatalog !== false,
+      changeStatus:  settings.adminChangeStatus  !== false,
+      markPaid:      settings.adminMarkPaid       !== false,
+      deleteOrders:  settings.adminDeleteOrders   !== false,
+      assign:        settings.adminAssign         !== false,
     };
     announce = {
       enabled: settings.announceEnabled === true,
@@ -1922,8 +2508,9 @@ async function register() {
     });
     myDiscord = discord;
     updateAuthUI();
-    showMsg("registerMsg", "✅ تم إنشاء الحساب بنجاح!", "ok");
-    setTimeout(() => { closeAuth(); toast(`أهلاً بك يا ${username} 🌙`); }, 1000);
+    await sendVerification(true);
+    showMsg("registerMsg", "✅ تم إنشاء الحساب — فعّل بريدك علشان تكمّل", "ok");
+    setTimeout(() => { closeAuth(); openVerify(); }, 800);
   } catch (e) {
     showMsg("registerMsg", authError(e), "error");
   } finally {
@@ -1941,6 +2528,12 @@ async function login() {
   btn.disabled = true;
   try {
     const cred = await signInWithEmailAndPassword(auth, email, password);
+    if (!cred.user.emailVerified) {
+      await sendVerification(true);
+      showMsg("loginMsg", "📧 لازم تأكّد بريدك أول — أرسلنا لك رابط التأكيد", "ok");
+      setTimeout(() => { closeAuth(); openVerify(); }, 700);
+      return;
+    }
     showMsg("loginMsg", "✅ تم تسجيل الدخول بنجاح!", "ok");
     setTimeout(() => {
       closeAuth();
@@ -1979,9 +2572,123 @@ function updateAuthUI() {
   document.getElementById("ordersBtn").style.display   = user ? "inline-flex" : "none";
   document.getElementById("adminBtn").style.display    = isAdmin() ? "inline-flex" : "none";
   document.getElementById("ownerBtn").style.display    = isOwner() ? "inline-flex" : "none";
+  // الهمبرغر يظهر فقط لما يكون فيه مستخدم مسجّل (يضم اللوحات + خروج)
+  document.getElementById("menuToggle").style.display  = user ? "inline-flex" : "none";
+  if (!user) closeMenu();
   if (user) document.getElementById("usernameDisplay").textContent = user.displayName || user.email;
   applyMaintenance();
 }
+
+// ===== قائمة الهمبرغر =====
+function openMenu() {
+  document.getElementById("menuDropdown").classList.add("open");
+  document.getElementById("menuToggle").setAttribute("aria-expanded", "true");
+}
+function closeMenu() {
+  const d = document.getElementById("menuDropdown");
+  if (d) d.classList.remove("open");
+  const t = document.getElementById("menuToggle");
+  if (t) t.setAttribute("aria-expanded", "false");
+}
+function toggleMenu() {
+  document.getElementById("menuDropdown").classList.contains("open") ? closeMenu() : openMenu();
+}
+// نسكّر القائمة لو ضغط برّاها
+document.addEventListener("click", e => {
+  const menu = document.getElementById("menu");
+  if (menu && !menu.contains(e.target)) closeMenu();
+});
+
+// ===== تأكيد البريد الإلكتروني (رابط تفعيل + كولداون 30 ثانية لإعادة الإرسال) =====
+let verifCooldownUntil = parseInt(localStorage.getItem("nv_verif_cooldown") || "0", 10) || 0;
+let verifTimer = null;
+
+function openVerify() {
+  const u = auth.currentUser;
+  if (!u) return;
+  document.getElementById("verifyEmail").textContent = u.email || "";
+  document.getElementById("verifyOverlay").classList.add("open");
+  startVerifTick();
+}
+function closeVerify() {
+  document.getElementById("verifyOverlay").classList.remove("open");
+  stopVerifTick();
+}
+
+// نرسل رابط التفعيل. force=true يتجاهل الكولداون (أول إرسال بعد التسجيل/الدخول).
+async function sendVerification(force = false) {
+  const u = auth.currentUser;
+  if (!u) return;
+  if (!force && Date.now() < verifCooldownUntil) return;
+  try {
+    await sendEmailVerification(u);
+    verifCooldownUntil = Date.now() + 30000; // 30 ثانية بين كل إرسال
+    localStorage.setItem("nv_verif_cooldown", String(verifCooldownUntil));
+    updateResendBtn();
+    toast("📧 أرسلنا لك رابط التأكيد — شيّك على بريدك (وحتى السبام)");
+  } catch (e) {
+    if (e && e.code === "auth/too-many-requests") {
+      // ميسر/فايربيس صدّنا — نطوّل الكولداون شوي
+      verifCooldownUntil = Date.now() + 60000;
+      localStorage.setItem("nv_verif_cooldown", String(verifCooldownUntil));
+      updateResendBtn();
+      toast("⏳ محاولات كثيرة — انتظر دقيقة وعيد المحاولة");
+    } else {
+      toast("⚠ تعذّر إرسال الرابط — حاول بعد شوي");
+    }
+  }
+}
+function resendVerification() { sendVerification(false); }
+
+function updateResendBtn() {
+  const btn = document.getElementById("verifyResendBtn");
+  if (!btn) return;
+  const remain = Math.ceil((verifCooldownUntil - Date.now()) / 1000);
+  if (remain > 0) {
+    btn.disabled = true;
+    btn.textContent = `إعادة إرسال الرابط بعد ${remain} ثانية`;
+  } else {
+    btn.disabled = false;
+    btn.textContent = "إعادة إرسال الرابط 📧";
+  }
+}
+function startVerifTick() {
+  stopVerifTick();
+  updateResendBtn();
+  verifTimer = setInterval(updateResendBtn, 1000);
+}
+function stopVerifTick() {
+  if (verifTimer) { clearInterval(verifTimer); verifTimer = null; }
+}
+
+// نعيد تحميل بيانات المستخدم ونتأكد هل فعّل بريده
+async function checkVerified() {
+  const u = auth.currentUser;
+  if (!u) { closeVerify(); return; }
+  const btn = document.getElementById("verifyCheckBtn");
+  btn.disabled = true;
+  const old = btn.textContent;
+  btn.textContent = "جارٍ التحقق...";
+  try {
+    await u.reload();
+    if (auth.currentUser && auth.currentUser.emailVerified) {
+      // إجباري: نجدّد التوكن علشان claim الـ email_verified يوصل لقواعد Firestore،
+      // وإلا بتظل القواعد ترفض الكتابة مع إن البريد تفعّل فعلاً.
+      await auth.currentUser.getIdToken(true);
+      closeVerify();
+      updateAuthUI();
+      toast("✅ تم تفعيل بريدك — أهلاً فيك 🌙");
+    } else {
+      toast("⚠ بريدك لسا ما تفعّل — افتح الرابط في إيميلك ثم اضغط «تحقّقت»");
+    }
+  } catch {
+    toast("⚠ صار خطأ بالتحقق — حاول مرة ثانية");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = old;
+  }
+}
+function verifyLogout() { closeVerify(); logout(); }
 
 let myDiscord = "";
 
@@ -1989,10 +2696,14 @@ onAuthStateChanged(auth, async user => {
   updateAuthUI();
   myDiscord = "";
   if (user) {
+    if (!user.emailVerified) openVerify();
+    else closeVerify();
     try {
       const snap = await getDoc(doc(db, "users", user.uid));
       if (snap.exists()) myDiscord = snap.data().discord || "";
     } catch {}
+  } else {
+    closeVerify();
   }
 });
 
@@ -2007,6 +2718,11 @@ function addToCart(productId) {
   if (!auth.currentUser) {
     openAuth("login");
     toast("⚠ يجب تسجيل الدخول أولاً لإضافة منتجات للسلة");
+    return;
+  }
+  if (!auth.currentUser.emailVerified) {
+    openVerify();
+    toast("📧 فعّل بريدك الإلكتروني أول");
     return;
   }
   const p = allProducts.find(p => p.id === productId);
@@ -2102,6 +2818,14 @@ function renderCart() {
   document.getElementById("cartTotal").textContent = total + " ر.س";
   footer.style.display = "block";
 
+  // إيقاف الطلبات: نخفي زر الإتمام ونعرض رسالة المالك (الإدارة تتخطى)
+  const ordersBlk = ordersBlocked && !isAdmin();
+  const obNote = document.getElementById("ordersBlockNote");
+  obNote.textContent = "🚫 " + ordersBlockMsg;
+  obNote.style.display = ordersBlk ? "block" : "none";
+  document.getElementById("checkoutBtn").style.display = ordersBlk ? "none" : "";
+  document.getElementById("checkoutHint").style.display = ordersBlk ? "none" : "";
+
   const discordInput = document.getElementById("checkoutDiscord");
   if (!discordInput.value && myDiscord) discordInput.value = myDiscord;
 }
@@ -2111,9 +2835,18 @@ function confirmCheckout() {
     toast("🔧 المتجر تحت الصيانة حالياً — عد لاحقاً");
     return;
   }
+  if (ordersBlocked && !isAdmin()) {
+    toast("🚫 " + ordersBlockMsg);
+    return;
+  }
   const user = auth.currentUser;
   if (!user) {
     openAuth("login");
+    return;
+  }
+  if (!user.emailVerified) {
+    openVerify();
+    toast("📧 فعّل بريدك الإلكتروني أول");
     return;
   }
   const cart = getCart().filter(i => allProducts.some(p => p.id === i.id));
@@ -2151,6 +2884,7 @@ function closeThanks() { document.getElementById("thanksOverlay").classList.remo
 let lastOrder = null;
 
 function openPay() {
+  if (payBlocked && !isAdmin()) return toast("🚫 " + payBlockMsg);
   if (!lastOrder) return toast("⚠ لا يوجد طلب للدفع");
   if (!lastOrder.rawId) return toast("⚠ تعذر تحديد الطلب — افتح «طلباتي» واضغط ادفع الآن من هناك");
   if (typeof Moyasar === "undefined") return toast("⚠ تعذر تحميل بوابة الدفع — تحقق من اتصالك");
@@ -2193,6 +2927,8 @@ function closePay() {
 async function placeOrder() {
   const user = auth.currentUser;
   if (!user) return;
+  if (!user.emailVerified) { openVerify(); toast("📧 فعّل بريدك الإلكتروني أول"); return; }
+  if (ordersBlocked && !isAdmin()) { toast("🚫 " + ordersBlockMsg); return; }
   const cart = getCart().filter(i => allProducts.some(p => p.id === i.id));
   if (cart.length === 0) return;
 
@@ -2236,6 +2972,7 @@ async function placeOrder() {
     document.getElementById("thanksOrderId").innerHTML =
       `رقم طلبك: <b style="color: #a78bfa;">#${fmtId(ref.id)}</b> — احفظه واذكره في التذكرة`;
     applyThanks();
+    applyPayBlockUI();
     document.getElementById("thanksOverlay").classList.add("open");
   } catch {
     toast("⚠ تعذر إرسال الطلب — حاول مجدداً");
@@ -2334,7 +3071,9 @@ async function openOrders() {
              </div>` : ""}
         ${o.moyasarPaymentId ? `<div class="order-date" style="margin-top: 6px; cursor: pointer; direction: ltr; unicode-bidi: embed; text-align: right;" title="معرّف دفعتك في ميسر — اضغط للنسخ" data-copy="${esc(o.moyasarPaymentId)}">💳 معرّف الدفعة: <code>${esc(o.moyasarPaymentId)}</code></div>` : ""}
         ${!o.paid && !["مكتمل", "ملغي"].includes(o.status)
-          ? `<button class="btn btn-primary btn-block btn-sm" style="margin-top: 10px;" data-pay="${o.id}" data-total="${o.total}">💳 ادفع الآن — دفع إلكتروني</button>`
+          ? ((payBlocked && !isAdmin())
+              ? `<p class="pv-note" style="margin-top: 10px; color: #fb7185; border-color: rgba(248,113,113,.4); background: rgba(248,113,113,.08);">🚫 ${esc(payBlockMsg)}</p>`
+              : `<button class="btn btn-primary btn-block btn-sm" style="margin-top: 10px;" data-pay="${o.id}" data-total="${o.total}">💳 ادفع الآن — دفع إلكتروني</button>`)
           : ""}
         ${CANCELLABLE_STATUSES.includes(o.status)
           ? (o.paid
@@ -2407,6 +3146,7 @@ function compressImage(file) {
 
 async function adminAddCat() {
   if (!isAdmin()) return;
+  if (!canAdmin("editCatalog")) return permDenied();
   const title = document.getElementById("apNewCatTitle").value.trim();
   const sub = document.getElementById("apNewCatSub").value.trim();
   if (!title) return showMsg("adminPanelMsg", "⚠ اكتب اسم القسم أولاً", "error");
@@ -2426,6 +3166,7 @@ async function adminAddCat() {
 
 async function adminSaveCat(id) {
   if (!isAdmin()) return;
+  if (!canAdmin("editCatalog")) return permDenied();
   const title = document.getElementById("cat-title-" + id).value.trim();
   const sub = document.getElementById("cat-sub-" + id).value.trim();
   if (!title) return toast("⚠ اسم القسم لا يمكن أن يكون فارغاً");
@@ -2443,6 +3184,7 @@ async function adminSaveCat(id) {
 
 async function adminDeleteCat(id) {
   if (!isAdmin()) return;
+  if (!canAdmin("deleteCatalog")) return permDenied();
   const gone = allCats.find(c => c.id === id) || {};
   const count = allProducts.filter(p => p.cat === id).length;
   try {
@@ -2488,6 +3230,7 @@ function adminCancelEdit() {
 
 async function adminSaveProduct() {
   if (!isAdmin()) return;
+  if (!canAdmin("editCatalog")) return permDenied();
   const cat   = document.getElementById("apCat").value;
   const icon  = document.getElementById("apIcon").value.trim();
   const name  = document.getElementById("apName").value.trim();
@@ -2558,6 +3301,7 @@ async function adminSaveProduct() {
 
 async function adminDeleteProduct(id) {
   if (!isAdmin()) return;
+  if (!canAdmin("deleteCatalog")) return permDenied();
   const gone = allProducts.find(p => p.id === id) || {};
   try {
     await deleteDoc(doc(db, "products", id));
@@ -2573,6 +3317,7 @@ async function adminDeleteProduct(id) {
 
 async function adminSaveRow(id) {
   if (!isAdmin()) return;
+  if (!canAdmin("editCatalog")) return permDenied();
   const before = allProducts.find(p => p.id === id) || {};
   const saleVal = Math.max(0, Math.min(90, Number(document.getElementById("sale-" + id).value) || 0));
   const statusVal = document.getElementById("status-" + id).value;
@@ -2594,16 +3339,42 @@ async function adminSaveRow(id) {
   }
 }
 
+// يبيّن للمسؤول وش الصلاحيات اللي وقفها المالك عنه، ويخفي نماذج الإضافة الممنوعة
+function applyAdminPermsNote() {
+  const ed = canAdmin("editCatalog");
+  document.getElementById("addCatBox").style.display = ed ? "" : "none";
+  document.getElementById("productFormBox").style.display = ed ? "" : "none";
+
+  const denied = [];
+  if (!canAdmin("editCatalog"))   denied.push("تعديل المتجر");
+  if (!canAdmin("deleteCatalog")) denied.push("حذف المنتجات/الأقسام");
+  if (!canAdmin("changeStatus"))  denied.push("تغيير حالة الطلبات");
+  if (!canAdmin("markPaid"))      denied.push("تعليم الطلبات كمدفوعة");
+  if (!canAdmin("deleteOrders"))  denied.push("حذف الطلبات");
+  if (!canAdmin("assign"))        denied.push("تكليف الفريق");
+  const note = document.getElementById("adminPermsNote");
+  if (denied.length && !isOwner()) {
+    note.textContent = "🛡️ المالك أوقف عنك: " + denied.join("، ") + ".";
+    note.style.display = "block";
+  } else {
+    note.style.display = "none";
+  }
+}
+
 function renderAdminAll() {
+  const ed = canAdmin("editCatalog");   // إضافة/تعديل المنتجات والأقسام
+  const del = canAdmin("deleteCatalog"); // حذف المنتجات والأقسام
+  applyAdminPermsNote();
+
   document.getElementById("seedBox").style.display =
-    (allCats.length === 0 && allProducts.length === 0) ? "block" : "none";
+    (allCats.length === 0 && allProducts.length === 0 && ed) ? "block" : "none";
 
   document.getElementById("adminCats").innerHTML = allCats.map(c => `
     <div class="admin-row">
-      <input class="cat-input" id="cat-title-${c.id}" value="${esc(c.title)}" placeholder="اسم القسم">
-      <input class="cat-input" id="cat-sub-${c.id}" value="${esc(c.sub || "")}" placeholder="الوصف">
-      <button class="btn btn-primary btn-sm" data-savecat="${c.id}">حفظ</button>
-      <button class="btn btn-danger btn-sm" data-delcat="${c.id}">حذف</button>
+      <input class="cat-input" id="cat-title-${c.id}" value="${esc(c.title)}" placeholder="اسم القسم" ${ed ? "" : "disabled"}>
+      <input class="cat-input" id="cat-sub-${c.id}" value="${esc(c.sub || "")}" placeholder="الوصف" ${ed ? "" : "disabled"}>
+      ${ed ? `<button class="btn btn-primary btn-sm" data-savecat="${c.id}">حفظ</button>` : ""}
+      ${del ? `<button class="btn btn-danger btn-sm" data-delcat="${c.id}">حذف</button>` : ""}
     </div>`).join("");
 
   document.getElementById("apCat").innerHTML = allCats
@@ -2613,15 +3384,15 @@ function renderAdminAll() {
     <div class="admin-row">
       <span>${esc(p.icon || "🛒")}</span>
       <span class="ar-name">${esc(p.name)} — ${finalPrice(p)} ر.س ${p.sale > 0 ? `<small>(خصم ${esc(p.sale)}%)</small>` : ""}</span>
-      <input class="sale-input" type="number" min="0" max="90" id="sale-${p.id}" value="${p.sale || 0}" title="نسبة الخصم %">
-      <select class="status-select" id="status-${p.id}" title="حالة التوفر">
+      <input class="sale-input" type="number" min="0" max="90" id="sale-${p.id}" value="${p.sale || 0}" title="نسبة الخصم %" ${ed ? "" : "disabled"}>
+      <select class="status-select" id="status-${p.id}" title="حالة التوفر" ${ed ? "" : "disabled"}>
         <option value="available" ${!p.status || p.status === "available" ? "selected" : ""}>متوفر</option>
         <option value="out" ${p.status === "out" ? "selected" : ""}>نفذت الكمية</option>
         <option value="unavailable" ${p.status === "unavailable" ? "selected" : ""}>غير متوفر حالياً</option>
       </select>
-      <button class="btn btn-primary btn-sm" data-saverow="${p.id}">حفظ</button>
-      <button class="btn btn-ghost btn-sm" data-edit="${p.id}">تعديل</button>
-      <button class="btn btn-danger btn-sm" data-del="${p.id}">حذف</button>
+      ${ed ? `<button class="btn btn-primary btn-sm" data-saverow="${p.id}">حفظ</button>
+      <button class="btn btn-ghost btn-sm" data-edit="${p.id}">تعديل</button>` : ""}
+      ${del ? `<button class="btn btn-danger btn-sm" data-del="${p.id}">حذف</button>` : ""}
     </div>`).join("");
 
   document.querySelectorAll("[data-savecat]").forEach(b => b.onclick = () => adminSaveCat(b.dataset.savecat));
@@ -2717,14 +3488,16 @@ function renderAdminOrders() {
           <span class="order-total">الإجمالي: ${o.total} ر.س</span>
           ${(o.status === "مكتمل" && !isOwner())
             ? `<span class="status-badge done" title="الطلب مكتمل — الحالة مقفلة">🔒 الحالة مقفلة</span>`
-            : `<select class="status-select" id="ostatus-${o.id}">
-                ${ORDER_STATUSES.map(s => `<option ${o.status === s ? "selected" : ""}>${s}</option>`).join("")}
-              </select>
-              <button class="btn btn-primary btn-sm" data-ostatus="${o.id}">حفظ</button>`}
-          ${canEditAssignment(o) ? `<button class="btn btn-ghost btn-sm" data-oassign="${o.id}">👤 تكليف</button>` : ""}
+            : (canAdmin("changeStatus")
+                ? `<select class="status-select" id="ostatus-${o.id}">
+                    ${ORDER_STATUSES.map(s => `<option ${o.status === s ? "selected" : ""}>${s}</option>`).join("")}
+                  </select>
+                  <button class="btn btn-primary btn-sm" data-ostatus="${o.id}">حفظ</button>`
+                : "")}
+          ${(canEditAssignment(o) && canAdmin("assign")) ? `<button class="btn btn-ghost btn-sm" data-oassign="${o.id}">👤 تكليف</button>` : ""}
           <button class="btn btn-ghost btn-sm" data-olog="${o.id}">📋 السجل</button>
-          <button class="btn ${o.paid ? "btn-ghost" : "btn-primary"} btn-sm" data-opaid="${o.id}" data-paidval="${o.paid ? "0" : "1"}">${o.paid ? "↩ تغير مدفوع" : "💰 تعليم كمدفوع"}</button>
-          <button class="btn btn-danger btn-sm" data-odel="${o.id}">🗑 حذف</button>
+          ${canAdmin("markPaid") ? `<button class="btn ${o.paid ? "btn-ghost" : "btn-primary"} btn-sm" data-opaid="${o.id}" data-paidval="${o.paid ? "0" : "1"}">${o.paid ? "↩ تغير مدفوع" : "💰 تعليم كمدفوع"}</button>` : ""}
+          ${canAdmin("deleteOrders") ? `<button class="btn btn-danger btn-sm" data-odel="${o.id}">🗑 حذف</button>` : ""}
         </div>
       </div>`).join("");
 
@@ -2741,6 +3514,7 @@ function renderAdminOrders() {
 
 async function adminDeleteOrder(orderId) {
   if (!isAdmin()) return;
+  if (!canAdmin("deleteOrders")) return permDenied();
   if (!confirm("هل أنت متأكد من حذف هذا الطلب نهائياً؟ لا يمكن التراجع.")) return;
   try {
     await deleteDoc(doc(db, "orders", orderId));
@@ -2753,6 +3527,7 @@ async function adminDeleteOrder(orderId) {
 
 async function adminSetOrderStatus(orderId) {
   if (!isAdmin()) return;
+  if (!canAdmin("changeStatus")) return permDenied();
   const sel = document.getElementById("ostatus-" + orderId);
   if (!sel) return;
   const order = adminOrdersCache.find(o => o.id === orderId);
@@ -2821,6 +3596,7 @@ async function saveAssignment() {
   const orderId = assignOrderId;
   if (!orderId) return;
   const o = adminOrdersCache.find(x => x.id === orderId);
+  if (!canAdmin("assign")) return permDenied();
   if (!o || !canEditAssignment(o)) { toast("⛔ لا تملك صلاحية تعديل التكليف"); return; }
   const checked = [...document.querySelectorAll("#assignList input:checked")];
   if (checked.length > 3) { toast("⚠ الحد الأقصى 3 أعضاء"); return; }
@@ -2995,6 +3771,7 @@ function dangerConfirm(title, text, confirmLabel = "تأكيد") {
 
 async function adminTogglePaid(orderId, makePaid) {
   if (!isAdmin()) return;
+  if (!canAdmin("markPaid")) return permDenied();
   const order = adminOrdersCache.find(o => o.id === orderId) || {};
   try {
     const batch = writeBatch(db);
@@ -3014,6 +3791,7 @@ async function adminTogglePaid(orderId, makePaid) {
 // نعبّي المتجر بالمنتجات الافتراضية (للتجربة بس)
 async function seedDefaults() {
   if (!isAdmin()) return;
+  if (!canAdmin("editCatalog")) return permDenied();
   const seedCats = [
     { id: "bots",    title: "🤖 برمجة بوتات ديسكورد",  sub: "بوتات مخصصة حسب طلبك، مبرمجة باحترافية وبدون أخطاء", order: 1 },
     { id: "servers", title: "🏰 بناء سيرفرات من الصفر", sub: "سيرفر متكامل: رتب، رومات، حماية، تصميم — جاهز للانطلاق", order: 2 },
@@ -3047,8 +3825,13 @@ async function seedDefaults() {
 
 document.addEventListener("keydown", e => {
   if (e.key !== "Escape") return;
+  closeMenu();
   const open = [...document.querySelectorAll(".overlay.open")];
-  if (open.length) open[open.length - 1].classList.remove("open");
+  if (!open.length) return;
+  const top = open[open.length - 1];
+  // شاشة تأكيد البريد إجبارية — ما تنسكّر بزر Escape
+  if (top.id === "verifyOverlay") return;
+  top.classList.remove("open");
 });
 
 function createStars() {
@@ -3073,10 +3856,13 @@ Object.assign(window, {
   openOrders, closeOrders, cancelMyOrder,
   openAdmin, closeAdmin, openAdminOrders, closeAdminOrders,
   openOwner, closeOwner, toggleMaintenance, publishClosed, publishAnnounce, publishThanks,
+  publishOrdersBlock, publishPayBlock, saveAdminPerms,
   adminAddCat, adminSaveProduct, adminCancelEdit, seedDefaults,
   closeAssign, saveAssignment, closeOrderLog,
   openActivityLog, closeActivityLog, exportActivityLogCSV,
   dismissApplePayNote,
+  toggleMenu, closeMenu,
+  checkVerified, resendVerification, verifyLogout,
 });
 
 // لمن نرجع من بوابة الدفع: نطلّع رسالة بس وما نكتب أي حالة دفع.
