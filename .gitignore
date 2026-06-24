@@ -20,6 +20,7 @@ Verytuff.txt
 functions/
 memorys.md
 deploy.mjs
+deploy-rules.mjs
 
 # =============================================================================
 # OS FILES

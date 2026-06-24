@@ -75,6 +75,23 @@ service cloud.firestore {
       allow write: if isOwner();
     }
 
+    // أكواد الخصم: المالك وحده ينشئها/يعدّلها/يحذفها — الحارس الحقيقي هنا في القواعد،
+    // فما يقدر أحد يضيف كوداً أو يغيّر نسبته من أدوات المطوّر.
+    // - get: أي أحد يقرأ كوداً واحداً بالضبط (id = نص الكود) عشان يتحقق منه عند الدفع.
+    // - list: المالك فقط — ما نخلي أحد يسرد كل الأكواد دفعة وحدة.
+    // - الإنشاء/التعديل: المالك فقط، والقيم محدودة: نسبة 1..90 وفعّال/معطّل بوول.
+    match /promocodes/{code} {
+      allow get: if true;
+      allow list: if isOwner();
+      allow create, update: if isOwner()
+        && request.resource.data.keys().hasOnly(["percent", "active", "createdAt"])
+        && request.resource.data.percent is number
+        && request.resource.data.percent >= 1
+        && request.resource.data.percent <= 90
+        && request.resource.data.active is bool;
+      allow delete: if isOwner();
+    }
+
     // ملفات المستخدمين (اسم المستخدم + يوزر الديسكورد):
     // كل مستخدم يقرأ ويعدّل ملفه فقط — والمسؤول يقرأ الجميع
     match /users/{uid} {
@@ -119,7 +136,15 @@ service cloud.firestore {
         && request.resource.data.get('paid', false) == false
         // إيقاف الطلبات: لو المالك موقف الاستقبال، ما أحد يقدر ينشئ طلب — حتى من أدوات
         // المطوّر. الإدارة تتخطى (تقدر تطلب للاختبار وقت الإيقاف).
-        && (isAdmin() || !ordersBlockedNow());
+        && (isAdmin() || !ordersBlockedNow())
+        // كود الخصم: لو الطلب يدّعي كوداً، لازم يكون الكود موجوداً وفعّالاً ونسبته تطابق
+        // المعلنة بالضبط — يفرضه الخادم. فما يقدر أحد يخترع نسبة خصم من عنده.
+        && (!("promoCode" in request.resource.data)
+          || (request.resource.data.promoCode is string
+            && request.resource.data.promoPercent is number
+            && exists(/databases/$(database)/documents/promocodes/$(request.resource.data.promoCode))
+            && get(/databases/$(database)/documents/promocodes/$(request.resource.data.promoCode)).data.active == true
+            && get(/databases/$(database)/documents/promocodes/$(request.resource.data.promoCode)).data.percent == request.resource.data.promoPercent));
       allow read: if request.auth != null
         && (resource.data.uid == request.auth.uid || isAdmin() || isWorker());
       // التعديل:

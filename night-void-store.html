@@ -744,6 +744,16 @@
     padding: 18px 0;
   }
   .cart-total .amount { color: #a78bfa; }
+  /* كود الخصم في السلة */
+  .promo-field { margin-bottom: 6px; }
+  .promo-row { display: flex; gap: 8px; align-items: stretch; }
+  .promo-row input { flex: 1; }
+  .promo-row .btn { width: auto; padding: 0 18px; white-space: nowrap; }
+  .promo-msg { margin: 8px 0 0; font-size: 0.85rem; font-weight: 600; }
+  .promo-msg.ok { color: var(--success); }
+  .promo-msg.error { color: #fb7185; }
+  .promo-applied { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; padding: 8px 12px; border-radius: 10px; background: rgba(52, 211, 153, 0.1); border: 1px solid rgba(52, 211, 153, 0.35); font-size: 0.85rem; font-weight: 600; color: var(--success); }
+  .promo-applied button { background: none; border: none; color: #fb7185; cursor: pointer; font-weight: 700; font-size: 0.9rem; }
   /* تنويه آبل باي فوق المجموع في السلة */
   .applepay-note {
     position: relative;
@@ -1441,6 +1451,22 @@
         <button class="applepay-note-x" onclick="dismissApplePayNote()" aria-label="إغلاق التنويه">✕</button>
         <span>يمكنك الآن الدفع عبر <img class="applepay-logo" src="Assets/applepay-logo.png" alt="Apple Pay"> بضغطة واحدة عند إتمام الطلب</span>
       </div>
+      <div class="field promo-field">
+        <label>كود الخصم 🎟️ (إن وُجد)</label>
+        <div class="promo-row">
+          <input type="text" id="promoInput" placeholder="اكتب الكود هنا" style="text-transform: uppercase;" autocomplete="off">
+          <button type="button" class="btn btn-ghost" id="promoApplyBtn" onclick="applyPromo()">تطبيق</button>
+        </div>
+        <p class="promo-msg" id="promoMsg" style="display: none;"></p>
+      </div>
+      <div class="cart-total" id="subtotalRow" style="display: none;">
+        <span>المجموع قبل الخصم:</span>
+        <span class="amount" id="cartSubtotal">0 ر.س</span>
+      </div>
+      <div class="cart-total" id="discountRow" style="display: none; color: var(--success);">
+        <span id="discountLabel">الخصم:</span>
+        <span class="amount" id="cartDiscount" style="color: var(--success);">0 ر.س</span>
+      </div>
       <div class="cart-total">
         <span>المجموع الكلي:</span>
         <span class="amount" id="cartTotal">0 ر.س</span>
@@ -1674,6 +1700,17 @@
       <label class="perm-check"><input type="checkbox" id="permAssign"> <span>👤 تكليف الفريق على الطلبات</span></label>
     </div>
     <button class="btn btn-primary btn-block" onclick="saveAdminPerms()">💾 حفظ صلاحيات المسؤولين</button>
+
+    <h3 style="margin: 26px 0 6px;">أكواد الخصم 🎟️</h3>
+    <p class="sub" style="margin-bottom: 10px;">أنشئ أكواد خصم بنسبة مئوية يستخدمها العملاء عند الدفع. <b>محمية في قواعد الأمان</b> — لا أحد غيرك يقدر ينشئ كوداً أو يغيّر نسبته. النسبة بين 1% و90%.</p>
+    <div class="form-msg" id="promoAdminMsg"></div>
+    <div class="promo-row" style="margin-bottom: 8px;">
+      <input type="text" id="newPromoCode" placeholder="الكود (مثال: NV20)" style="text-transform: uppercase;" autocomplete="off">
+      <input type="number" id="newPromoPercent" placeholder="%" min="1" max="90" style="max-width: 90px;">
+    </div>
+    <button class="btn btn-primary btn-block" id="promoSaveBtn" onclick="savePromoCode()">➕ إنشاء الكود</button>
+    <button class="btn btn-ghost btn-block" id="promoCancelEditBtn" style="display: none; margin-top: 8px;" onclick="cancelPromoEdit()">↩ إلغاء التعديل</button>
+    <div id="promoList" style="margin-top: 14px; display: flex; flex-direction: column; gap: 8px;"></div>
 
     <h3 style="margin: 26px 0 6px;">الرسالة العامة 📢</h3>
     <p class="sub" style="margin-bottom: 10px;">شريط يظهر أعلى الموقع لجميع الزوار — يدعم التنسيق: **عريض** *مائل* `كود`</p>
@@ -2147,6 +2184,14 @@ function renderOwnerPanel() {
   document.getElementById("permMarkPaid").checked      = adminPerms.markPaid;
   document.getElementById("permDeleteOrders").checked  = adminPerms.deleteOrders;
   document.getElementById("permAssign").checked        = adminPerms.assign;
+
+  // أكواد الخصم — نرجّع النموذج لوضع الإضافة ونحمّل القائمة (للمالك فقط)
+  editingPromo = null;
+  const pcInput = document.getElementById("newPromoCode");
+  if (pcInput) { pcInput.readOnly = false; pcInput.style.opacity = ""; }
+  document.getElementById("promoSaveBtn").textContent = "➕ إنشاء الكود";
+  document.getElementById("promoCancelEditBtn").style.display = "none";
+  renderPromoCodes();
 }
 
 // المالك يحفظ صلاحيات المسؤولين — التحديد = مسموح، إلغاؤه = ممنوع
@@ -2170,6 +2215,123 @@ async function saveAdminPerms() {
     toast("✅ تم حفظ صلاحيات المسؤولين");
   } catch {
     toast("⚠ تعذر حفظ الصلاحيات");
+  }
+}
+
+// ====== أكواد الخصم (جهة المالك) ======
+// المالك ينشئ/يعدّل/يحذف الأكواد. الحارس الحقيقي قواعد Firestore: create/update/delete
+// للمالك فقط، والقيم محدودة (نسبة 1..90). list للمالك فقط كمان.
+// الكود اللي نعدّله حالياً (id الوثيقة) أو null لو نضيف كوداً جديداً.
+let editingPromo = null;
+
+async function renderPromoCodes() {
+  const list = document.getElementById("promoList");
+  if (!list) return;
+  if (!isOwner()) { list.innerHTML = ""; return; }
+  list.innerHTML = `<p class="sub" style="margin:0;">⏳ جارٍ تحميل الأكواد...</p>`;
+  try {
+    const snap = await getDocs(collection(db, "promocodes"));
+    if (snap.empty) {
+      list.innerHTML = `<p class="sub" style="margin:0;">لا توجد أكواد بعد — أنشئ أول كود فوق.</p>`;
+      return;
+    }
+    const rows = [];
+    snap.forEach(d => rows.push({ code: d.id, ...d.data() }));
+    rows.sort((a, b) => a.code.localeCompare(b.code));
+    list.innerHTML = rows.map(r => `
+      <div class="promo-applied" style="background: var(--card); border-color: ${editingPromo === r.code ? "var(--accent)" : "var(--border-soft)"}; color: var(--text);">
+        <span><b style="color:#a78bfa;">${esc(r.code)}</b> — خصم ${esc(r.percent)}%
+          <span style="color:${r.active ? "var(--success)" : "#fb7185"}; font-size:0.8rem;">
+            ${r.active ? "● فعّال" : "○ موقوف"}</span></span>
+        <span style="display:flex; gap:10px;">
+          <button onclick="editPromoCode('${esc(r.code)}', ${esc(r.percent)})" style="color:#a78bfa;">تعديل</button>
+          <button onclick="togglePromoActive('${esc(r.code)}', ${r.active ? "false" : "true"})" style="color:${r.active ? "#fbbf24" : "var(--success)"};">${r.active ? "إيقاف" : "تفعيل"}</button>
+          <button onclick="deletePromoCode('${esc(r.code)}')">حذف</button>
+        </span>
+      </div>`).join("");
+  } catch {
+    list.innerHTML = `<p class="sub" style="margin:0; color:#fb7185;">⚠ تعذر تحميل الأكواد</p>`;
+  }
+}
+
+// يحمّل كوداً موجوداً في النموذج لتعديل نسبته. الكود نفسه (المعرّف) يُقفل —
+// لو تبي اسم كود مختلف أنشئ كوداً جديداً. التعديل يغيّر النسبة فقط ويحافظ على
+// حالة التفعيل وتاريخ الإنشاء.
+function editPromoCode(code, percent) {
+  if (!isOwner()) return;
+  editingPromo = code;
+  const codeInput = document.getElementById("newPromoCode");
+  const pctInput = document.getElementById("newPromoPercent");
+  codeInput.value = code;
+  codeInput.readOnly = true;
+  codeInput.style.opacity = "0.6";
+  pctInput.value = percent;
+  document.getElementById("promoSaveBtn").textContent = "💾 حفظ تعديل النسبة";
+  document.getElementById("promoCancelEditBtn").style.display = "block";
+  showMsg("promoAdminMsg", `✏️ تعدّل الكود «${code}» — غيّر النسبة ثم احفظ`, "ok");
+  pctInput.focus();
+  renderPromoCodes();
+}
+
+// يلغي وضع التعديل ويرجّع النموذج لوضع الإضافة
+function cancelPromoEdit() {
+  editingPromo = null;
+  const codeInput = document.getElementById("newPromoCode");
+  codeInput.value = "";
+  codeInput.readOnly = false;
+  codeInput.style.opacity = "";
+  document.getElementById("newPromoPercent").value = "";
+  document.getElementById("promoSaveBtn").textContent = "➕ إنشاء الكود";
+  document.getElementById("promoCancelEditBtn").style.display = "none";
+  hideMsg("promoAdminMsg");
+  renderPromoCodes();
+}
+
+async function savePromoCode() {
+  if (!isOwner()) return;
+  const percent = parseInt(document.getElementById("newPromoPercent").value, 10);
+  if (!(percent >= 1 && percent <= 90)) return showMsg("promoAdminMsg", "⚠ النسبة لازم بين 1 و90", "error");
+  try {
+    if (editingPromo) {
+      // تعديل كود موجود: نغيّر النسبة فقط — نحافظ على active و createdAt
+      await updateDoc(doc(db, "promocodes", editingPromo), { percent });
+      const code = editingPromo;
+      cancelPromoEdit();
+      showMsg("promoAdminMsg", `✅ تم تحديث «${code}» — صار الخصم ${percent}%`, "ok");
+    } else {
+      // كود جديد
+      const code = normPromo(document.getElementById("newPromoCode").value);
+      if (!code) return showMsg("promoAdminMsg", "⚠ اكتب الكود (حروف/أرقام إنجليزية فقط)", "error");
+      await setDoc(doc(db, "promocodes", code), { percent, active: true, createdAt: serverTimestamp() });
+      document.getElementById("newPromoCode").value = "";
+      document.getElementById("newPromoPercent").value = "";
+      showMsg("promoAdminMsg", `✅ تم إنشاء الكود «${code}» — خصم ${percent}%`, "ok");
+    }
+    renderPromoCodes();
+  } catch {
+    showMsg("promoAdminMsg", "⚠ تعذر حفظ الكود — تحقق من قواعد الأمان", "error");
+  }
+}
+
+async function togglePromoActive(code, active) {
+  if (!isOwner()) return;
+  try {
+    await updateDoc(doc(db, "promocodes", code), { active });
+    renderPromoCodes();
+  } catch {
+    showMsg("promoAdminMsg", "⚠ تعذر تغيير حالة الكود", "error");
+  }
+}
+
+async function deletePromoCode(code) {
+  if (!isOwner()) return;
+  if (!confirm(`حذف الكود «${code}» نهائياً؟`)) return;
+  try {
+    await deleteDoc(doc(db, "promocodes", code));
+    showMsg("promoAdminMsg", `🗑 تم حذف الكود «${code}»`, "ok");
+    renderPromoCodes();
+  } catch {
+    showMsg("promoAdminMsg", "⚠ تعذر حذف الكود", "error");
   }
 }
 
@@ -2840,7 +3002,24 @@ function renderCart() {
     container.appendChild(row);
   });
 
-  document.getElementById("cartTotal").textContent = total + " ر.س";
+  // كود الخصم: total هنا هو المجموع قبل الخصم — نطبّق الخصم لو فيه كود مفعّل
+  const subtotal = total;
+  const discount = promoDiscountAmount(subtotal);
+  const finalTotal = subtotal - discount;
+  const subRow = document.getElementById("subtotalRow");
+  const discRow = document.getElementById("discountRow");
+  if (discount > 0 && appliedPromo) {
+    subRow.style.display = "flex";
+    discRow.style.display = "flex";
+    document.getElementById("cartSubtotal").textContent = subtotal + " ر.س";
+    document.getElementById("discountLabel").textContent = `الخصم (${appliedPromo.code} ‑${appliedPromo.percent}%):`;
+    document.getElementById("cartDiscount").textContent = "‑" + discount + " ر.س";
+  } else {
+    subRow.style.display = "none";
+    discRow.style.display = "none";
+  }
+  document.getElementById("cartTotal").textContent = finalTotal + " ر.س";
+  renderPromoMsg();
   footer.style.display = "block";
 
   // إيقاف الطلبات: نخفي زر الإتمام ونعرض رسالة المالك (الإدارة تتخطى)
@@ -2853,6 +3032,79 @@ function renderCart() {
 
   const discordInput = document.getElementById("checkoutDiscord");
   if (!discordInput.value && myDiscord) discordInput.value = myDiscord;
+}
+
+// ====== أكواد الخصم (جهة العميل) ======
+// الكود المطبَّق حالياً على السلة: { code, percent } أو null. الحارس الحقيقي قواعد
+// Firestore — هنا بس واجهة وحساب. القاعدة تتحقق إن الكود موجود وفعّال ونسبته تطابق.
+let appliedPromo = null;
+
+// نظّف الكود لحروف وأرقام إنجليزية كبيرة فقط — عشان يصير معرّف وثيقة آمن في Firestore
+function normPromo(code) {
+  return String(code || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 32);
+}
+
+function promoDiscountAmount(subtotal) {
+  if (!appliedPromo) return 0;
+  return Math.round(subtotal * appliedPromo.percent / 100);
+}
+
+function showPromoMsg(text, kind) {
+  const el = document.getElementById("promoMsg");
+  if (!el) return;
+  el.textContent = text;
+  el.className = "promo-msg " + (kind || "");
+  el.style.display = text ? "block" : "none";
+}
+
+// يعكس حالة الكود المطبَّق على حقل الإدخال (يخفي/يظهر زر التطبيق ويملّي الكود)
+function renderPromoMsg() {
+  const input = document.getElementById("promoInput");
+  const btn = document.getElementById("promoApplyBtn");
+  if (!input || !btn) return;
+  if (appliedPromo) {
+    input.value = appliedPromo.code;
+    input.disabled = true;
+    btn.textContent = "إزالة";
+    btn.onclick = removePromo;
+    showPromoMsg(`✅ تم تطبيق كود «${appliedPromo.code}» — خصم ${appliedPromo.percent}%`, "ok");
+  } else {
+    input.disabled = false;
+    btn.textContent = "تطبيق";
+    btn.onclick = applyPromo;
+  }
+}
+
+async function applyPromo() {
+  const code = normPromo(document.getElementById("promoInput").value);
+  if (!code) { showPromoMsg("⚠ اكتب كود الخصم أولاً", "error"); return; }
+  const btn = document.getElementById("promoApplyBtn");
+  btn.disabled = true;
+  showPromoMsg("⏳ جارٍ التحقق من الكود...", "");
+  try {
+    const snap = await getDoc(doc(db, "promocodes", code));
+    if (!snap.exists() || snap.data().active !== true) {
+      appliedPromo = null;
+      showPromoMsg("❌ كود غير صالح أو موقوف", "error");
+      renderCart();
+      return;
+    }
+    const percent = snap.data().percent;
+    appliedPromo = { code, percent };
+    renderCart(); // يعيد الحساب ويعرض الخصم ويحدّث رسالة النجاح
+  } catch {
+    showPromoMsg("⚠ تعذر التحقق من الكود — حاول مجدداً", "error");
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function removePromo() {
+  appliedPromo = null;
+  const input = document.getElementById("promoInput");
+  if (input) input.value = "";
+  showPromoMsg("", "");
+  renderCart();
 }
 
 function confirmCheckout() {
@@ -2888,7 +3140,9 @@ function confirmCheckout() {
     const p = allProducts.find(p => p.id === i.id);
     return { name: p.name, icon: p.icon || "🛒", price: finalPrice(p), qty: i.qty };
   });
-  const total = items.reduce((sum, it) => sum + it.price * it.qty, 0);
+  const subtotal = items.reduce((sum, it) => sum + it.price * it.qty, 0);
+  const discount = promoDiscountAmount(subtotal);
+  const total = subtotal - discount;
 
   document.getElementById("confirmSummary").innerHTML = `
     ${items.map(it => `
@@ -2896,6 +3150,15 @@ function confirmCheckout() {
         <span>${esc(it.icon)} ${esc(it.name)}</span>
         <span>${esc(it.price)} ر.س × ${esc(it.qty)}</span>
       </div>`).join("")}
+    ${discount > 0 && appliedPromo ? `
+    <div class="order-item">
+      <span>المجموع قبل الخصم</span>
+      <span>${subtotal} ر.س</span>
+    </div>
+    <div class="order-item" style="color: var(--success);">
+      <span>الخصم (${esc(appliedPromo.code)} ‑${esc(appliedPromo.percent)}%)</span>
+      <span>‑${discount} ر.س</span>
+    </div>` : ""}
     <div class="pv-price">
       <span>الإجمالي:</span>
       <span class="amount">${total} ر.س</span>
@@ -2967,8 +3230,12 @@ async function placeOrder() {
   btn.disabled = true;
   btn.textContent = "جارٍ إرسال الطلب...";
   try {
-    const total = items.reduce((sum, it) => sum + it.price * it.qty, 0);
-    const ref = await addDoc(collection(db, "orders"), {
+    const subtotal = items.reduce((sum, it) => sum + it.price * it.qty, 0);
+    const discount = promoDiscountAmount(subtotal);
+    const total = subtotal - discount;
+    // حقول الطلب — نضيف معلومات الخصم فقط لو فيه كود مطبَّق. القاعدة تتحقق إن الكود
+    // موجود وفعّال ونسبته تطابق promoPercent قبل ما تسمح بإنشاء الطلب.
+    const orderData = {
       uid: user.uid,
       username: user.displayName || user.email,
       email: user.email,
@@ -2978,7 +3245,13 @@ async function placeOrder() {
       status: "قيد المراجعة",
       paid: false,
       createdAt: serverTimestamp(),
-    });
+    };
+    if (appliedPromo && discount > 0) {
+      orderData.subtotal = subtotal;
+      orderData.promoCode = appliedPromo.code;
+      orderData.promoPercent = appliedPromo.percent;
+    }
+    const ref = await addDoc(collection(db, "orders"), orderData);
 
     notifyNewOrder(ref.id);
 
@@ -2989,6 +3262,7 @@ async function placeOrder() {
       } catch {}
     }
     saveCart([]);
+    appliedPromo = null; // نصفّر الكود بعد نجاح الطلب
     updateCartCount();
     closeConfirm();
     closeCart();
@@ -3084,6 +3358,10 @@ async function openOrders() {
             <span>${esc(it.icon)} ${esc(it.name)}</span>
             <span>${esc(it.price)} ر.س × ${esc(it.qty)}</span>
           </div>`).join("")}
+        ${o.promoCode ? `<div class="order-item" style="color: var(--success);">
+            <span>🎟️ كود ${esc(o.promoCode)} (‑${esc(o.promoPercent)}%)</span>
+            <span>${esc(o.subtotal)} ← ${esc(o.total)} ر.س</span>
+          </div>` : ""}
         <div class="order-foot">
           <span class="order-total">الإجمالي: ${esc(o.total)} ر.س</span>
           <span class="order-date">تاريخ الطلب: ${orderDate(o)}</span>
@@ -3509,6 +3787,7 @@ function renderAdminOrders() {
           </div>`).join("")}
         ${(o.assigneeNames && o.assigneeNames.length)
           ? `<div class="ao-assignees">👥 المكلّفون: ${o.assigneeNames.map(n => esc(n)).join("، ")}</div>` : ""}
+        ${o.promoCode ? `<div class="ao-assignees" style="color: var(--success);">🎟️ كود ${esc(o.promoCode)} (‑${esc(o.promoPercent)}%) — قبل الخصم ${esc(o.subtotal)} ر.س</div>` : ""}
         <div class="ao-actions">
           <span class="order-total">الإجمالي: ${o.total} ر.س</span>
           ${(o.status === "مكتمل" && !isOwner())
@@ -3882,6 +4161,8 @@ Object.assign(window, {
   openAdmin, closeAdmin, openAdminOrders, closeAdminOrders,
   openOwner, closeOwner, toggleMaintenance, publishClosed, publishAnnounce, publishThanks,
   publishOrdersBlock, publishPayBlock, saveAdminPerms,
+  applyPromo, removePromo, savePromoCode, togglePromoActive, deletePromoCode,
+  editPromoCode, cancelPromoEdit,
   adminAddCat, adminSaveProduct, adminCancelEdit, seedDefaults,
   closeAssign, saveAssignment, closeOrderLog,
   openActivityLog, closeActivityLog, exportActivityLogCSV,
