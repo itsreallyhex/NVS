@@ -83,12 +83,31 @@ service cloud.firestore {
     match /promocodes/{code} {
       allow get: if true;
       allow list: if isOwner();
+
+      // المالك ينشئ/يعدّل بكل الحقول المسموحة بقيم محدودة:
+      // percent 1..90، active بوول، maxUses عدد ≥0 (0 = بلا حد)، uses عدد ≥0،
+      // expiresAt إمّا فاضي (بلا انتهاء) أو تاريخ.
       allow create, update: if isOwner()
-        && request.resource.data.keys().hasOnly(["percent", "active", "createdAt"])
+        && request.resource.data.keys().hasOnly(["percent", "active", "createdAt", "maxUses", "uses", "expiresAt"])
         && request.resource.data.percent is number
         && request.resource.data.percent >= 1
         && request.resource.data.percent <= 90
-        && request.resource.data.active is bool;
+        && request.resource.data.active is bool
+        && (!("maxUses" in request.resource.data) || (request.resource.data.maxUses is number && request.resource.data.maxUses >= 0))
+        && (!("uses" in request.resource.data) || (request.resource.data.uses is number && request.resource.data.uses >= 0))
+        && (!("expiresAt" in request.resource.data) || request.resource.data.expiresAt == null || request.resource.data.expiresAt is timestamp);
+
+      // العميل (مسجّل ومتحقّق) يزيد عدّاد الاستخدام +1 فقط — لا يلمس أي حقل ثاني،
+      // وبشرط أن الكود فعّال وضمن الحد الأقصى وغير منتهي الصلاحية. هذا يجعل حدّ
+      // الاستخدام فعّالاً فعلاً: عند الوصول للحد ما يقدر أحد يزيد العدّاد فيُرفض الطلب معه.
+      allow update: if request.auth != null && isVerified()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["uses"])
+        && request.resource.data.uses is number
+        && request.resource.data.uses == resource.data.get("uses", 0) + 1
+        && resource.data.active == true
+        && (resource.data.get("maxUses", 0) == 0 || resource.data.get("uses", 0) < resource.data.maxUses)
+        && (resource.data.get("expiresAt", null) == null || resource.data.expiresAt > request.time);
+
       allow delete: if isOwner();
     }
 
@@ -138,13 +157,18 @@ service cloud.firestore {
         // المطوّر. الإدارة تتخطى (تقدر تطلب للاختبار وقت الإيقاف).
         && (isAdmin() || !ordersBlockedNow())
         // كود الخصم: لو الطلب يدّعي كوداً، لازم يكون الكود موجوداً وفعّالاً ونسبته تطابق
-        // المعلنة بالضبط — يفرضه الخادم. فما يقدر أحد يخترع نسبة خصم من عنده.
+        // المعلنة بالضبط، وغير منتهي الصلاحية، وما وصل حدّ الاستخدام — يفرضه الخادم.
+        // فما يقدر أحد يخترع نسبة خصم أو يستخدم كوداً منتهياً/مستهلَكاً من أدوات المطوّر.
         && (!("promoCode" in request.resource.data)
           || (request.resource.data.promoCode is string
             && request.resource.data.promoPercent is number
             && exists(/databases/$(database)/documents/promocodes/$(request.resource.data.promoCode))
             && get(/databases/$(database)/documents/promocodes/$(request.resource.data.promoCode)).data.active == true
-            && get(/databases/$(database)/documents/promocodes/$(request.resource.data.promoCode)).data.percent == request.resource.data.promoPercent));
+            && get(/databases/$(database)/documents/promocodes/$(request.resource.data.promoCode)).data.percent == request.resource.data.promoPercent
+            && (get(/databases/$(database)/documents/promocodes/$(request.resource.data.promoCode)).data.get("expiresAt", null) == null
+              || get(/databases/$(database)/documents/promocodes/$(request.resource.data.promoCode)).data.expiresAt > request.time)
+            && (get(/databases/$(database)/documents/promocodes/$(request.resource.data.promoCode)).data.get("maxUses", 0) == 0
+              || get(/databases/$(database)/documents/promocodes/$(request.resource.data.promoCode)).data.get("uses", 0) < get(/databases/$(database)/documents/promocodes/$(request.resource.data.promoCode)).data.maxUses)));
       allow read: if request.auth != null
         && (resource.data.uid == request.auth.uid || isAdmin() || isWorker());
       // التعديل:

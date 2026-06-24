@@ -383,7 +383,7 @@
 
   /* ===== قائمة الهامبرغر (على كل الأحجام) ===== */
   nav { display: none; }
-  .nav-ham { position: relative; display: block; }
+  .nav-ham { position: relative; display: inline-flex; align-items: center; }
   .ham-btn {
     background: none;
     border: 1px solid var(--border-soft);
@@ -398,9 +398,14 @@
   }
   .ham-btn:hover { background: var(--card); }
   .ham-btn .ico { width: 1.35em; height: 1.35em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+  /* تحوّل الهامبرغر إلى ✕ عند الفتح — مدفوع بسمة aria-expanded فلا يحتاج JS */
+  .ham-btn .ico line { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease; transform-box: view-box; transform-origin: 12px 12px; }
+  .ham-btn[aria-expanded="true"] .ico line:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .ham-btn[aria-expanded="true"] .ico line:nth-child(2) { opacity: 0; }
+  .ham-btn[aria-expanded="true"] .ico line:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
   .nav-dropdown {
     position: absolute;
-    top: calc(100% + 10px);
+    top: calc(100% + 6px);
     left: 0;
     min-width: 220px;
     display: none;

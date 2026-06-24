@@ -124,6 +124,9 @@
   @media (prefers-reduced-motion: reduce) {
     .star { animation: none; opacity: 0.5; }
     .modal { animation: none; }
+    .overlay.open { animation: none; }
+    .card:hover .icon { transform: none; }
+    .card:hover img.thumb { transform: none; }
     .hero h1 .grad { animation: none; }
     .badge::before { animation: none; }
     .boot-logo { animation: none; }
@@ -206,6 +209,11 @@
   .menu { position: relative; }
   .menu-toggle { padding: 10px 12px; }
   .menu-toggle .ico { width: 1.35em; height: 1.35em; }
+  /* تحوّل زر القائمة إلى ✕ عند الفتح — مدفوع بسمة aria-expanded */
+  .menu-toggle .ico line { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease; transform-box: view-box; transform-origin: 12px 12px; }
+  .menu-toggle[aria-expanded="true"] .ico line:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .menu-toggle[aria-expanded="true"] .ico line:nth-child(2) { opacity: 0; }
+  .menu-toggle[aria-expanded="true"] .ico line:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
   .menu-dropdown {
     position: absolute;
     top: calc(100% + 12px);
@@ -514,7 +522,15 @@
     border-radius: var(--r-md);
     background: rgba(139, 92, 246, 0.12);
     border: 1px solid var(--border-soft);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease, border-color 0.3s ease;
   }
+  /* لمسة عند المرور: الأيقونة تكبر شوي وتميل، والصورة تزوم بنعومة */
+  .card:hover .icon {
+    transform: scale(1.1) rotate(-4deg);
+    background: rgba(139, 92, 246, 0.2);
+    border-color: rgba(167, 139, 250, 0.5);
+  }
+  .card:hover img.thumb { transform: scale(1.06); }
   .card h3 { font-size: 1.18rem; font-weight: 700; }
   .card p { color: var(--muted); font-size: 0.92rem; line-height: 1.75; flex: 1; }
   .card .price-row {
@@ -539,6 +555,7 @@
     object-fit: cover;
     border-radius: 12px;
     border: 1px solid var(--border);
+    transition: transform 0.35s ease;
   }
 
   .tag {
@@ -576,7 +593,17 @@
     z-index: 100;
     padding: 20px;
   }
-  .overlay.open { display: flex; }
+  /* النافذة تظهر مع تلاشٍ ناعم للخلفية + ضبابية بسيطة بدل ما تنط فجأة */
+  .overlay.open {
+    display: flex;
+    animation: overlayFade 0.28s ease forwards;
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+  }
+  @keyframes overlayFade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
 
   .modal {
     position: relative;
@@ -592,7 +619,8 @@
     overflow-y: auto;
     overscroll-behavior: contain;
     box-shadow: var(--shadow-lg), 0 0 0 1px rgba(0,0,0,0.4);
-    animation: pop 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    animation: pop 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+    transform-origin: center bottom;
   }
   /* نقفل تمرير الصفحة خلف أي نافذة منبثقة + نحجز مكان شريط التمرير عشان الصفحة ما "تنط" لمن تفتح */
   html { scrollbar-gutter: stable; scroll-behavior: smooth; }
@@ -616,8 +644,8 @@
   }
   .orders-summary b { color: #fff; }
   @keyframes pop {
-    from { transform: translateY(14px) scale(0.97); opacity: 0; }
-    to { transform: translateY(0) scale(1); opacity: 1; }
+    from { transform: translateY(22px) scale(0.94); opacity: 0; filter: blur(6px); }
+    to   { transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
   }
   .modal h2 { margin: 6px 0; font-size: 1.4rem; }
   .modal .sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; }
@@ -1708,6 +1736,14 @@
       <input type="text" id="newPromoCode" placeholder="الكود (مثال: NV20)" style="text-transform: uppercase;" autocomplete="off">
       <input type="number" id="newPromoPercent" placeholder="%" min="1" max="90" style="max-width: 90px;">
     </div>
+    <div class="field">
+      <label>الحد الأقصى للاستخدام (اتركه فارغاً أو 0 = بلا حد)</label>
+      <input type="number" id="newPromoMaxUses" placeholder="0 = غير محدود" min="0">
+    </div>
+    <div class="field">
+      <label>تاريخ الانتهاء (اتركه فارغاً = بلا انتهاء)</label>
+      <input type="date" id="newPromoExpiry" style="color-scheme: dark;">
+    </div>
     <button class="btn btn-primary btn-block" id="promoSaveBtn" onclick="savePromoCode()">➕ إنشاء الكود</button>
     <button class="btn btn-ghost btn-block" id="promoCancelEditBtn" style="display: none; margin-top: 8px;" onclick="cancelPromoEdit()">↩ إلغاء التعديل</button>
     <div id="promoList" style="margin-top: 14px; display: flex; flex-direction: column; gap: 8px;"></div>
@@ -1829,7 +1865,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 import {
   getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc,
-  updateDoc, deleteDoc, query, where, serverTimestamp, writeBatch, collectionGroup
+  updateDoc, deleteDoc, query, where, serverTimestamp, writeBatch, collectionGroup, increment
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -2188,7 +2224,10 @@ function renderOwnerPanel() {
   // أكواد الخصم — نرجّع النموذج لوضع الإضافة ونحمّل القائمة (للمالك فقط)
   editingPromo = null;
   const pcInput = document.getElementById("newPromoCode");
-  if (pcInput) { pcInput.readOnly = false; pcInput.style.opacity = ""; }
+  if (pcInput) { pcInput.value = ""; pcInput.readOnly = false; pcInput.style.opacity = ""; }
+  document.getElementById("newPromoPercent").value = "";
+  document.getElementById("newPromoMaxUses").value = "";
+  document.getElementById("newPromoExpiry").value = "";
   document.getElementById("promoSaveBtn").textContent = "➕ إنشاء الكود";
   document.getElementById("promoCancelEditBtn").style.display = "none";
   renderPromoCodes();
@@ -2224,6 +2263,17 @@ async function saveAdminPerms() {
 // الكود اللي نعدّله حالياً (id الوثيقة) أو null لو نضيف كوداً جديداً.
 let editingPromo = null;
 
+// مخزّن مؤقت لبيانات الأكواد (عشان زر التعديل يحمّل كل الحقول بدون تشفيرها في onclick)
+let promoCache = {};
+
+// نص يوضّح حالة الانتهاء للعرض في لوحة المالك
+function promoExpiryLabel(d) {
+  const ms = promoExpiryMs(d);
+  if (ms === null) return "♾️ بلا انتهاء";
+  const s = new Date(ms).toLocaleDateString("ar-SA-u-ca-gregory");
+  return ms < Date.now() ? `⌛ منتهٍ (${s})` : `📅 ينتهي ${s}`;
+}
+
 async function renderPromoCodes() {
   const list = document.getElementById("promoList");
   if (!list) return;
@@ -2236,40 +2286,64 @@ async function renderPromoCodes() {
       return;
     }
     const rows = [];
-    snap.forEach(d => rows.push({ code: d.id, ...d.data() }));
+    promoCache = {};
+    snap.forEach(d => { const r = { code: d.id, ...d.data() }; rows.push(r); promoCache[d.id] = r; });
     rows.sort((a, b) => a.code.localeCompare(b.code));
-    list.innerHTML = rows.map(r => `
-      <div class="promo-applied" style="background: var(--card); border-color: ${editingPromo === r.code ? "var(--accent)" : "var(--border-soft)"}; color: var(--text);">
-        <span><b style="color:#a78bfa;">${esc(r.code)}</b> — خصم ${esc(r.percent)}%
-          <span style="color:${r.active ? "var(--success)" : "#fb7185"}; font-size:0.8rem;">
-            ${r.active ? "● فعّال" : "○ موقوف"}</span></span>
-        <span style="display:flex; gap:10px;">
-          <button onclick="editPromoCode('${esc(r.code)}', ${esc(r.percent)})" style="color:#a78bfa;">تعديل</button>
-          <button onclick="togglePromoActive('${esc(r.code)}', ${r.active ? "false" : "true"})" style="color:${r.active ? "#fbbf24" : "var(--success)"};">${r.active ? "إيقاف" : "تفعيل"}</button>
-          <button onclick="deletePromoCode('${esc(r.code)}')">حذف</button>
-        </span>
-      </div>`).join("");
+    list.innerHTML = rows.map(r => {
+      const uses = r.uses || 0;
+      const maxUses = r.maxUses || 0;
+      const expired = promoExpired(r);
+      const exhausted = maxUses > 0 && uses >= maxUses;
+      const usesTxt = maxUses > 0 ? `${uses}/${maxUses}` : `${uses} (بلا حد)`;
+      return `
+      <div style="background: var(--card); border: 1px solid ${editingPromo === r.code ? "var(--accent)" : "var(--border-soft)"}; border-radius: 12px; padding: 10px 12px; color: var(--text);">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;">
+          <span><b style="color:#a78bfa;">${esc(r.code)}</b> — خصم ${esc(r.percent)}%
+            <span style="color:${r.active ? "var(--success)" : "#fb7185"}; font-size:0.8rem;">${r.active ? "● فعّال" : "○ موقوف"}</span></span>
+          <span style="display:flex; gap:12px; font-size:0.85rem;">
+            <button onclick="editPromoCode('${esc(r.code)}')" style="background:none;border:none;cursor:pointer;color:#a78bfa;font-weight:700;">تعديل</button>
+            <button onclick="togglePromoActive('${esc(r.code)}', ${r.active ? "false" : "true"})" style="background:none;border:none;cursor:pointer;font-weight:700;color:${r.active ? "#fbbf24" : "var(--success)"};">${r.active ? "إيقاف" : "تفعيل"}</button>
+            <button onclick="deletePromoCode('${esc(r.code)}')" style="background:none;border:none;cursor:pointer;color:#fb7185;font-weight:700;">حذف</button>
+          </span>
+        </div>
+        <div style="margin-top:6px; font-size:0.78rem; color: var(--muted); display:flex; gap:14px; flex-wrap:wrap;">
+          <span style="color:${exhausted ? "#fb7185" : "var(--muted)"};">🔢 الاستخدام: ${usesTxt}</span>
+          <span style="color:${expired ? "#fb7185" : "var(--muted)"};">${promoExpiryLabel(r)}</span>
+        </div>
+      </div>`;
+    }).join("");
   } catch {
     list.innerHTML = `<p class="sub" style="margin:0; color:#fb7185;">⚠ تعذر تحميل الأكواد</p>`;
   }
 }
 
-// يحمّل كوداً موجوداً في النموذج لتعديل نسبته. الكود نفسه (المعرّف) يُقفل —
-// لو تبي اسم كود مختلف أنشئ كوداً جديداً. التعديل يغيّر النسبة فقط ويحافظ على
-// حالة التفعيل وتاريخ الإنشاء.
-function editPromoCode(code, percent) {
+// يحوّل expiresAt إلى صيغة input[type=date] (YYYY-MM-DD) أو "" لو بلا انتهاء
+function promoExpiryInputValue(d) {
+  const ms = promoExpiryMs(d);
+  if (ms === null) return "";
+  const dt = new Date(ms);
+  return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
+}
+
+// يحمّل كوداً موجوداً في النموذج لتعديل نسبته/حدّه/انتهائه. الكود نفسه (المعرّف)
+// يُقفل — لو تبي اسم كود مختلف أنشئ كوداً جديداً. التعديل يحافظ على عدّاد الاستخدام
+// وحالة التفعيل وتاريخ الإنشاء.
+function editPromoCode(code) {
   if (!isOwner()) return;
+  const r = promoCache[code];
+  if (!r) return;
   editingPromo = code;
   const codeInput = document.getElementById("newPromoCode");
-  const pctInput = document.getElementById("newPromoPercent");
   codeInput.value = code;
   codeInput.readOnly = true;
   codeInput.style.opacity = "0.6";
-  pctInput.value = percent;
-  document.getElementById("promoSaveBtn").textContent = "💾 حفظ تعديل النسبة";
+  document.getElementById("newPromoPercent").value = r.percent;
+  document.getElementById("newPromoMaxUses").value = r.maxUses || 0;
+  document.getElementById("newPromoExpiry").value = promoExpiryInputValue(r);
+  document.getElementById("promoSaveBtn").textContent = "💾 حفظ التعديل";
   document.getElementById("promoCancelEditBtn").style.display = "block";
-  showMsg("promoAdminMsg", `✏️ تعدّل الكود «${code}» — غيّر النسبة ثم احفظ`, "ok");
-  pctInput.focus();
+  showMsg("promoAdminMsg", `✏️ تعدّل الكود «${code}» — غيّر القيم ثم احفظ`, "ok");
+  document.getElementById("newPromoPercent").focus();
   renderPromoCodes();
 }
 
@@ -2281,6 +2355,8 @@ function cancelPromoEdit() {
   codeInput.readOnly = false;
   codeInput.style.opacity = "";
   document.getElementById("newPromoPercent").value = "";
+  document.getElementById("newPromoMaxUses").value = "";
+  document.getElementById("newPromoExpiry").value = "";
   document.getElementById("promoSaveBtn").textContent = "➕ إنشاء الكود";
   document.getElementById("promoCancelEditBtn").style.display = "none";
   hideMsg("promoAdminMsg");
@@ -2291,21 +2367,33 @@ async function savePromoCode() {
   if (!isOwner()) return;
   const percent = parseInt(document.getElementById("newPromoPercent").value, 10);
   if (!(percent >= 1 && percent <= 90)) return showMsg("promoAdminMsg", "⚠ النسبة لازم بين 1 و90", "error");
+
+  // الحد الأقصى: فارغ أو 0 = بلا حد. لا نقبل أرقاماً سالبة.
+  const rawMax = document.getElementById("newPromoMaxUses").value.trim();
+  const maxUses = rawMax === "" ? 0 : Math.max(0, parseInt(rawMax, 10) || 0);
+
+  // تاريخ الانتهاء: فارغ = بلا انتهاء. نخلّيه نهاية اليوم المختار.
+  const rawExp = document.getElementById("newPromoExpiry").value;
+  const expiresAt = rawExp ? new Date(rawExp + "T23:59:59") : null;
+  if (expiresAt && isNaN(expiresAt.getTime())) return showMsg("promoAdminMsg", "⚠ تاريخ الانتهاء غير صالح", "error");
+
   try {
     if (editingPromo) {
-      // تعديل كود موجود: نغيّر النسبة فقط — نحافظ على active و createdAt
-      await updateDoc(doc(db, "promocodes", editingPromo), { percent });
+      // تعديل كود موجود: نغيّر النسبة/الحد/الانتهاء — نحافظ على uses و active و createdAt
+      await updateDoc(doc(db, "promocodes", editingPromo), { percent, maxUses, expiresAt });
       const code = editingPromo;
       cancelPromoEdit();
-      showMsg("promoAdminMsg", `✅ تم تحديث «${code}» — صار الخصم ${percent}%`, "ok");
+      showMsg("promoAdminMsg", `✅ تم تحديث «${code}» — خصم ${percent}%${maxUses ? ` · حد ${maxUses}` : ""}`, "ok");
     } else {
-      // كود جديد
+      // كود جديد — نبدأ العدّاد من صفر
       const code = normPromo(document.getElementById("newPromoCode").value);
       if (!code) return showMsg("promoAdminMsg", "⚠ اكتب الكود (حروف/أرقام إنجليزية فقط)", "error");
-      await setDoc(doc(db, "promocodes", code), { percent, active: true, createdAt: serverTimestamp() });
+      await setDoc(doc(db, "promocodes", code), { percent, active: true, createdAt: serverTimestamp(), maxUses, uses: 0, expiresAt });
       document.getElementById("newPromoCode").value = "";
       document.getElementById("newPromoPercent").value = "";
-      showMsg("promoAdminMsg", `✅ تم إنشاء الكود «${code}» — خصم ${percent}%`, "ok");
+      document.getElementById("newPromoMaxUses").value = "";
+      document.getElementById("newPromoExpiry").value = "";
+      showMsg("promoAdminMsg", `✅ تم إنشاء الكود «${code}» — خصم ${percent}%${maxUses ? ` · حد ${maxUses}` : ""}`, "ok");
     }
     renderPromoCodes();
   } catch {
@@ -3044,6 +3132,17 @@ function normPromo(code) {
   return String(code || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 32);
 }
 
+// يحوّل expiresAt (Timestamp من Firestore أو null) إلى ميلي-ثانية، أو null
+function promoExpiryMs(d) {
+  const e = d && d.expiresAt;
+  if (!e) return null;
+  try { return e.toMillis ? e.toMillis() : new Date(e).getTime(); } catch { return null; }
+}
+function promoExpired(d) {
+  const ms = promoExpiryMs(d);
+  return ms !== null && ms < Date.now();
+}
+
 function promoDiscountAmount(subtotal) {
   if (!appliedPromo) return 0;
   return Math.round(subtotal * appliedPromo.percent / 100);
@@ -3089,8 +3188,24 @@ async function applyPromo() {
       renderCart();
       return;
     }
-    const percent = snap.data().percent;
-    appliedPromo = { code, percent };
+    const d = snap.data();
+    // انتهاء الصلاحية (نفس ما تفرضه القاعدة عند إنشاء الطلب — هذا للواجهة)
+    if (promoExpired(d)) {
+      appliedPromo = null;
+      showPromoMsg("⌛ انتهت صلاحية هذا الكود", "error");
+      renderCart();
+      return;
+    }
+    // حد الاستخدام
+    const maxUses = d.maxUses || 0;
+    const uses = d.uses || 0;
+    if (maxUses > 0 && uses >= maxUses) {
+      appliedPromo = null;
+      showPromoMsg("🚫 وصل هذا الكود للحد الأقصى من الاستخدام", "error");
+      renderCart();
+      return;
+    }
+    appliedPromo = { code, percent: d.percent };
     renderCart(); // يعيد الحساب ويعرض الخصم ويحدّث رسالة النجاح
   } catch {
     showPromoMsg("⚠ تعذر التحقق من الكود — حاول مجدداً", "error");
@@ -3251,7 +3366,19 @@ async function placeOrder() {
       orderData.promoCode = appliedPromo.code;
       orderData.promoPercent = appliedPromo.percent;
     }
-    const ref = await addDoc(collection(db, "orders"), orderData);
+    let ref;
+    if (appliedPromo && discount > 0) {
+      // إنشاء الطلب + زيادة عدّاد استخدام الكود +1 في عملية ذرّية واحدة:
+      // لو فشل أيّهما (مثلاً وصل الكود لحدّه أو انتهى) يفشل الطلب كاملاً.
+      // القاعدة تتحقق من الحد/الانتهاء على الكتابتين معاً.
+      const batch = writeBatch(db);
+      ref = doc(collection(db, "orders"));
+      batch.set(ref, orderData);
+      batch.update(doc(db, "promocodes", appliedPromo.code), { uses: increment(1) });
+      await batch.commit();
+    } else {
+      ref = await addDoc(collection(db, "orders"), orderData);
+    }
 
     notifyNewOrder(ref.id);
 
@@ -3274,7 +3401,15 @@ async function placeOrder() {
     applyPayBlockUI();
     document.getElementById("thanksOverlay").classList.add("open");
   } catch {
-    toast("⚠ تعذر إرسال الطلب — حاول مجدداً");
+    // لو فيه كود مطبَّق، الغالب إن الكود انتهى أو وصل حدّه بين التطبيق والإرسال —
+    // نصفّره ونوضّح للعميل. غير كذا خطأ عام.
+    if (appliedPromo) {
+      appliedPromo = null;
+      renderCart();
+      toast("⚠ تعذر إتمام الطلب — قد يكون كود الخصم انتهى أو وصل حدّه. أزلناه، حاول مجدداً");
+    } else {
+      toast("⚠ تعذر إرسال الطلب — حاول مجدداً");
+    }
   } finally {
     btn.disabled = false;
     btn.textContent = "نعم، أكّد الطلب ✅";
