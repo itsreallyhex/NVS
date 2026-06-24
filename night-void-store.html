@@ -786,13 +786,38 @@
     vertical-align: middle;
   }
 
-  /* نموذج ميسر مصمَّم لخلفية فاتحة — نحطه على بطاقة بيضاء عشان كل نصه (آبل باي، البطاقة، العناوين) يطلع واضح جوّا النافذة الداكنة */
+  /* نموذج ميسر شفاف — نخلي خلفيته شفافة ونرفع لون النصوص للفاتح عشان تبقى واضحة على النافذة الداكنة، مع إبقاء الحقول نفسها مقروءة */
   #moyasarForm {
-    background: #fff;
-    border-radius: 12px;
-    padding: 14px;
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
   }
   #moyasarForm:empty { background: none; padding: 0; }
+  /* كل نصوص نموذج ميسر فاتحة بالقوة (ستايل ميسر له أولوية فنستخدم important) */
+  #moyasarForm .mysr-form,
+  #moyasarForm .mysr-form * {
+    color: #e8e8f0 !important;
+  }
+  /* الحقول القابلة للكتابة تبقى نص داكن على خلفيتها الفاتحة عشان تنقرأ */
+  #moyasarForm .mysr-form input,
+  #moyasarForm .mysr-form select,
+  #moyasarForm .mysr-form textarea,
+  #moyasarForm .mysr-form input::placeholder,
+  #moyasarForm .mysr-form textarea::placeholder {
+    color: #1a1a1a !important;
+  }
+  #moyasarForm .mysr-form input::placeholder,
+  #moyasarForm .mysr-form textarea::placeholder {
+    opacity: 0.55;
+  }
+  /* ميسر يلوّن اللِيبلات بمحدِّد عالي الأولوية (يكرّر معرّف الفورم 3 مرات) — نتفوّق عليه
+     بإضافة #moyasarForm قدّامه فيصير عندنا 4 معرّفات تغلب الـ3 حقّتهم */
+  #moyasarForm #mysr-form-form-el#mysr-form-form-el#mysr-form-form-el .mysr-form-label,
+  #moyasarForm #mysr-form-form-el#mysr-form-form-el#mysr-form-form-el .mysr-form-label *,
+  #moyasarForm #mysr-form-form-el#mysr-form-form-el#mysr-form-form-el legend,
+  #moyasarForm #mysr-form-form-el#mysr-form-form-el#mysr-form-form-el .mysr-form-source-name {
+    color: #e8e8f0 !important;
+  }
 
   .empty-cart { text-align: center; color: var(--muted); padding: 40px 0; }
   .empty-cart .icon { font-size: 3rem; display: block; margin-bottom: 12px; }
