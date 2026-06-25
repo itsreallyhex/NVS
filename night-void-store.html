@@ -443,7 +443,10 @@
     background: linear-gradient(135deg, var(--accent), var(--discord));
     display: flex; align-items: center; justify-content: center;
     font-weight: 800; color: #fff; font-size: 0.82rem; flex-shrink: 0;
+    overflow: hidden;
+    border: 1px solid var(--border-soft);
   }
+  .sp-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .sp-name { font-weight: 800; font-size: 1rem; }
   .sp-online { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--success); margin-top: 3px; }
   .sp-online .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px var(--success); }
@@ -1498,7 +1501,7 @@
           <span class="sp-glow"></span>
           <div class="sp-card">
             <div class="sp-head">
-              <div class="sp-avatar">NV</div>
+              <div class="sp-avatar"><img src="Assets/nightvoidserver.png" alt="Night Void Server"></div>
               <div>
                 <div class="sp-name">Night Void</div>
                 <div class="sp-online"><span class="dot"></span> أعضاء متصلون الآن</div>
