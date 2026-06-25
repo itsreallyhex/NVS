@@ -125,13 +125,14 @@
     .star { animation: none; opacity: 0.5; }
     .modal { animation: none; }
     .overlay.open { animation: none; }
-    .card:hover .icon { transform: none; }
-    .card:hover img.thumb { transform: none; }
+    .card:hover .card-media .media-icon { transform: none; }
+    .card:hover .card-media img.thumb { transform: none; }
     .hero h1 .grad { animation: none; }
     .badge::before { animation: none; }
     .boot-logo { animation: none; }
     .hero .orb { animation: none; }
     .hero-chev { animation: none; }
+    .server-preview { animation: none; }
     .menu-dropdown { animation: none; }
     * { scroll-behavior: auto !important; }
   }
@@ -396,6 +397,76 @@
   .hero-chev { animation: chevBounce 1.6s ease-in-out infinite; }
   @keyframes chevBounce { 0%,100% { transform: translateY(-1px); } 50% { transform: translateY(3px); } }
 
+  /* ===== تخطيط الواجهة بعمودين + بطاقة معاينة السيرفر ===== */
+  .hero-inner {
+    position: relative;
+    max-width: 1180px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 48px;
+    flex-wrap: wrap;
+  }
+  .hero-text { flex: 1 1 440px; min-width: 300px; text-align: right; }
+  .hero-text p { margin: 0 0 30px; max-width: 540px; }
+  .hero-text .hero-actions { justify-content: flex-start; }
+  .hero-visual { flex: 1 1 380px; min-width: 300px; display: flex; justify-content: center; }
+  .hero-chips { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; }
+  .hero-chips span {
+    padding: 8px 15px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    color: #b9b2cd;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  .server-preview { position: relative; width: 100%; max-width: 400px; animation: floatCard 7s ease-in-out infinite; }
+  @keyframes floatCard { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+  .server-preview .sp-glow {
+    position: absolute; inset: -28px; border-radius: 30px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.3), transparent 70%);
+    filter: blur(20px); pointer-events: none;
+  }
+  .sp-card {
+    position: relative;
+    border-radius: 20px;
+    padding: 18px;
+    background: linear-gradient(160deg, rgba(34, 29, 56, 0.92), rgba(18, 15, 30, 0.92));
+    border: 1px solid rgba(150, 120, 255, 0.2);
+    box-shadow: 0 30px 70px -24px rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+  }
+  .sp-head { display: flex; align-items: center; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid var(--border-soft); }
+  .sp-avatar {
+    width: 46px; height: 46px; border-radius: 14px;
+    background: linear-gradient(135deg, var(--accent), var(--discord));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; color: #fff; font-size: 0.82rem; flex-shrink: 0;
+  }
+  .sp-name { font-weight: 800; font-size: 1rem; }
+  .sp-online { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--success); margin-top: 3px; }
+  .sp-online .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px var(--success); }
+  .sp-channels { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+  .sp-ch { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 11px; background: rgba(255, 255, 255, 0.03); font-size: 0.9rem; color: var(--muted); }
+  .sp-ch.active { background: linear-gradient(90deg, rgba(139, 92, 246, 0.18), rgba(139, 92, 246, 0.04)); border: 1px solid rgba(139, 92, 246, 0.22); color: var(--text); }
+  .sp-ch .hash { font-weight: 800; color: #7a7390; }
+  .sp-ch.active .hash { color: var(--accent-soft); }
+  .sp-ch .dot-end { margin-inline-start: auto; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  .sp-roles { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+  .sp-role { padding: 5px 12px; border-radius: 999px; font-size: 0.74rem; font-weight: 700; }
+  .sp-role.owner { color: #ffd6a5; background: rgba(255, 180, 90, 0.12); border: 1px solid rgba(255, 180, 90, 0.25); }
+  .sp-role.admin { color: #a5c8ff; background: rgba(90, 140, 255, 0.12); border: 1px solid rgba(90, 140, 255, 0.25); }
+  .sp-role.vip { color: #c9b5ff; background: rgba(160, 120, 255, 0.12); border: 1px solid rgba(160, 120, 255, 0.25); }
+  .sp-members { display: flex; align-items: center; margin-top: 16px; }
+  .sp-members .stack { display: flex; }
+  .sp-members .stack span { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #1a1730; }
+  .sp-members .stack span:not(:first-child) { margin-inline-start: -10px; }
+  .sp-members .av1 { background: linear-gradient(135deg, #8b5cff, #5865f2); }
+  .sp-members .av2 { background: linear-gradient(135deg, #c084fc, #8b5cff); }
+  .sp-members .av3 { background: linear-gradient(135deg, #5865f2, #34d399); }
+  .sp-members .more { font-size: 0.78rem; color: #8a83a0; margin-inline-start: 10px; }
+
   /* ===== خطوات الطلب ===== */
   .how-to {
     max-width: 900px;
@@ -409,26 +480,24 @@
     position: relative;
     background: linear-gradient(160deg, rgba(30, 27, 56, 0.6), rgba(15, 14, 29, 0.4));
     border: 1px solid var(--border-soft);
-    border-radius: var(--r-md);
-    padding: 24px 20px;
-    text-align: center;
+    border-radius: var(--r-lg);
+    padding: 26px 24px;
+    text-align: right;
     transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
   }
   .step:hover { transform: translateY(-4px); border-color: rgba(167, 139, 250, 0.45); box-shadow: var(--shadow-md); }
   .step .num {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: #fff;
-    font-weight: 800;
-    font-size: 1.05rem;
-    margin-bottom: 12px;
-    box-shadow: 0 0 0 6px rgba(139, 92, 246, 0.1), 0 6px 16px rgba(139, 92, 246, 0.4);
+    display: block;
+    font-weight: 900;
+    font-size: 2.6rem;
+    line-height: 1;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, var(--accent-soft), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
-  .step h4 { font-size: 1.02rem; margin-bottom: 7px; }
+  .step h4 { font-size: 1.08rem; margin-bottom: 7px; }
   .step p { color: var(--muted); font-size: 0.88rem; line-height: 1.75; }
 
   /* ===== أقسام المنتجات والبطاقات ===== */
@@ -491,10 +560,10 @@
     background: linear-gradient(165deg, rgba(28, 26, 52, 0.72), rgba(15, 14, 29, 0.55));
     border: 1px solid var(--border);
     border-radius: var(--r-lg);
-    padding: 22px;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 0;
     transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
     cursor: pointer;
     overflow: hidden;
@@ -505,6 +574,7 @@
     position: absolute;
     top: 0; left: 12%; right: 12%;
     height: 1px;
+    z-index: 2;
     background: linear-gradient(90deg, transparent, var(--accent-soft), transparent);
     opacity: 0;
     transition: opacity 0.25s ease;
@@ -515,57 +585,81 @@
     box-shadow: var(--shadow-md), 0 0 26px var(--glow);
   }
   .card:hover::before { opacity: 1; }
-  .card .icon {
-    font-size: 2.4rem;
-    width: 58px; height: 58px;
-    display: flex; align-items: center; justify-content: center;
-    border-radius: var(--r-md);
-    background: rgba(139, 92, 246, 0.12);
-    border: 1px solid var(--border-soft);
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease, border-color 0.3s ease;
+  /* منطقة المعاينة العلوية للبطاقة */
+  .card-media {
+    position: relative;
+    height: 158px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border-soft);
+    background-image: repeating-linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0 10px, rgba(139, 92, 246, 0.04) 10px 20px);
   }
-  /* لمسة عند المرور: الأيقونة تكبر شوي وتميل، والصورة تزوم بنعومة */
-  .card:hover .icon {
-    transform: scale(1.1) rotate(-4deg);
-    background: rgba(139, 92, 246, 0.2);
-    border-color: rgba(167, 139, 250, 0.5);
+  .card-media img.thumb {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
   }
-  .card:hover img.thumb { transform: scale(1.06); }
-  .card h3 { font-size: 1.18rem; font-weight: 700; }
-  .card p { color: var(--muted); font-size: 0.92rem; line-height: 1.75; flex: 1; }
-  .card .price-row {
+  .card:hover .card-media img.thumb { transform: scale(1.06); }
+  .card-media .media-icon {
+    font-size: 3rem;
+    line-height: 1;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.45));
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .card:hover .card-media .media-icon { transform: scale(1.12) rotate(-4deg); }
+  .card-media .ph-cap {
+    position: absolute;
+    bottom: 12px;
+    font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+    font-size: 0.64rem;
+    letter-spacing: 1.5px;
+    color: #7c7596;
+  }
+
+  .card-body {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+  }
+  .card-body h3 { font-size: 1.18rem; font-weight: 700; }
+  .card-body p { color: var(--muted); font-size: 0.92rem; line-height: 1.75; flex: 1; }
+  .price-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 8px;
-    padding-top: 14px;
+    margin-top: 4px;
+    padding-top: 16px;
     border-top: 1px solid var(--border-soft);
     gap: 10px;
   }
-  .card .price {
-    font-size: 1.35rem;
-    font-weight: 800;
-    color: #c4b5fd;
+  .price {
+    font-size: 1.6rem;
+    font-weight: 900;
     white-space: nowrap;
+    background: linear-gradient(135deg, #ffffff, var(--accent-soft));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
-  .card .price small { font-size: 0.8rem; color: var(--muted); font-weight: 400; }
-  .card img.thumb {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    transition: transform 0.35s ease;
-  }
+  .price small { font-size: 0.78rem; color: var(--muted); font-weight: 400; -webkit-text-fill-color: var(--muted); }
 
   .tag {
-    align-self: flex-start;
     font-size: 0.72rem;
     padding: 3px 10px;
     border-radius: 999px;
     background: rgba(52, 211, 153, 0.12);
     color: var(--success);
     border: 1px solid rgba(52, 211, 153, 0.4);
+  }
+  .card-media .tag {
+    position: absolute;
+    top: 12px; right: 12px;
+    z-index: 1;
+    backdrop-filter: blur(4px);
   }
   .tag.hot { background: rgba(244, 63, 94, 0.12); color: #fb7185; border-color: rgba(244, 63, 94, 0.4); }
   .tag.sale { background: rgba(251, 191, 36, 0.12); color: #fbbf24; border-color: rgba(251, 191, 36, 0.4); }
@@ -576,6 +670,7 @@
 
   .old-price {
     color: var(--muted);
+    -webkit-text-fill-color: var(--muted);
     text-decoration: line-through;
     font-size: 0.85rem;
     font-weight: 400;
@@ -1383,29 +1478,66 @@
   <div class="hero">
     <span class="orb o1" aria-hidden="true"></span>
     <span class="orb o2" aria-hidden="true"></span>
-    <div class="badge">متجر خدمات ديسكورد الاحترافي</div>
-    <h1>متجر <span class="grad">Night Void</span><br>كل ما تحتاجه لسيرفر ديسكورد مميز</h1>
-    <p>نقدم خدمات برمجة بوتات ديسكورد وبناء السيرفرات من الصفر بأعلى جودة وأفضل الأسعار. اطلب من الموقع وأكمل الدفع داخل سيرفرنا عبر التذاكر.</p>
-    <div class="hero-actions">
-      <button class="btn btn-primary" onclick="document.getElementById('storeSections').scrollIntoView({behavior:'smooth'})">تصفح الخدمات <svg class="ico hero-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
-      <a class="btn btn-discord" href="https://discord.gg/sAakXRRudu" target="_blank" rel="noopener"><svg class="dc-ico" viewBox="0 0 127.14 96.36" fill="currentColor" aria-hidden="true"><path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.9-72.15ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"/></svg> انضم للسيرفر</a>
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="badge">متجر خدمات ديسكورد الاحترافي</div>
+        <h1>متجر <span class="grad">Night Void</span><br>كل ما تحتاجه لسيرفر ديسكورد مميز</h1>
+        <p>نقدم خدمات برمجة بوتات ديسكورد وبناء السيرفرات من الصفر بأعلى جودة وأفضل الأسعار. اطلب من الموقع وأكمل الدفع داخل سيرفرنا عبر التذاكر.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="document.getElementById('storeSections').scrollIntoView({behavior:'smooth'})">تصفح الخدمات <svg class="ico hero-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+          <a class="btn btn-discord" href="https://discord.gg/sAakXRRudu" target="_blank" rel="noopener"><svg class="dc-ico" viewBox="0 0 127.14 96.36" fill="currentColor" aria-hidden="true"><path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.9-72.15ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"/></svg> انضم للسيرفر</a>
+        </div>
+        <div class="hero-chips">
+          <span>بناء من الصفر</span>
+          <span>بوتات احترافية</span>
+          <span>دعم عبر التذاكر</span>
+        </div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="server-preview">
+          <span class="sp-glow"></span>
+          <div class="sp-card">
+            <div class="sp-head">
+              <div class="sp-avatar">NV</div>
+              <div>
+                <div class="sp-name">Night Void</div>
+                <div class="sp-online"><span class="dot"></span> أعضاء متصلون الآن</div>
+              </div>
+            </div>
+            <div class="sp-channels">
+              <div class="sp-ch active"><span class="hash">#</span> الرتب-والرومات <span class="dot-end"></span></div>
+              <div class="sp-ch"><span class="hash">#</span> نظام-التذاكر</div>
+              <div class="sp-ch"><span class="hash">#</span> الحماية-والبوتات</div>
+            </div>
+            <div class="sp-roles">
+              <span class="sp-role buyer">مشتري</span>
+              <span class="sp-role vip">عضو مميز</span>
+              <span class="sp-role andmore">والمزيد</span>
+            </div>
+            <div class="sp-members">
+              <div class="stack"><span class="av1"></span><span class="av2"></span><span class="av3"></span></div>
+              <span class="more">مجتمع نشِط ومتفاعل</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
   <div class="how-to">
     <div class="step">
       <span class="num">1</span>
-      <h4>سجّل واطلب 🛒</h4>
+      <h4>سجّل واطلب</h4>
       <p>أنشئ حسابك، أضف الخدمات للسلة، ثم أكّد الطلب من الموقع</p>
     </div>
     <div class="step">
       <span class="num">2</span>
-      <h4>افتح تذكرة 🎟️</h4>
+      <h4>افتح تذكرة</h4>
       <p>ادخل سيرفرنا وافتح تذكرة واذكر رقم طلبك لإتمام الدفع</p>
     </div>
     <div class="step">
       <span class="num">3</span>
-      <h4>استلم خدمتك ✅</h4>
+      <h4>استلم خدمتك</h4>
       <p>نبدأ التنفيذ فور التأكيد وتتابع حالة طلبك من "طلباتي"</p>
     </div>
   </div>
@@ -2704,13 +2836,17 @@ function renderProducts() {
       card.className = "card" + (soldout ? " soldout" : "");
       card.onclick = () => openProduct(p.id);
       card.innerHTML = `
-        ${soldout ? `<span class="tag oos">${STATUS_LABELS[p.status]}</span>` : p.sale > 0 ? `<span class="tag sale">🔥 خصم ${esc(p.sale)}%</span>` : p.tag ? `<span class="tag ${p.hot ? "hot" : ""}">${esc(p.tag)}</span>` : ""}
-        ${p.image ? `<img class="thumb" src="${esc(p.image)}" alt="${esc(p.name)}" onerror="this.remove()">` : `<div class="icon">${esc(p.icon || "🛒")}</div>`}
-        <h3>${esc(p.name)}</h3>
-        <p>${md(p.desc)}</p>
-        <div class="price-row">
-          <span class="price">${p.sale > 0 ? `<span class="old-price">${p.price}</span>` : ""}${finalPrice(p)} ر.س <small>/ خدمة</small></span>
-          <button class="btn btn-primary" ${soldout ? "disabled" : ""} data-add="${p.id}">${soldout ? "غير متوفر" : "أضف للسلة +"}</button>
+        <div class="card-media">
+          ${soldout ? `<span class="tag oos">${STATUS_LABELS[p.status]}</span>` : p.sale > 0 ? `<span class="tag sale">🔥 خصم ${esc(p.sale)}%</span>` : p.tag ? `<span class="tag ${p.hot ? "hot" : ""}">${esc(p.tag)}</span>` : ""}
+          ${p.image ? `<img class="thumb" src="${esc(p.image)}" alt="${esc(p.name)}" onerror="this.remove()">` : `<span class="media-icon">${esc(p.icon || "🛒")}</span><span class="ph-cap">معاينة الخدمة</span>`}
+        </div>
+        <div class="card-body">
+          <h3>${esc(p.name)}</h3>
+          <p>${md(p.desc)}</p>
+          <div class="price-row">
+            <span class="price">${p.sale > 0 ? `<span class="old-price">${p.price}</span>` : ""}${finalPrice(p)} ر.س <small>/ خدمة</small></span>
+            <button class="btn btn-primary" ${soldout ? "disabled" : ""} data-add="${p.id}">${soldout ? "غير متوفر" : "أضف للسلة +"}</button>
+          </div>
         </div>`;
       const addBtn = card.querySelector("[data-add]");
       if (addBtn && !soldout) addBtn.onclick = e => { e.stopPropagation(); addToCart(p.id); };

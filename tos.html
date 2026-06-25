@@ -155,8 +155,20 @@
   .dc-ico { width: 1.2em; height: 1.2em; vertical-align: -0.18em; }
 
   /* ===== محتوى الشروط ===== */
-  .tos-wrap { max-width: 860px; margin: 0 auto; padding: 70px 5% 80px; }
-  .tos-head { text-align: center; margin-bottom: 44px; }
+  .tos-wrap { max-width: 1180px; margin: 0 auto; padding: 56px 5% 80px; }
+  .tos-head { text-align: center; margin-bottom: 36px; }
+  .tos-head .doc-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 54px; height: 54px;
+    border-radius: 15px;
+    margin-bottom: 18px;
+    background: rgba(139, 92, 246, 0.12);
+    border: 1px solid rgba(167, 139, 250, 0.3);
+    color: var(--accent-soft);
+  }
+  .tos-head .doc-badge svg { width: 26px; height: 26px; stroke: currentColor; fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
   .tos-head h1 {
     font-size: clamp(1.9rem, 4.5vw, 2.8rem);
     font-weight: 900;
@@ -174,14 +186,22 @@
   @keyframes gradShift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
   .tos-head p { color: var(--muted); font-size: 0.95rem; line-height: 1.8; }
 
+  /* ===== تخطيط المحتوى + الفهرس الجانبي ===== */
+  .tos-body {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 30px;
+    align-items: start;
+  }
+  .tos-content { display: flex; flex-direction: column; gap: 16px; }
+
   /* ===== بطاقات البنود ===== */
   section.term {
     position: relative;
     background: linear-gradient(165deg, rgba(28, 26, 52, 0.6), rgba(15, 14, 29, 0.45));
     border: 1px solid var(--border-soft);
-    border-radius: 16px;
+    border-radius: 18px;
     padding: 26px 28px;
-    margin-bottom: 18px;
     transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
   }
   section.term:hover {
@@ -189,24 +209,30 @@
     border-color: rgba(167, 139, 250, 0.4);
     box-shadow: var(--shadow-md);
   }
-  section.term h2 {
-    font-size: 1.18rem;
-    margin-bottom: 12px;
-    color: #c4b5fd;
+  .term-head {
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-weight: 800;
+    gap: 14px;
+    margin-bottom: 12px;
   }
-  /* عمود وهج متدرّج يجي قبل عنوان البند */
-  section.term h2::before {
-    content: "";
-    width: 4px;
-    align-self: stretch;
-    min-height: 1.2em;
-    border-radius: 999px;
-    background: linear-gradient(180deg, var(--accent-soft), var(--accent2));
-    box-shadow: 0 0 10px var(--glow);
+  .term-num {
+    flex-shrink: 0;
+    width: 38px; height: 38px;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 1rem;
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    box-shadow: 0 6px 16px rgba(139, 92, 246, 0.35);
+  }
+  section.term h2 {
+    font-size: 1.18rem;
+    margin: 0;
+    color: var(--text);
+    font-weight: 800;
   }
   section.term p, section.term li {
     color: var(--muted);
@@ -228,8 +254,45 @@
     text-align: center;
     line-height: 1.9;
     font-size: 0.95rem;
-    margin-top: 28px;
+    margin-top: 12px;
     box-shadow: inset 0 0 26px rgba(139, 92, 246, 0.12);
+  }
+
+  /* ===== الفهرس الجانبي ===== */
+  .tos-toc {
+    position: sticky;
+    top: 24px;
+    align-self: start;
+    padding: 20px;
+    border-radius: 18px;
+    background: linear-gradient(165deg, rgba(28, 26, 52, 0.6), rgba(15, 14, 29, 0.45));
+    border: 1px solid var(--border-soft);
+  }
+  .tos-toc .toc-title {
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: #cfc7e6;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .toc-list { display: flex; flex-direction: column; gap: 2px; }
+  .toc-list a {
+    display: flex;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 9px;
+    font-size: 0.88rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+  }
+  .toc-list a:hover { background: rgba(139, 92, 246, 0.12); color: #fff; }
+  .toc-list a span { color: var(--accent-soft); font-weight: 700; width: 22px; flex-shrink: 0; }
+
+  @media (max-width: 900px) {
+    .tos-body { grid-template-columns: 1fr; }
+    .tos-toc { display: none; }
   }
 
   /* ===== الفوتر ===== */
@@ -334,6 +397,81 @@
     display: none;
   }
   .ico-cart { width: 1.2em; height: 1.2em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  /* ===== مصادقة (تسجيل دخول/خروج على كل الصفحات) ===== */
+  .header-actions { display: flex; align-items: center; gap: 12px; }
+  .welcome-user { font-size: 0.9rem; color: var(--muted); white-space: nowrap; }
+  .welcome-user b { color: var(--accent-soft); }
+  .auth-btn {
+    font-family: inherit; font-weight: 700; font-size: 0.9rem;
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none; border-radius: var(--r-md);
+    padding: 10px 16px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 7px;
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.4);
+    transition: transform 0.18s ease, box-shadow 0.2s ease;
+  }
+  .auth-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(139, 92, 246, 0.55); }
+  .auth-btn .ico { width: 1.05em; height: 1.05em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .nav-dropdown .logout-link { color: #fb7185; }
+  .nav-dropdown .logout-link:hover { color: #fff; background: rgba(244, 63, 94, 0.15); }
+
+  .auth-overlay {
+    position: fixed; inset: 0;
+    background: rgba(5, 4, 12, 0.88);
+    display: none; align-items: center; justify-content: center;
+    z-index: 100; padding: 20px;
+    backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  }
+  .auth-overlay.open { display: flex; animation: authOvFade 0.28s ease; }
+  @keyframes authOvFade { from { opacity: 0; } to { opacity: 1; } }
+  .auth-modal {
+    position: relative;
+    background: linear-gradient(180deg, rgba(28, 26, 52, 0.55), transparent 40%), var(--bg2);
+    border: 1px solid var(--border-soft);
+    border-radius: 18px;
+    padding: 32px 30px;
+    width: 100%; max-width: 410px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+    animation: authMPop 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @keyframes authMPop { from { opacity: 0; transform: translateY(22px) scale(0.96); } to { opacity: 1; transform: none; } }
+  .auth-modal .close-x {
+    position: absolute; top: 14px; left: 16px;
+    background: none; border: none; color: var(--muted);
+    font-size: 1.4rem; cursor: pointer; line-height: 1;
+  }
+  .auth-modal .close-x:hover { color: var(--text); }
+  .auth-modal h2 { font-size: 1.4rem; margin-bottom: 6px; }
+  .auth-modal .sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; }
+  .auth-field { margin-bottom: 14px; }
+  .auth-field label { display: block; font-size: 0.85rem; margin-bottom: 6px; color: var(--text); }
+  .auth-field input {
+    width: 100%; font-family: inherit; font-size: 0.95rem;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border); border-radius: 10px;
+    color: var(--text);
+  }
+  .auth-field input:focus { outline: none; border-color: var(--accent-soft); box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2); }
+  .auth-submit {
+    width: 100%; font-family: inherit; font-weight: 700; font-size: 1rem;
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none; border-radius: 12px;
+    padding: 13px; cursor: pointer; margin-top: 6px;
+    box-shadow: 0 6px 22px rgba(139, 92, 246, 0.45);
+    transition: transform 0.18s ease, box-shadow 0.2s ease;
+  }
+  .auth-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(139, 92, 246, 0.6); }
+  .auth-submit:disabled { opacity: 0.6; cursor: default; transform: none; }
+  .auth-msg { display: none; padding: 11px 14px; border-radius: 10px; font-size: 0.88rem; margin-bottom: 14px; line-height: 1.6; }
+  .auth-msg.ok { display: block; background: rgba(52, 211, 153, 0.12); border: 1px solid rgba(52, 211, 153, 0.4); color: var(--success, #34d399); }
+  .auth-msg.error { display: block; background: rgba(244, 63, 94, 0.12); border: 1px solid rgba(244, 63, 94, 0.4); color: #fb7185; }
+  .auth-switch { text-align: center; font-size: 0.88rem; color: var(--muted); margin-top: 14px; }
+  .auth-switch a { color: var(--accent-soft); cursor: pointer; text-decoration: none; font-weight: 600; }
+  .auth-switch a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -350,7 +488,13 @@
     <a href="tos.html" class="active">الشروط</a>
     <a href="https://discord.gg/sAakXRRudu" target="_blank" rel="noopener" class="discord-link"><svg class="dc-ico" viewBox="0 0 127.14 96.36" fill="currentColor" aria-hidden="true"><path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.9-72.15ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"/></svg> ديسكورد</a>
   </nav>
-  <div class="nav-ham">
+  <div class="header-actions">
+    <span class="welcome-user" id="welcomeUser" style="display:none;">مرحباً، <b id="usernameDisplay"></b></span>
+    <button class="auth-btn" id="authBtn" onclick="openAuth()">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5M15 12H3"/></svg>
+      تسجيل الدخول
+    </button>
+    <div class="nav-ham">
     <button class="ham-btn" id="hamBtn" onclick="toggleHam()" aria-label="القائمة" aria-expanded="false">
       <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
@@ -365,6 +509,12 @@
         السلة
         <span class="cart-badge" id="cartBadge">0</span>
       </a>
+      <div class="menu-sep" id="logoutSep" style="display:none;"></div>
+      <a href="#" id="logoutLink" class="logout-link" style="display:none;" onclick="logout(); return false;">
+        <svg class="ico-cart" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
+        تسجيل الخروج
+      </a>
+    </div>
     </div>
   </div>
 </header>
@@ -372,91 +522,115 @@
 <main>
   <div class="tos-wrap">
     <div class="tos-head">
-      <h1>شروط الخدمة <span class="grad">Night Void</span> 📜</h1>
+      <span class="doc-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg></span>
+      <h1>شروط الخدمة <span class="grad">Night Void</span></h1>
       <p>آخر تحديث: 12 يونيو 2026 — باستخدامك للموقع أو الطلب منه فأنت توافق على هذه الشروط</p>
     </div>
 
-    <section class="term">
-      <h2>١ — القبول ✅</h2>
-      <p>استخدام المتجر أو فتح حساب أو إرسال طلب يعني موافقتك على هذه الشروط كاملة. ما توافق؟ لا تستخدم المتجر.</p>
-    </section>
+    <div class="tos-body">
+      <div class="tos-content">
+        <section class="term" id="t1">
+          <div class="term-head"><span class="term-num">١</span><h2>القبول</h2></div>
+          <p>استخدام المتجر أو فتح حساب أو إرسال طلب يعني موافقتك على هذه الشروط كاملة. ما توافق؟ لا تستخدم المتجر.</p>
+        </section>
 
-    <section class="term">
-      <h2>٢ — الخدمات 🤖</h2>
-      <p>نقدم خدمات رقمية على الديسكورد:</p>
-      <ul>
-        <li>برمجة بوتات مخصصة من الصفر</li>
-        <li>إعداد وتخصيص بوتات جاهزة</li>
-        <li>بناء سيرفرات ديسكورد وتجهيزها</li>
-      </ul>
-      <p>نحن مستقلون ولسنا تابعين لـ <b>Discord Inc</b>.</p>
-    </section>
+        <section class="term" id="t2">
+          <div class="term-head"><span class="term-num">٢</span><h2>الخدمات</h2></div>
+          <p>نقدم خدمات رقمية على الديسكورد:</p>
+          <ul>
+            <li>برمجة بوتات مخصصة من الصفر</li>
+            <li>إعداد وتخصيص بوتات جاهزة</li>
+            <li>بناء سيرفرات ديسكورد وتجهيزها</li>
+          </ul>
+          <p>نحن مستقلون ولسنا تابعين لـ <b>Discord Inc</b>.</p>
+        </section>
 
-    <section class="term">
-      <h2>٣ — الحسابات 👤</h2>
-      <p>أدخل بيانات صحيحة، خصوصاً <b>حساب الديسكورد</b>. أنت المسؤول عن حسابك. أي إساءة أو تلاعب يعني إيقاف الحساب أو حذفه.</p>
-    </section>
+        <section class="term" id="t3">
+          <div class="term-head"><span class="term-num">٣</span><h2>الحسابات</h2></div>
+          <p>أدخل بيانات صحيحة، خصوصاً <b>حساب الديسكورد</b>. أنت المسؤول عن حسابك. أي إساءة أو تلاعب يعني إيقاف الحساب أو حذفه.</p>
+        </section>
 
-    <section class="term">
-      <h2>٤ — الطلبات والدفع 💳</h2>
-      <p>إرسال الطلب لا يعني تأكيده — <b>التأكيد يكون داخل التذكرة الرسمية فقط</b>. الدفع كذلك داخل التذكرة. طلب يمشي <b>٧ أيام</b> بدون إكمال قد يُلغى.</p>
-    </section>
+        <section class="term" id="t4">
+          <div class="term-head"><span class="term-num">٤</span><h2>الطلبات والدفع</h2></div>
+          <p>إرسال الطلب لا يعني تأكيده — <b>التأكيد يكون داخل التذكرة الرسمية فقط</b>. الدفع كذلك داخل التذكرة. طلب يمشي <b>٧ أيام</b> بدون إكمال قد يُلغى.</p>
+        </section>
 
-    <section class="term">
-      <h2>٥ — الإلغاء والاسترداد ↩</h2>
-      <p>تقدر تلغي قبل ما نبدأ. بعد البداية لا، <b>تحت أي ظرف</b>.</p>
-      <p>الاسترداد الوحيد الممكن: دفعت ولم نبدأ ولم نسلم أي شيء. غير هذا <b>ما في استرداد</b> — لا بعد بدء التنفيذ، لا بعد التسليم، لا استثناءات.</p>
-      <p>هذا ينطبق على جميع الخدمات: البوتات المخصصة، التخصيص، السيرفرات. الخدمات الرقمية تُسلَّم مرة واحدة ولا يمكن التحقق مما يصير معها بعدها، لما نسلّم انتهى دورنا.</p>
-    </section>
+        <section class="term" id="t5">
+          <div class="term-head"><span class="term-num">٥</span><h2>الإلغاء والاسترداد</h2></div>
+          <p>تقدر تلغي قبل ما نبدأ. بعد البداية لا، <b>تحت أي ظرف</b>.</p>
+          <p>الاسترداد الوحيد الممكن: دفعت ولم نبدأ ولم نسلم أي شيء. غير هذا <b>ما في استرداد</b> — لا بعد بدء التنفيذ، لا بعد التسليم، لا استثناءات.</p>
+          <p>هذا ينطبق على جميع الخدمات: البوتات المخصصة، التخصيص، السيرفرات. الخدمات الرقمية تُسلَّم مرة واحدة ولا يمكن التحقق مما يصير معها بعدها، لما نسلّم انتهى دورنا.</p>
+        </section>
 
-    <section class="term">
-      <h2>٦ — الأسعار 💰</h2>
-      <p>السعر في الموقع هو السعر النهائي. <b>ما في تفاوض بعد تأكيد الطلب</b>. أي إضافة خارج الخدمة الأصلية تُحتسب منفصلة. السعر يثبت لما تؤكد داخل التذكرة.</p>
-    </section>
+        <section class="term" id="t6">
+          <div class="term-head"><span class="term-num">٦</span><h2>الأسعار</h2></div>
+          <p>السعر في الموقع هو السعر النهائي. <b>ما في تفاوض بعد تأكيد الطلب</b>. أي إضافة خارج الخدمة الأصلية تُحتسب منفصلة. السعر يثبت لما تؤكد داخل التذكرة.</p>
+        </section>
 
-    <section class="term">
-      <h2>٧ — البوتات المخصصة 💻</h2>
-      <p>تستلم الكود الكامل بعد الانتهاء. <b>الاستضافة عليك</b>. نقدم دعم لـ<b>٧ أيام</b> لإصلاح الأخطاء — بعدها أي مشكلة أو تعديل خارج مسؤوليتنا.</p>
-    </section>
+        <section class="term" id="t7">
+          <div class="term-head"><span class="term-num">٧</span><h2>البوتات المخصصة</h2></div>
+          <p>تستلم الكود الكامل بعد الانتهاء. <b>الاستضافة عليك</b>. نقدم دعم لـ<b>٧ أيام</b> لإصلاح الأخطاء — بعدها أي مشكلة أو تعديل خارج مسؤوليتنا.</p>
+        </section>
 
-    <section class="term">
-      <h2>٨ — البوتات الجاهزة والتخصيص 🔧</h2>
-      <p>ممكن نطلب وصول مؤقت لحسابك أو صلاحيات السيرفر لتنفيذ الخدمة. هذا الوصول <b>للتنفيذ فقط ويُلغى بعد الانتهاء</b>. بعد التسليم أي مشكلة أو تغيير مسؤوليتك.</p>
-    </section>
+        <section class="term" id="t8">
+          <div class="term-head"><span class="term-num">٨</span><h2>البوتات الجاهزة والتخصيص</h2></div>
+          <p>ممكن نطلب وصول مؤقت لحسابك أو صلاحيات السيرفر لتنفيذ الخدمة. هذا الوصول <b>للتنفيذ فقط ويُلغى بعد الانتهاء</b>. بعد التسليم أي مشكلة أو تغيير مسؤوليتك.</p>
+        </section>
 
-    <section class="term">
-      <h2>٩ — الاستخدام المقبول 🚫</h2>
-      <p>ممنوع:</p>
-      <ul>
-        <li>إساءة استخدام الموقع أو النظام</li>
-        <li>انتحال صفة الإدارة</li>
-        <li>طلب خدمات تخالف <a href="https://discord.com/terms" target="_blank" rel="noopener">شروط Discord</a> أو القوانين</li>
-      </ul>
-      <p>أي مخالفة = <b>حظر فوري بدون استرداد</b>.</p>
-    </section>
+        <section class="term" id="t9">
+          <div class="term-head"><span class="term-num">٩</span><h2>الاستخدام المقبول</h2></div>
+          <p>ممنوع:</p>
+          <ul>
+            <li>إساءة استخدام الموقع أو النظام</li>
+            <li>انتحال صفة الإدارة</li>
+            <li>طلب خدمات تخالف <a href="https://discord.com/terms" target="_blank" rel="noopener">شروط Discord</a> أو القوانين</li>
+          </ul>
+          <p>أي مخالفة = <b>حظر فوري بدون استرداد</b>.</p>
+        </section>
 
-    <section class="term">
-      <h2>١٠ — صلاحياتنا ⚖️</h2>
-      <p>الأسعار نهائية ولا تفاوض بعد الطلب. يحق لنا نرفض أو نلغي أي طلب في أي وقت. إلغاء من طرفنا قبل البدء يعني إعادة مبلغك. إلغاء بسبب مخالفتك يعني <b>لا استرداد</b>.</p>
-    </section>
+        <section class="term" id="t10">
+          <div class="term-head"><span class="term-num">١٠</span><h2>صلاحياتنا</h2></div>
+          <p>الأسعار نهائية ولا تفاوض بعد الطلب. يحق لنا نرفض أو نلغي أي طلب في أي وقت. إلغاء من طرفنا قبل البدء يعني إعادة مبلغك. إلغاء بسبب مخالفتك يعني <b>لا استرداد</b>.</p>
+        </section>
 
-    <section class="term">
-      <h2>١١ — حدود المسؤولية 🛡</h2>
-      <p>الخدمة تُقدَّم كما هي. ما نتحمل مسؤولية تحديثات Discord، ولا سوء الاستخدام، ولا مشاكل الاستضافة.</p>
-    </section>
+        <section class="term" id="t11">
+          <div class="term-head"><span class="term-num">١١</span><h2>حدود المسؤولية</h2></div>
+          <p>الخدمة تُقدَّم كما هي. ما نتحمل مسؤولية تحديثات Discord، ولا سوء الاستخدام، ولا مشاكل الاستضافة.</p>
+        </section>
 
-    <section class="term">
-      <h2>١٢ — تعديل الشروط 📝</h2>
-      <p>نقدر نعدل الشروط في أي وقت. استمرارك في الاستخدام يعني موافقتك.</p>
-    </section>
+        <section class="term" id="t12">
+          <div class="term-head"><span class="term-num">١٢</span><h2>تعديل الشروط</h2></div>
+          <p>نقدر نعدل الشروط في أي وقت. استمرارك في الاستخدام يعني موافقتك.</p>
+        </section>
 
-    <section class="term">
-      <h2>١٣ — التواصل 💬</h2>
-      <p>لأي استفسار أو شكوى، افتح تذكرة في <a href="https://discord.gg/sAakXRRudu" target="_blank" rel="noopener">سيرفر Night Void الرسمي</a> — هذه قناة التواصل الرسمية الوحيدة.</p>
-    </section>
+        <section class="term" id="t13">
+          <div class="term-head"><span class="term-num">١٣</span><h2>التواصل</h2></div>
+          <p>لأي استفسار أو شكوى، افتح تذكرة في <a href="https://discord.gg/sAakXRRudu" target="_blank" rel="noopener">سيرفر Night Void الرسمي</a> — هذه قناة التواصل الرسمية الوحيدة.</p>
+        </section>
 
-    <div class="agree-note">
-       بإنشائك حساباً أو إرسالك طلباً في متجر Night Void فأنت تؤكد موافقتك الكاملة على جميع الشروط أعلاه
+        <div class="agree-note">
+           بإنشائك حساباً أو إرسالك طلباً في متجر Night Void فأنت تؤكد موافقتك الكاملة على جميع الشروط أعلاه
+        </div>
+      </div>
+
+      <aside class="tos-toc">
+        <div class="toc-title">محتويات الشروط</div>
+        <div class="toc-list">
+          <a href="#t1"><span>١</span>القبول</a>
+          <a href="#t2"><span>٢</span>الخدمات</a>
+          <a href="#t3"><span>٣</span>الحسابات</a>
+          <a href="#t4"><span>٤</span>الطلبات والدفع</a>
+          <a href="#t5"><span>٥</span>الإلغاء والاسترداد</a>
+          <a href="#t6"><span>٦</span>الأسعار</a>
+          <a href="#t7"><span>٧</span>البوتات المخصصة</a>
+          <a href="#t8"><span>٨</span>البوتات الجاهزة</a>
+          <a href="#t9"><span>٩</span>الاستخدام المقبول</a>
+          <a href="#t10"><span>١٠</span>صلاحياتنا</a>
+          <a href="#t11"><span>١١</span>حدود المسؤولية</a>
+          <a href="#t12"><span>١٢</span>تعديل الشروط</a>
+          <a href="#t13"><span>١٣</span>التواصل</a>
+        </div>
+      </aside>
     </div>
   </div>
 </main>
@@ -498,6 +672,107 @@ for (let i = 0; i < 90; i++) {
     animation-duration:${2 + Math.random() * 3}s;`;
   container.appendChild(star);
 }
+</script>
+
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-modal">
+    <button class="close-x" onclick="closeAuth()" aria-label="إغلاق">✕</button>
+    <h2>تسجيل الدخول 🔐</h2>
+    <p class="sub">أهلاً بعودتك إلى Night Void</p>
+    <div class="auth-msg" id="authMsg"></div>
+    <div class="auth-field">
+      <label>البريد الإلكتروني</label>
+      <input type="email" id="authEmail" placeholder="example@gmail.com" autocomplete="email">
+    </div>
+    <div class="auth-field">
+      <label>كلمة المرور</label>
+      <input type="password" id="authPassword" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="auth-submit" id="authSubmit" onclick="doLogin()">دخول</button>
+    <p class="auth-switch"><a onclick="doReset()">نسيت كلمة المرور؟</a></p>
+    <p class="auth-switch">ليس لديك حساب؟ <a href="night-void-store.html">أنشئ حساباً من المتجر</a></p>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import {
+  getAuth, signInWithEmailAndPassword, signOut,
+  onAuthStateChanged, sendPasswordResetEmail, sendEmailVerification
+} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBovXwSPfUNaY4IMQVayMyH0Zqx9yw9LCI",
+  authDomain: "night-void-store.firebaseapp.com",
+  projectId: "night-void-store",
+  storageBucket: "night-void-store.firebasestorage.app",
+  messagingSenderId: "889475385326",
+  appId: "1:889475385326:web:13cba0e9fe57576aee30ff",
+  measurementId: "G-6Y91ZG2ZCQ"
+};
+const auth = getAuth(initializeApp(firebaseConfig));
+
+const $ = id => document.getElementById(id);
+function setMsg(text, type) { const el = $("authMsg"); el.textContent = text; el.className = "auth-msg " + type; }
+function clearMsg() { const el = $("authMsg"); el.textContent = ""; el.className = "auth-msg"; }
+
+window.openAuth = () => { clearMsg(); $("authOverlay").classList.add("open"); setTimeout(() => $("authEmail").focus(), 50); };
+window.closeAuth = () => $("authOverlay").classList.remove("open");
+
+window.doLogin = async () => {
+  const email = $("authEmail").value.trim();
+  const password = $("authPassword").value;
+  if (!email || !password) return setMsg("⚠ يرجى تعبئة جميع الحقول", "error");
+  const btn = $("authSubmit"); btn.disabled = true;
+  try {
+    const cred = await signInWithEmailAndPassword(auth, email, password);
+    if (!cred.user.emailVerified) {
+      try { await sendEmailVerification(cred.user); } catch (_) {}
+      await signOut(auth);
+      setMsg("📧 لازم تأكّد بريدك أول — أرسلنا لك رابط التأكيد", "ok");
+      return;
+    }
+    setMsg("✅ تم تسجيل الدخول بنجاح!", "ok");
+    setTimeout(closeAuth, 700);
+  } catch (e) { setMsg(authError(e), "error"); }
+  finally { btn.disabled = false; }
+};
+
+window.doReset = async () => {
+  const email = $("authEmail").value.trim();
+  if (!email) return setMsg("⚠ اكتب بريدك الإلكتروني أولاً ثم اضغط نسيت كلمة المرور", "error");
+  try {
+    await sendPasswordResetEmail(auth, email);
+    setMsg("✅ تم إرسال رابط إعادة التعيين إلى بريدك (تحقّق من السبام)", "ok");
+  } catch (e) { setMsg(authError(e), "error"); }
+};
+
+window.logout = async () => {
+  try { await signOut(auth); } catch (_) {}
+  const d = $("navDropdown"); if (d) d.classList.remove("open");
+  const b = $("hamBtn"); if (b) b.setAttribute("aria-expanded", "false");
+};
+
+function authError(e) {
+  const c = (e && e.code) || "";
+  if (c.includes("invalid-credential") || c.includes("wrong-password") || c.includes("user-not-found")) return "⚠ البريد أو كلمة المرور غير صحيحة";
+  if (c.includes("invalid-email")) return "⚠ صيغة البريد غير صحيحة";
+  if (c.includes("too-many-requests")) return "⚠ محاولات كثيرة، انتظر شوي ثم حاول";
+  if (c.includes("network")) return "⚠ في مشكلة بالاتصال بالإنترنت";
+  return "⚠ صار خطأ، حاول مرة ثانية";
+}
+
+onAuthStateChanged(auth, user => {
+  const signedIn = !!(user && user.emailVerified);
+  if ($("welcomeUser")) $("welcomeUser").style.display = signedIn ? "inline" : "none";
+  if ($("authBtn")) $("authBtn").style.display = signedIn ? "none" : "inline-flex";
+  if (signedIn && $("usernameDisplay")) $("usernameDisplay").textContent = user.displayName || "صديقنا";
+  if ($("logoutLink")) $("logoutLink").style.display = signedIn ? "flex" : "none";
+  if ($("logoutSep")) $("logoutSep").style.display = signedIn ? "block" : "none";
+});
+
+$("authOverlay").addEventListener("click", e => { if (e.target.id === "authOverlay") closeAuth(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeAuth(); });
 </script>
 </body>
 </html>
