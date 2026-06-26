@@ -237,8 +237,91 @@
     to { opacity: 1; transform: translateY(0) scale(1); }
   }
   /* الأزرار اللي جوّا القائمة تاخذ العرض كامل ونصها يبدأ من الجهة */
-  .menu-dropdown .btn { width: 100%; justify-content: flex-start; }
+  .menu-dropdown .btn { width: 100%; justify-content: flex-start; border-radius: 11px; }
   .menu-sep { height: 1px; background: var(--border-soft); margin: 2px 0; }
+  .mc-badge { margin-inline-start: auto; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--accent); color: #fff; font-size: 0.72rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; }
+  .menu-dropdown .btn .ico { width: 1.15em; height: 1.15em; flex: 0 0 auto; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ===== قائمة الهامبرغر (تستبدل الشريط العلوي على كل الأحجام — مثل باقي الصفحات) ===== */
+  nav.main-nav { display: none; }
+  .nav-ham { position: relative; display: inline-flex; align-items: center; }
+  .ham-btn { background: none; border: 1px solid var(--border-soft); color: var(--text); border-radius: var(--r-lg); cursor: pointer; padding: 10px 12px; display: inline-flex; align-items: center; font-family: inherit; transition: background 0.2s; }
+  .ham-btn:hover { background: var(--card); }
+  .ham-btn .ico { width: 1.35em; height: 1.35em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+  .ham-btn .ico line { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease; transform-box: view-box; transform-origin: 12px 12px; }
+  .ham-btn[aria-expanded="true"] .ico line:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .ham-btn[aria-expanded="true"] .ico line:nth-child(2) { opacity: 0; }
+  .ham-btn[aria-expanded="true"] .ico line:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+  .nav-dropdown { position: absolute; top: calc(100% + 6px); left: 0; min-width: 220px; display: none; flex-direction: column; gap: 4px; padding: 10px; background: linear-gradient(180deg, rgba(28, 26, 52, 0.97), rgba(15, 14, 29, 0.98)); border: 1px solid var(--border-soft); border-radius: var(--r-lg); box-shadow: 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.4); z-index: 60; animation: hamPop 0.16s ease-out; }
+  @keyframes hamPop { from { opacity: 0; transform: translateY(-8px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .nav-dropdown.open { display: flex; }
+  .nav-dropdown a { color: var(--muted); text-decoration: none; font-weight: 600; font-size: 0.95rem; padding: 10px 14px; border-radius: 10px; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+  .nav-dropdown a:hover { color: var(--text); background: var(--card); }
+  .nav-dropdown a.active { color: #fff; background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 0 14px var(--glow); }
+  .nav-dropdown .discord-link { color: #fff; background: var(--discord); }
+  .nav-dropdown .discord-link:hover { background: #4752c4; }
+
+  /* ===== زر الحساب (الأفاتار) + ترويسة الهوية ===== */
+  .account-trigger {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 5px 6px 5px 14px;
+    border-radius: 999px;
+    background: rgba(167, 139, 250, 0.06);
+    border: 1px solid var(--border-soft);
+    color: var(--text); cursor: pointer; font-family: inherit;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  .account-trigger:hover { border-color: var(--accent); background: rgba(139, 92, 246, 0.12); }
+  .account-trigger .at-name {
+    font-size: 0.9rem; font-weight: 600; color: #cfc7e6;
+    max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    direction: ltr; unicode-bidi: embed;
+  }
+  .account-trigger .at-chev {
+    width: 13px; height: 13px; stroke: var(--muted); fill: none;
+    stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round;
+    transition: transform 0.25s ease;
+  }
+  .account-trigger[aria-expanded="true"] .at-chev { transform: rotate(180deg); }
+  .at-avatar, .menu-id-avatar {
+    flex: 0 0 auto; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; color: #fff; text-transform: uppercase;
+    background: linear-gradient(135deg, var(--accent), var(--discord));
+  }
+  .at-avatar { width: 34px; height: 34px; font-size: 0.95rem; }
+  .menu-id-avatar { width: 44px; height: 44px; font-size: 1.1rem; }
+  .menu-id { display: flex; align-items: center; gap: 12px; padding: 4px 6px 12px; }
+  .menu-id-info { flex: 1; min-width: 0; }
+  .menu-id-name { font-weight: 800; font-size: 0.95rem; }
+  .menu-id-handle {
+    font-size: 0.78rem; color: var(--muted);
+    direction: ltr; unicode-bidi: embed; text-align: right;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .menu-id-role {
+    flex: 0 0 auto; display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 800;
+    color: #a9b6ff; background: rgba(88, 101, 242, 0.16); border: 1px solid rgba(120, 130, 255, 0.4);
+  }
+  .menu-id-role.owner { color: #ffce8a; background: rgba(255, 180, 90, 0.14); border-color: rgba(255, 180, 90, 0.4); }
+  /* صورة الأفاتار المرفوعة من الجهاز */
+  .at-avatar.has-img, .menu-id-avatar.has-img { background-size: cover; background-position: center; }
+  .at-avatar.has-img { color: transparent; }
+  .menu-id-avatar.avatar-edit { position: relative; cursor: pointer; overflow: hidden; }
+  .menu-id-avatar .av-cam {
+    position: absolute; inset: auto 0 0 0; height: 42%;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0, 0, 0, 0.55); opacity: 0; transition: opacity 0.18s ease;
+  }
+  .menu-id-avatar.avatar-edit:hover .av-cam { opacity: 1; }
+  .menu-id-avatar .av-cam svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .menu-id-avatar.has-img .av-initial { visibility: hidden; }
+  .av-remove {
+    background: none; border: none; color: var(--muted); font-family: inherit;
+    font-size: 0.76rem; cursor: pointer; padding: 0 6px 6px; text-align: right; text-decoration: underline;
+  }
+  .av-remove:hover { color: var(--danger); }
 
   /* ===== الأزرار ===== */
   .btn {
@@ -724,7 +807,7 @@
   html { scrollbar-gutter: stable; scroll-behavior: smooth; }
   body:has(.overlay.open) { overflow: hidden; }
   .modal.wide { max-width: 560px; }
-  .modal.owner-modal { max-width: 720px; }
+  .modal.owner-modal { max-width: 940px; }
   @media (min-width: 768px) { .modal.owner-modal { padding: 38px 44px; } }
   .modal.orders-modal { max-width: 880px; }
   @media (min-width: 768px) { .modal.orders-modal { padding: 36px 40px; } }
@@ -1204,13 +1287,95 @@
     background: rgba(251, 191, 36, 0.1);
     border: 1px solid rgba(251, 191, 36, 0.45);
     color: #fbbf24;
-    border-radius: 10px;
+    border-radius: 14px;
     padding: 14px 16px;
     font-size: 0.92rem;
     line-height: 1.9;
     margin: 14px 0;
     text-align: right;
   }
+
+  /* ===== نافذة "تم استلام طلبك" — تصميم محدّث ===== */
+  .soft .thanks-modal { padding: 32px 30px; }
+  .thanks-check {
+    width: 78px; height: 78px; margin: 2px auto 18px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #c084fc);
+    box-shadow: 0 14px 34px rgba(139, 92, 246, 0.5), 0 0 0 8px rgba(139, 92, 246, 0.12);
+    animation: thanksPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .thanks-check svg {
+    width: 38px; height: 38px; fill: none; stroke: #fff;
+    stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
+  }
+  @keyframes thanksPop {
+    0%   { transform: scale(0); opacity: 0; }
+    60%  { transform: scale(1.12); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .thanks-modal .thanks-lead { max-width: 380px; margin: 8px auto 22px; line-height: 1.8; }
+
+  .thanks-idcard {
+    text-align: right;
+    background: rgba(10, 9, 20, 0.45);
+    border: 1px solid var(--border-soft);
+    border-radius: 18px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+  }
+  .thanks-idcard .tic-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; margin-bottom: 9px;
+  }
+  .thanks-idcard .tic-label { color: var(--muted); font-size: 0.85rem; font-weight: 700; }
+  .tic-copy {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(139, 92, 246, 0.16);
+    border: 1px solid rgba(167, 139, 250, 0.32);
+    color: var(--accent-soft);
+    font-family: inherit; font-weight: 700; font-size: 0.82rem;
+    border-radius: 999px; padding: 6px 14px; cursor: pointer;
+    transition: background 0.18s ease, transform 0.18s ease;
+  }
+  .tic-copy svg {
+    width: 14px; height: 14px; fill: none; stroke: currentColor;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .tic-copy:hover { background: rgba(139, 92, 246, 0.28); transform: translateY(-1px); }
+  .thanks-idcard .tic-id {
+    font-family: ui-monospace, "Cairo", monospace; font-weight: 800;
+    font-size: 1.42rem; letter-spacing: 1px;
+    direction: ltr; unicode-bidi: embed; text-align: right; word-break: break-all;
+    background: linear-gradient(135deg, #c4b5fd, #c084fc);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .thanks-idcard .tic-hint { color: var(--muted); font-size: 0.8rem; margin: 9px 0 0; line-height: 1.7; }
+
+  .soft .thanks-modal .btn-block { margin-top: 10px; }
+  .soft .thanks-modal .btn-block .ico {
+    width: 1.15em; height: 1.15em; vertical-align: -0.18em;
+    fill: none; stroke: currentColor; stroke-width: 2;
+    stroke-linecap: round; stroke-linejoin: round; margin-inline-end: 4px;
+  }
+  .soft .thanks-modal .btn-discord { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+  .soft .thanks-modal .btn-discord:hover {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    box-shadow: 0 16px 34px rgba(99, 102, 241, 0.45);
+  }
+
+  .thanks-foot {
+    color: var(--muted); font-size: 0.84rem; line-height: 1.75;
+    margin: 20px 0 0; padding-top: 16px; border-top: 1px solid var(--border-soft);
+  }
+  .thanks-foot b, .thanks-foot strong { color: var(--text); font-weight: 700; }
+  .thanks-close {
+    display: inline-block; margin-top: 14px;
+    background: none; border: none;
+    color: var(--muted); font-family: inherit; font-size: 0.92rem; font-weight: 700;
+    cursor: pointer; transition: color 0.18s ease;
+  }
+  .thanks-close:hover { color: var(--text); }
 
   /* ===== لوحة التحكم ===== */
   .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
@@ -1402,8 +1567,73 @@
   .soft .assign-row:hover { background: rgba(139, 92, 246, 0.08); }
   .soft .assignee-box { border-radius: 14px; }
   .soft .assignee-box .assignee-names span { border-radius: 999px; }
-  .soft .log-row { border-bottom: 1px solid var(--border-soft); }
+  .soft .log-row { border-bottom: 1px solid var(--border-soft); gap: 14px; padding: 14px 0; align-items: flex-start; }
   .soft .log-row .log-order { border-radius: 8px; }
+  .soft .log-row .log-ico {
+    width: 32px; height: 32px; flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 9px; font-size: 0.95rem;
+    background: rgba(139, 92, 246, 0.12); border: 1px solid var(--border-soft);
+  }
+  .soft .log-row .log-what { font-size: 0.92rem; line-height: 1.6; }
+
+  /* بطاقات الطلبات — رقم الطلب كشريحة + إجمالي بنفسجي */
+  .soft .order-head h4 { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; color: var(--muted); font-size: 0.85rem; }
+  .ord-id {
+    font-family: ui-monospace, "Cairo", monospace; font-weight: 800; font-size: 0.84rem;
+    color: var(--text); direction: ltr; unicode-bidi: embed;
+    background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-soft);
+    border-radius: 8px; padding: 2px 10px;
+  }
+  .soft .order-foot .order-total,
+  .soft .ao-actions .order-total { color: var(--accent-soft); }
+  .soft .orders-summary {
+    background: rgba(139, 92, 246, 0.06);
+    padding: 13px 16px;
+    font-size: 0.85rem; line-height: 1.9;
+    margin-bottom: 14px;
+  }
+  .soft .orders-summary b { color: var(--accent-soft); }
+
+  /* ===== إدارة الطلبات: بطاقات إحصائية + بطاقة طلب بنمط المخطط ===== */
+  .soft .orders-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px;
+  }
+  .soft .ostat {
+    padding: 13px 15px; border-radius: 13px;
+    background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-soft);
+  }
+  .soft .ostat .ostat-label { font-size: 0.74rem; color: var(--muted); }
+  .soft .ostat .ostat-value { font-weight: 900; font-size: 1.35rem; margin-top: 2px; }
+  .soft .ostat .ostat-value small { font-size: 0.72rem; color: var(--muted); font-weight: 700; }
+  .soft .ostat.green { background: rgba(52, 211, 153, 0.06); border-color: rgba(52, 211, 153, 0.22); }
+  .soft .ostat.green .ostat-label { color: #8fe3a8; }
+  .soft .ostat.green .ostat-value { color: #a7f0c0; }
+  .soft .ostat.green .ostat-value small { color: #7bdc9f; }
+  @media (max-width: 560px) { .soft .orders-stats { grid-template-columns: 1fr; } }
+
+  /* بطاقة الطلب — حواف، ترويسة بفاصل، عناصر بصندوق غامق، تذييل بشريط */
+  .soft .order-card {
+    background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-soft);
+    border-radius: 16px; padding: 16px 18px; overflow: hidden;
+  }
+  .soft .order-head { margin: 0 0 12px; padding-bottom: 14px; border-bottom: 1px solid var(--border-soft); }
+  .soft .order-head .oh-badges { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .soft .order-item {
+    background: rgba(0, 0, 0, 0.22); border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 10px; padding: 11px 14px;
+  }
+  .soft .ao-actions {
+    margin: 14px -18px -16px; padding: 14px 18px;
+    border-top: 1px solid var(--border-soft); background: rgba(0, 0, 0, 0.15);
+  }
+
+  /* تلوين أيقونات السجل حسب نوع الحدث */
+  .soft .log-row .log-ico.lg-new { background: rgba(52, 211, 153, 0.12); border-color: rgba(52, 211, 153, 0.25); }
+  .soft .log-row .log-ico.lg-status { background: rgba(251, 191, 36, 0.12); border-color: rgba(251, 191, 36, 0.3); }
+  .soft .log-row .log-ico.lg-edit { background: rgba(139, 92, 246, 0.14); border-color: rgba(139, 92, 246, 0.3); }
+  .soft .log-row .log-ico.lg-paid { background: rgba(52, 211, 153, 0.12); border-color: rgba(52, 211, 153, 0.25); }
+  .soft .log-row .log-ico.lg-assign { background: rgba(88, 101, 242, 0.14); border-color: rgba(88, 101, 242, 0.3); }
 
   /* ===== اللوحات (الإدارة + المالك) ===== */
   .soft .admin-row { border-bottom: 1px solid var(--border-soft); padding: 12px 0; }
@@ -1414,6 +1644,285 @@
     border: 1px solid var(--border-soft);
   }
   .soft .emoji-picker button { border-radius: 10px; border: 1px solid var(--border-soft); }
+
+  /* ===== لوحة التحكم/المالك (عناوين مجموعات + صفوف بطاقات + مفاتيح) ===== */
+  .soft .admin-modal #adminPanel h3,
+  .soft .owner-modal h3 {
+    font-size: 0.95rem; font-weight: 800; color: var(--accent-soft);
+    display: flex; align-items: center; gap: 9px;
+    margin: 24px 0 10px !important; padding-top: 18px;
+    border-top: 1px solid var(--border-soft);
+  }
+  .soft .admin-modal #adminPanel h3::before,
+  .soft .owner-modal h3::before {
+    content: ""; width: 4px; height: 16px; border-radius: 4px;
+    background: linear-gradient(var(--accent), var(--accent2)); flex: 0 0 auto;
+  }
+  .soft .admin-modal .admin-row {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-soft);
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+  .soft .admin-modal #adminList .admin-row > span:first-child {
+    width: 40px; height: 40px; flex: 0 0 auto;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 11px; font-size: 1.1rem;
+    background: rgba(139, 92, 246, 0.14); border: 1px solid var(--border-soft);
+    color: var(--accent-soft);
+  }
+  .soft .admin-modal .ar-name { font-weight: 700; }
+
+  /* مفاتيح الصلاحيات على شكل توغل (تبقى checkbox فعلية في المنطق) */
+  .soft .perm-check {
+    flex-direction: row-reverse; justify-content: space-between;
+    padding: 12px 14px; margin-bottom: 8px;
+    border: 1px solid var(--border-soft); border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+  }
+  .soft .perm-check span { flex: 1; }
+  .soft .perm-check input[type="checkbox"] {
+    appearance: none; -webkit-appearance: none;
+    width: 44px; height: 25px; border-radius: 999px; flex: 0 0 auto;
+    background: rgba(255, 255, 255, 0.1); border: none; position: relative;
+    cursor: pointer; transition: background 0.2s ease;
+  }
+  .soft .perm-check input[type="checkbox"]::after {
+    content: ""; position: absolute; top: 3px; right: 3px;
+    width: 19px; height: 19px; border-radius: 50%; background: #cfc7e6;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+  .soft .perm-check input[type="checkbox"]:checked { background: linear-gradient(135deg, var(--accent), #c084fc); }
+  .soft .perm-check input[type="checkbox"]:checked::after { transform: translateX(-19px); background: #fff; }
+
+  /* ===== ترويسة النافذة: شارة أيقونة + عنوان + وصف + زر إغلاق ===== */
+  .soft .m-head {
+    display: flex; align-items: center; gap: 14px;
+    padding-bottom: 18px; margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .soft .m-head .m-badge {
+    width: 46px; height: 46px; flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 13px;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.22), rgba(139, 92, 246, 0.06));
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    color: var(--accent-soft);
+  }
+  .soft .m-head .m-badge svg {
+    width: 22px; height: 22px; fill: none; stroke: currentColor;
+    stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .soft .m-head .m-titles { flex: 1; min-width: 0; }
+  .soft .m-head .m-titles h2 { margin: 0; }
+  .soft .m-head .m-titles .sub { margin: 3px 0 0; }
+  .soft .m-head .close-x { position: static; flex: 0 0 auto; margin: 0; }
+  .soft .m-head .m-badge.warn {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.22), rgba(251, 191, 36, 0.06));
+    border-color: rgba(251, 191, 36, 0.3); color: #fbbf24;
+  }
+  .soft .m-head .m-badge.green {
+    background: linear-gradient(135deg, rgba(52, 211, 153, 0.22), rgba(52, 211, 153, 0.06));
+    border-color: rgba(52, 211, 153, 0.3); color: var(--success);
+  }
+
+  /* ===== لوحة التحكم: تبويبات ===== */
+  .soft .cp-tabs {
+    display: flex; gap: 2px; flex-wrap: wrap;
+    border-bottom: 1px solid var(--border-soft);
+    margin: 0 0 20px;
+  }
+  .soft .cp-tabs button {
+    padding: 11px 18px; border: none; background: none;
+    color: var(--muted); font-family: inherit; font-weight: 700;
+    font-size: 0.95rem; cursor: pointer;
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+    transition: color 0.18s ease, border-color 0.18s ease;
+  }
+  .soft .cp-tabs button:hover { color: #fff; }
+  .soft .cp-tabs button.active { color: #fff; font-weight: 800; border-bottom-color: var(--accent); }
+  .soft .cp-pane { display: none; }
+  .soft .cp-pane.active { display: block; animation: cpFade 0.25s ease; }
+  @keyframes cpFade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  .soft .admin-modal #adminPanel .cp-pane > h3:first-child {
+    border-top: none !important; padding-top: 0 !important; margin-top: 2px !important;
+  }
+
+  /* ===== لوحة المالك: شريط جانبي + أقسام ===== */
+  .soft .owner-layout { display: flex; gap: 20px; align-items: flex-start; }
+  .soft .owner-nav {
+    width: 208px; flex: 0 0 auto; position: sticky; top: 0;
+    display: flex; flex-direction: column; gap: 3px;
+    background: rgba(10, 8, 18, 0.4); border: 1px solid var(--border-soft);
+    border-radius: 16px; padding: 10px;
+  }
+  .soft .owner-nav button {
+    display: flex; align-items: center; gap: 10px; width: 100%;
+    padding: 11px 12px; border: none; border-radius: 11px;
+    background: none; color: var(--muted); cursor: pointer;
+    font-family: inherit; font-weight: 700; font-size: 0.9rem; text-align: right;
+    transition: background 0.18s ease, color 0.18s ease;
+  }
+  .soft .owner-nav button svg {
+    width: 17px; height: 17px; flex: 0 0 auto; fill: none; stroke: currentColor;
+    stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .soft .owner-nav button:hover { background: rgba(255, 255, 255, 0.04); color: #fff; }
+  .soft .owner-nav button.active { background: linear-gradient(135deg, var(--accent), #c084fc); color: #fff; }
+  .soft .owner-content { flex: 1; min-width: 0; }
+  .soft .osec { display: none; }
+  .soft .osec.active { display: block; animation: cpFade 0.25s ease; }
+  .soft .owner-content .osec > h3:first-child {
+    border-top: none !important; padding-top: 0 !important; margin-top: 2px !important;
+  }
+  @media (max-width: 720px) {
+    .soft .owner-layout { flex-direction: column; }
+    .soft .owner-nav {
+      width: 100%; flex-direction: row; overflow-x: auto;
+      position: static; gap: 4px; -webkit-overflow-scrolling: touch;
+    }
+    .soft .owner-nav button { width: auto; white-space: nowrap; flex: 0 0 auto; }
+  }
+
+  /* ===== السلة (تصميم محدّث — بطاقات وأيقونات وملخّص) ===== */
+  .soft .cart-item { gap: 14px; align-items: center; }
+  .soft .cart-item .ci-icon {
+    width: 46px; height: 46px; flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 13px; font-size: 1.35rem;
+    background: rgba(139, 92, 246, 0.14);
+    border: 1px solid var(--border-soft);
+    color: var(--accent-soft);
+  }
+  .soft .cart-item .ci-info h4 { font-size: 1rem; font-weight: 800; }
+  .soft .cart-item .ci-info span { font-size: 0.82rem; direction: ltr; unicode-bidi: embed; text-align: right; display: block; }
+  .soft .qty-controls {
+    padding: 3px; border-radius: 12px; gap: 4px;
+    background: rgba(167, 139, 250, 0.06);
+    border: 1px solid var(--border-soft);
+  }
+  .soft .qty-controls span { min-width: 22px; text-align: center; font-weight: 700; }
+  .soft .qty-controls button { width: 30px; height: 30px; border: none; background: rgba(255, 255, 255, 0.05); }
+  .soft .qty-controls button[data-plus] { background: linear-gradient(135deg, var(--accent), #c084fc); color: #fff; }
+  .soft .qty-controls button[data-plus]:hover { background: linear-gradient(135deg, var(--accent), #c084fc); transform: translateY(-1px); }
+  .soft .cart-item .remove-item {
+    width: 34px; height: 34px; flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 10px; font-size: 0.95rem;
+    background: rgba(244, 63, 94, 0.08);
+    border: 1px solid rgba(244, 63, 94, 0.25);
+    color: #fb7185;
+    transition: background 0.18s ease, transform 0.18s ease;
+  }
+  .soft .cart-item .remove-item:hover { background: rgba(244, 63, 94, 0.18); transform: translateY(-1px); }
+
+  /* صندوق ملخّص السلة — مجموع + خصم + إجمالي */
+  .soft .cart-summary {
+    background: rgba(10, 9, 20, 0.4);
+    border: 1px solid var(--border-soft);
+    border-radius: 16px;
+    padding: 4px 18px;
+    margin: 16px 0;
+  }
+  .soft .cart-summary .cart-total { padding: 13px 0; font-size: 0.95rem; font-weight: 600; }
+  .soft .cart-summary .cart-total:not(:last-child) { border-bottom: 1px solid var(--border-soft); }
+  .soft .cart-summary .cart-total:last-child { font-size: 1.1rem; font-weight: 800; }
+  .soft .cart-summary #cartTotal {
+    font-size: 1.5rem; font-weight: 900;
+    background: linear-gradient(135deg, #c4b5fd, #c084fc);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    direction: ltr; unicode-bidi: embed;
+  }
+
+  /* ===========================================================================
+     إعادة تصميم: نافذة السلة + نافذة مراجعة الطلب
+     بطاقات منفصلة لكل عنصر + شريحة سعر السطر + لوحة إجمالي بارزة.
+     ========================================================================= */
+
+  /* --- عناصر السلة كبطاقات مستقلة --- */
+  .soft #cartItems { display: flex; flex-direction: column; gap: 12px; margin-bottom: 6px; }
+  .soft .cart-item {
+    display: block;
+    gap: 0;
+    border: 1px solid var(--border-soft);
+    border-radius: 18px;
+    padding: 14px 16px;
+    background: linear-gradient(160deg, rgba(36, 33, 66, 0.5), rgba(18, 16, 33, 0.4));
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .soft .cart-item:hover {
+    transform: translateY(-2px);
+    border-color: rgba(167, 139, 250, 0.42);
+    box-shadow: 0 16px 36px rgba(139, 92, 246, 0.2);
+  }
+  .soft .cart-item .ci-top { display: flex; align-items: center; gap: 13px; }
+  .soft .cart-item .ci-icon {
+    width: 50px; height: 50px; flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 14px; font-size: 1.5rem;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(192, 132, 252, 0.14));
+    border: 1px solid rgba(167, 139, 250, 0.3);
+    color: var(--accent-soft);
+  }
+  .soft .cart-item .ci-info { flex: 1; min-width: 0; }
+  .soft .cart-item .ci-info h4 { font-size: 1.02rem; font-weight: 800; margin: 0 0 3px; line-height: 1.35; }
+  .soft .cart-item .ci-unit {
+    color: var(--muted); font-size: 0.82rem; font-weight: 600;
+    direction: ltr; unicode-bidi: embed; text-align: right; display: block;
+  }
+  .soft .cart-item .ci-bottom {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-top: 14px; padding-top: 13px;
+    border-top: 1px solid var(--border-soft);
+  }
+  .soft .cart-item .ci-line {
+    font-weight: 800; font-size: 1.05rem;
+    direction: ltr; unicode-bidi: embed;
+    color: var(--accent-soft);
+    background: rgba(139, 92, 246, 0.14);
+    border: 1px solid rgba(167, 139, 250, 0.28);
+    border-radius: 999px; padding: 5px 15px;
+  }
+  .soft .cart-item .remove-item { margin-inline-start: auto; }
+
+  /* --- لوحة ملخّص السلة: إبراز سطر الإجمالي --- */
+  .soft .cart-summary { overflow: hidden; padding: 6px 18px; }
+  .soft .cart-summary .cart-total:last-child {
+    margin: 4px -18px -6px; padding: 16px 18px;
+    border-top: 1px solid var(--border-soft);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.16), rgba(192, 132, 252, 0.05));
+  }
+
+  /* --- نافذة مراجعة الطلب: بطاقات + لوحة إجمالي --- */
+  .soft #confirmSummary { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+  .soft #confirmSummary .order-item {
+    margin-bottom: 0; align-items: center; gap: 12px;
+    background: linear-gradient(160deg, rgba(36, 33, 66, 0.5), rgba(18, 16, 33, 0.4));
+    border: 1px solid var(--border-soft);
+    border-radius: 14px; padding: 14px 16px; font-size: 0.95rem;
+  }
+  .soft #confirmSummary .order-item span:first-child { font-weight: 700; }
+  .soft #confirmSummary .order-item span:last-child {
+    flex: 0 0 auto; font-weight: 800; color: var(--accent-soft);
+    direction: ltr; unicode-bidi: embed; white-space: nowrap;
+  }
+  .soft #confirmSummary .pv-price {
+    margin: 4px 0 0; padding: 18px 20px; border-radius: 16px; align-items: center;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.18), rgba(192, 132, 252, 0.05));
+    border: 1px solid rgba(167, 139, 250, 0.32);
+  }
+  .soft #confirmSummary .pv-price > span:first-child { font-weight: 800; }
+  .soft #confirmSummary .pv-price .amount {
+    font-size: 1.65rem; font-weight: 900;
+    direction: ltr; unicode-bidi: embed;
+    background: linear-gradient(135deg, #c4b5fd, #c084fc);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .soft #confirmSummary .pv-note { margin-top: 14px; }
 </style>
 </head>
 <body>
@@ -1443,15 +1952,42 @@
     </button>
     <button class="btn btn-primary" id="authBtn" onclick="openAuth('login')"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5M15 12H3"/></svg> تسجيل الدخول</button>
     <div class="menu" id="menu">
-      <button class="btn btn-ghost menu-toggle" id="menuToggle" style="display:none;" onclick="toggleMenu()" aria-label="القائمة" aria-haspopup="true" aria-expanded="false">
-        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <button class="account-trigger menu-toggle" id="menuToggle" style="display:none;" onclick="toggleMenu()" aria-label="حسابي" aria-haspopup="true" aria-expanded="false">
+        <span class="at-name" id="menuTriggerName"></span>
+        <svg class="at-chev" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        <span class="at-avatar" id="menuTriggerAvatar">U</span>
       </button>
       <div class="menu-dropdown" id="menuDropdown">
+        <div class="menu-id">
+          <label class="menu-id-avatar avatar-edit" for="avatarInput" title="تغيير الصورة">
+            <span class="av-initial" id="menuIdAvatar">U</span>
+            <span class="av-cam" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
+          </label>
+          <input type="file" id="avatarInput" accept="image/png,image/jpeg,image/webp,image/gif" style="display:none;" onchange="onAvatarPick(this)">
+          <div class="menu-id-info">
+            <div class="menu-id-name" id="menuIdName"></div>
+            <div class="menu-id-handle" id="menuIdHandle"></div>
+          </div>
+          <span class="menu-id-role" id="menuRoleBadge" style="display:none;"></span>
+        </div>
+        <button class="av-remove" id="avatarRemove" style="display:none;" onclick="removeAvatar()">إزالة الصورة</button>
+        <div class="menu-sep"></div>
         <button class="btn btn-ghost" id="ownerBtn" style="display:none;" onclick="closeMenu(); openOwner()"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l4 5 5-7 5 7 4-5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg> المالك</button>
         <button class="btn btn-ghost" id="adminBtn" style="display:none;" onclick="closeMenu(); openAdmin()"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> الإدارة</button>
         <button class="btn btn-ghost" id="ordersBtn" style="display:none;" onclick="closeMenu(); openOrders()"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 9.4 7.5 4.21M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg> طلباتي</button>
         <div class="menu-sep"></div>
         <button class="btn btn-danger" id="logoutBtn" style="display:none;" onclick="closeMenu(); logout()"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg> خروج</button>
+      </div>
+    </div>
+    <div class="nav-ham">
+      <button class="ham-btn" id="hamBtn" onclick="toggleHam()" aria-label="القائمة" aria-expanded="false">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="nav-dropdown" id="navDropdown">
+        <a href="index.html">الرئيسية</a>
+        <a href="night-void-store.html" class="active">المتجر</a>
+        <a href="tos.html">الشروط</a>
+        <a href="https://discord.gg/sAakXRRudu" target="_blank" rel="noopener" class="discord-link"><svg class="dc-ico" viewBox="0 0 127.14 96.36" fill="currentColor" aria-hidden="true"><path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.9-72.15ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"/></svg> ديسكورد</a>
       </div>
     </div>
   </div>
@@ -1605,9 +2141,14 @@
 
 <div class="overlay soft" id="cartOverlay">
   <div class="modal wide">
-    <button class="close-x" onclick="closeCart()">✕</button>
-    <h2>سلة المشتريات 🛒</h2>
-    <p class="sub">راجع طلباتك قبل إتمام الشراء</p>
+    <div class="m-head">
+      <span class="m-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></span>
+      <div class="m-titles">
+        <h2>سلة المشتريات</h2>
+        <p class="sub">راجع طلباتك قبل إتمام الشراء</p>
+      </div>
+      <button class="close-x" onclick="closeCart()">✕</button>
+    </div>
     <div id="cartItems"></div>
     <div id="cartFooter" style="display:none;">
       <div class="applepay-note" id="applepayNote">
@@ -1622,17 +2163,19 @@
         </div>
         <p class="promo-msg" id="promoMsg" style="display: none;"></p>
       </div>
-      <div class="cart-total" id="subtotalRow" style="display: none;">
-        <span>المجموع قبل الخصم:</span>
-        <span class="amount" id="cartSubtotal">0 ر.س</span>
-      </div>
-      <div class="cart-total" id="discountRow" style="display: none; color: var(--success);">
-        <span id="discountLabel">الخصم:</span>
-        <span class="amount" id="cartDiscount" style="color: var(--success);">0 ر.س</span>
-      </div>
-      <div class="cart-total">
-        <span>المجموع الكلي:</span>
-        <span class="amount" id="cartTotal">0 ر.س</span>
+      <div class="cart-summary">
+        <div class="cart-total" id="subtotalRow" style="display: none;">
+          <span>المجموع قبل الخصم:</span>
+          <span class="amount" id="cartSubtotal">0 ر.س</span>
+        </div>
+        <div class="cart-total" id="discountRow" style="display: none; color: var(--success);">
+          <span id="discountLabel">الخصم:</span>
+          <span class="amount" id="cartDiscount" style="color: var(--success);">0 ر.س</span>
+        </div>
+        <div class="cart-total">
+          <span>المجموع الكلي:</span>
+          <span class="amount" id="cartTotal">0 ر.س</span>
+        </div>
       </div>
       <div class="field">
         <label>يوزر الديسكورد 💬 (سنفتح معك تذكرة من خلاله)</label>
@@ -1651,19 +2194,29 @@
 
 <div class="overlay soft" id="ordersOverlay">
   <div class="modal wide">
-    <button class="close-x" onclick="closeOrders()">✕</button>
-    <h2>طلباتي 📦</h2>
-    <p class="sub">جميع طلباتك السابقة وحالتها</p>
+    <div class="m-head">
+      <span class="m-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>
+      <div class="m-titles">
+        <h2>طلباتي</h2>
+        <p class="sub">جميع طلباتك السابقة وحالتها</p>
+      </div>
+      <button class="close-x" onclick="closeOrders()">✕</button>
+    </div>
     <div id="ordersList"></div>
   </div>
 </div>
 
 <div class="overlay soft" id="adminOverlay">
   <div class="modal admin-modal">
-    <button class="close-x" onclick="closeAdmin()">✕</button>
     <div id="adminPanel">
-      <h2>لوحة التحكم ⚙️</h2>
-      <p class="sub">كل تعديل يُحفظ في قاعدة البيانات ويظهر للزوار فوراً</p>
+      <div class="m-head">
+        <span class="m-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+        <div class="m-titles">
+          <h2>لوحة التحكم</h2>
+          <p class="sub">كل تعديل يُحفظ في قاعدة البيانات ويظهر للزوار فوراً</p>
+        </div>
+        <button class="close-x" onclick="closeAdmin()">✕</button>
+      </div>
       <div class="pv-note" id="adminPermsNote" style="display: none; color: #fbbf24; border-color: rgba(251,191,36,.4); background: rgba(251,191,36,.08);"></div>
       <div class="form-msg" id="adminPanelMsg"></div>
 
@@ -1671,6 +2224,13 @@
         <button class="btn btn-primary btn-block" style="margin-bottom: 18px;" onclick="seedDefaults()">🚀 المتجر فارغ — اضغط لإضافة المنتجات الافتراضية</button>
       </div>
 
+      <div class="cp-tabs">
+        <button class="active" onclick="cpTab('cats',this)">الأقسام</button>
+        <button onclick="cpTab('products',this)">المنتجات</button>
+        <button onclick="cpTab('orders',this)">الطلبات والسجل</button>
+      </div>
+
+      <div class="cp-pane active" data-pane="cats">
       <h3 style="margin: 4px 0 6px;">الأقسام 📂</h3>
       <p class="sub" style="margin-bottom: 4px;">عدّل اسم أو وصف أي قسم ثم اضغط حفظ — أو احذفه مع كل منتجاته</p>
       <div id="adminCats"></div>
@@ -1687,9 +2247,11 @@
         </div>
         <button class="btn btn-ghost btn-block" onclick="adminAddCat()">➕ إضافة قسم جديد</button>
       </div>
+      </div>
 
+      <div class="cp-pane" data-pane="products">
       <div id="productFormBox">
-      <h3 style="margin: 26px 0 6px;">إضافة / تعديل منتج 🛒</h3>
+      <h3 style="margin: 4px 0 6px;">إضافة / تعديل منتج 🛒</h3>
       <div class="admin-grid">
         <div class="field">
           <label>الفئة</label>
@@ -1737,47 +2299,77 @@
       <h3 style="margin: 26px 0 6px;">المنتجات الحالية</h3>
       <p class="sub" style="margin-bottom: 4px;">عدّل الخصم أو حالة التوفر ثم اضغط حفظ — أو عدّل/احذف المنتج بالكامل</p>
       <div id="adminList"></div>
+      </div>
 
-      <h3 style="margin: 26px 0 6px;">طلبات العملاء 📦</h3>
+      <div class="cp-pane" data-pane="orders">
+      <h3 style="margin: 4px 0 6px;">طلبات العملاء 📦</h3>
       <p class="sub" style="margin-bottom: 4px;">نافذة مستقلة لعرض الطلبات بالتفصيل وإدارتها</p>
       <button class="btn btn-primary btn-block" onclick="openAdminOrders()">📦 فتح إدارة الطلبات</button>
       <button class="btn btn-ghost btn-block" style="margin-top: 8px;" onclick="openActivityLog()">📋 سجل نشاط الطلبات الكامل</button>
       <p class="sub" style="margin-top: 6px;">سجل تدقيق لكل تغيير على كل الطلبات (الحالة، التكليف، الدفع) مع التاريخ والوقت بالضبط</p>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="overlay" id="confirmOverlay">
+<div class="overlay soft" id="confirmOverlay">
   <div class="modal">
-    <button class="close-x" onclick="closeConfirm()">✕</button>
-    <h2>مراجعة الطلب ⚠️</h2>
-    <p class="sub">تأكد من طلبك جيداً — هذه الخطوة الأخيرة قبل الإرسال</p>
+    <div class="m-head">
+      <span class="m-badge warn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+      <div class="m-titles">
+        <h2>مراجعة الطلب</h2>
+        <p class="sub">تأكد من طلبك جيداً — هذه الخطوة الأخيرة قبل الإرسال</p>
+      </div>
+      <button class="close-x" onclick="closeConfirm()">✕</button>
+    </div>
     <div id="confirmSummary"></div>
     <button class="btn btn-primary btn-block" id="confirmBtn" onclick="placeOrder()">نعم، أكّد الطلب ✅</button>
     <button class="btn btn-ghost btn-block" style="margin-top: 8px;" onclick="closeConfirm()">↩ رجوع للسلة</button>
   </div>
 </div>
 
-<div class="overlay" id="thanksOverlay">
-  <div class="modal" style="text-align: center;">
-    <div style="font-size: 4rem; margin: 6px 0;">🎉</div>
-    <h2>شكراً لك! تم استلام طلبك</h2>
-    <p class="sub" id="thanksOrderId" style="margin-bottom: 10px;"></p>
+<div class="overlay soft" id="thanksOverlay">
+  <div class="modal thanks-modal" style="text-align: center;">
+    <div class="thanks-check">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h2>تم استلام طلبك</h2>
+    <p class="sub thanks-lead">شكراً لك — طلبك الآن محفوظ وبانتظار خطوة واحدة أخيرة منك لبدء التنفيذ.</p>
+
+    <div class="thanks-idcard">
+      <div class="tic-head">
+        <span class="tic-label">رقم الطلب</span>
+        <button type="button" class="tic-copy" onclick="copyOrderId()">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          نسخ
+        </button>
+      </div>
+      <div class="tic-id" id="thanksOrderId"></div>
+      <p class="tic-hint">احفظ هذا الرقم — ستحتاج لذكره عند فتح التذكرة في الديسكورد.</p>
+    </div>
+
     <div class="thanks-note" id="thanksNote1"></div>
     <div class="pv-note" id="payBlockNote" style="display: none; color: #fb7185; border-color: rgba(248,113,113,.4); background: rgba(248,113,113,.08);"></div>
-    <button class="btn btn-primary btn-block" id="payNowBtn" onclick="openPay()" style="margin-top: 4px;">💳 ادفع الآن — دفع إلكتروني</button>
-    <p class="sub" style="margin: 10px 0 4px;">أو أكمل الدفع عبر التحويل المحلي:</p>
-    <div class="thanks-note" id="thanksNote2" style="border-color: rgba(96, 165, 250, 0.45); background: rgba(96, 165, 250, 0.1); color: #60a5fa;"></div>
-    <a class="btn btn-discord btn-block" href="https://discord.gg/sAakXRRudu" target="_blank" rel="noopener"><svg class="dc-ico" viewBox="0 0 127.14 96.36" fill="currentColor" aria-hidden="true"><path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.9-72.15ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"/></svg> اضغط هنا للانتقال إلى سيرفر الديسكورد</a>
-    <button class="btn btn-ghost btn-block" style="margin-top: 8px;" onclick="closeThanks()">إغلاق</button>
+
+    <button class="btn btn-primary btn-block" id="payNowBtn" onclick="openPay()"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> ادفع الآن · دفع إلكتروني</button>
+    <a class="btn btn-discord btn-block" href="https://discord.gg/sAakXRRudu" target="_blank" rel="noopener"><svg class="dc-ico" viewBox="0 0 127.14 96.36" fill="currentColor" aria-hidden="true"><path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.9-72.15ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"/></svg> انتقل إلى سيرفر الديسكورد</a>
+    <a class="btn btn-ghost btn-block" href="https://discord.gg/sAakXRRudu" target="_blank" rel="noopener">أو أكمل الدفع عبر التحويل المحلي</a>
+
+    <p class="thanks-foot" id="thanksNote2"></p>
+    <button type="button" class="thanks-close" onclick="closeThanks()">إغلاق</button>
   </div>
 </div>
 
-<div class="overlay" id="payOverlay">
+<div class="overlay soft" id="payOverlay">
   <div class="modal">
-    <button class="close-x" onclick="closePay()">✕</button>
-    <h2>الدفع الإلكتروني 💳</h2>
-    <p class="sub" id="paySummary" style="margin-bottom: 14px;"></p>
+    <div class="m-head">
+      <span class="m-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>
+      <div class="m-titles">
+        <h2>الدفع الإلكتروني</h2>
+        <p class="sub" id="paySummary"></p>
+      </div>
+      <button class="close-x" onclick="closePay()">✕</button>
+    </div>
     <div id="moyasarForm"></div>
     <p class="pv-note" style="margin-top: 12px;">🔒 دفع آمن عبر Moyasar — يدعم مدى والبطاقات البنكية. بعد إتمام الدفع افتح تذكرة في الديسكورد واذكر رقم طلبك.</p>
     <button class="btn btn-ghost btn-block" style="margin-top: 8px;" onclick="closePay()">↩ رجوع</button>
@@ -1786,9 +2378,24 @@
 
 <div class="overlay soft" id="ownerOverlay">
   <div class="modal owner-modal">
-    <button class="close-x" onclick="closeOwner()">✕</button>
-    <h2>لوحة المالك 👑</h2>
-    <p class="sub">إعدادات حساسة — لا يراها إلا أنت</p>
+    <div class="m-head">
+      <span class="m-badge warn"><svg viewBox="0 0 24 24" aria-hidden="true" style="fill:currentColor;stroke:none"><path d="M3 7l4 4 5-7 5 7 4-4v11H3z"/></svg></span>
+      <div class="m-titles">
+        <h2>لوحة المالك</h2>
+        <p class="sub">إعدادات حساسة — لا يراها إلا أنت</p>
+      </div>
+      <button class="close-x" onclick="closeOwner()">✕</button>
+    </div>
+    <div class="owner-layout">
+    <aside class="owner-nav">
+      <button class="active" onclick="ownerSec('status',this)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>حالة المتجر</button>
+      <button onclick="ownerSec('orders',this)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>الطلبات والدفع</button>
+      <button onclick="ownerSec('perms',this)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>صلاحيات المسؤولين</button>
+      <button onclick="ownerSec('promo',this)"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>أكواد الخصم</button>
+      <button onclick="ownerSec('msgs',this)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>الرسائل</button>
+    </aside>
+    <div class="owner-content">
+    <section class="osec active" data-osec="status">
     <div class="cart-total">
       <span>حالة المتجر:</span>
       <span class="amount" id="storeStateLabel">...</span>
@@ -1817,8 +2424,10 @@
     <button class="btn btn-danger btn-block" id="closedToggleBtn" onclick="publishClosed(true)">🚫 إغلاق الموقع برسالتي</button>
     <button class="btn btn-ghost btn-block" style="margin-top: 8px;" id="openSiteBtn" onclick="publishClosed(false)">✅ فتح الموقع</button>
     <p class="pv-note">إغلاق كامل: يُخفي كل المنتجات والصفحات عن الزوار ويعرض رسالتك فقط. مختلف عن "تحت الصيانة".</p>
+    </section>
 
-    <h3 style="margin: 26px 0 6px;">إيقاف الطلبات / الدفع ⛔</h3>
+    <section class="osec" data-osec="orders">
+    <h3 style="margin: 4px 0 6px;">إيقاف الطلبات / الدفع ⛔</h3>
     <p class="sub" style="margin-bottom: 10px;">أوقف <b>استقبال الطلبات</b> و/أو <b>الدفع الإلكتروني</b> مؤقتاً برسالة تشرح السبب — مفتاحان مستقلّان، فعّل أيّهما تبي أو الاثنين. المتجر يبقى ظاهراً، لكن الزائر ما يقدر يطلب/يدفع. أنت والإدارة ما تتأثرون.</p>
 
     <div class="cart-total">
@@ -1851,8 +2460,10 @@
     <button class="btn btn-danger btn-block" id="payBlockToggleBtn" onclick="publishPayBlock(true)">⛔ إيقاف الدفع الإلكتروني</button>
     <button class="btn btn-ghost btn-block" style="margin-top: 8px;" id="payUnblockBtn" onclick="publishPayBlock(false)">✅ استئناف الدفع الإلكتروني</button>
     <p class="pv-note">إيقاف الدفع يخفي زر «ادفع الآن» ويعرض رسالتك مكانه. إيقاف الطلبات يمنع إتمام الطلب من السلة. يشتغلان معاً أو كلٌّ لحاله.</p>
+    </section>
 
-    <h3 style="margin: 26px 0 6px;">صلاحيات المسؤولين 🛡️</h3>
+    <section class="osec" data-osec="perms">
+    <h3 style="margin: 4px 0 6px;">صلاحيات المسؤولين 🛡️</h3>
     <p class="sub" style="margin-bottom: 10px;">تحكّم بما يقدر المسؤولون (غيرك) يسوونه. ألغِ التحديد لإيقاف الصلاحية. أنت كمالك تملك كل الصلاحيات دائماً. <b>محمية في قواعد الأمان</b> — مو بس إخفاء أزرار.</p>
     <div class="field">
       <label class="perm-check"><input type="checkbox" id="permEditCatalog"> <span>✏️ تعديل المتجر — إضافة وتعديل المنتجات والأقسام والأسعار والخصومات</span></label>
@@ -1863,8 +2474,10 @@
       <label class="perm-check"><input type="checkbox" id="permAssign"> <span>👤 تكليف الفريق على الطلبات</span></label>
     </div>
     <button class="btn btn-primary btn-block" onclick="saveAdminPerms()">💾 حفظ صلاحيات المسؤولين</button>
+    </section>
 
-    <h3 style="margin: 26px 0 6px;">أكواد الخصم 🎟️</h3>
+    <section class="osec" data-osec="promo">
+    <h3 style="margin: 4px 0 6px;">أكواد الخصم 🎟️</h3>
     <p class="sub" style="margin-bottom: 10px;">أنشئ أكواد خصم بنسبة مئوية يستخدمها العملاء عند الدفع. <b>محمية في قواعد الأمان</b> — لا أحد غيرك يقدر ينشئ كوداً أو يغيّر نسبته. النسبة بين 1% و90%.</p>
     <div class="form-msg" id="promoAdminMsg"></div>
     <div class="promo-row" style="margin-bottom: 8px;">
@@ -1882,8 +2495,10 @@
     <button class="btn btn-primary btn-block" id="promoSaveBtn" onclick="savePromoCode()">➕ إنشاء الكود</button>
     <button class="btn btn-ghost btn-block" id="promoCancelEditBtn" style="display: none; margin-top: 8px;" onclick="cancelPromoEdit()">↩ إلغاء التعديل</button>
     <div id="promoList" style="margin-top: 14px; display: flex; flex-direction: column; gap: 8px;"></div>
+    </section>
 
-    <h3 style="margin: 26px 0 6px;">الرسالة العامة 📢</h3>
+    <section class="osec" data-osec="msgs">
+    <h3 style="margin: 4px 0 6px;">الرسالة العامة 📢</h3>
     <p class="sub" style="margin-bottom: 10px;">شريط يظهر أعلى الموقع لجميع الزوار — يدعم التنسيق: **عريض** *مائل* `كود`</p>
     <div class="field">
       <label>نص الرسالة</label>
@@ -1917,19 +2532,27 @@
       <textarea id="thanksNote2Input" rows="3" placeholder="نص الملاحظة الثانية..."></textarea>
     </div>
     <button class="btn btn-primary btn-block" onclick="publishThanks()">💾 حفظ رسالة الشكر</button>
+    </section>
+    </div>
+    </div>
   </div>
 </div>
 
 <div class="overlay soft" id="adminOrdersOverlay">
   <div class="modal orders-modal">
-    <button class="close-x" onclick="closeAdminOrders()">✕</button>
-    <h2>إدارة الطلبات 📦</h2>
-    <p class="sub">ابحث برقم الطلب أو يوزر الديسكورد أو معرّف دفعة ميسر — أو تصفّح كل الطلبات</p>
+    <div class="m-head">
+      <span class="m-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>
+      <div class="m-titles">
+        <h2>إدارة الطلبات</h2>
+        <p class="sub">ابحث برقم الطلب أو يوزر الديسكورد أو معرّف دفعة ميسر — أو تصفّح كل الطلبات</p>
+      </div>
+      <button class="close-x" onclick="closeAdminOrders()">✕</button>
+    </div>
     <div class="field" style="margin-bottom: 10px;">
       <input id="orderSearch" list="orderSearchList" autocomplete="off" placeholder="🔎 رقم الطلب / يوزر الديسكورد / معرّف دفعة ميسر...">
       <datalist id="orderSearchList"></datalist>
     </div>
-    <div class="orders-summary" id="ordersSummary"></div>
+    <div id="ordersSummary"></div>
     <div id="adminOrdersList"></div>
   </div>
 </div>
@@ -1946,18 +2569,28 @@
 
 <div class="overlay soft" id="logOverlay">
   <div class="modal wide">
-    <button class="close-x" onclick="closeOrderLog()">✕</button>
-    <h2>📋 سجل الطلب</h2>
-    <p class="sub" id="logSub"></p>
+    <div class="m-head">
+      <span class="m-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-4"/><rect x="9" y="2" width="6" height="6" rx="1"/></svg></span>
+      <div class="m-titles">
+        <h2>سجل الطلب</h2>
+        <p class="sub" id="logSub"></p>
+      </div>
+      <button class="close-x" onclick="closeOrderLog()">✕</button>
+    </div>
     <div id="logList" class="log-scroll"></div>
   </div>
 </div>
 
 <div class="overlay soft" id="activityLogOverlay">
   <div class="modal orders-modal">
-    <button class="close-x" onclick="closeActivityLog()">✕</button>
-    <h2>📋 سجل نشاط الطلبات الكامل</h2>
-    <p class="sub">كل تغيير على كل الطلبات — الحالة والتكليف والدفع — بالتاريخ والوقت الكامل، الأحدث أولاً</p>
+    <div class="m-head">
+      <span class="m-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-4"/><rect x="9" y="2" width="6" height="6" rx="1"/></svg></span>
+      <div class="m-titles">
+        <h2>سجل نشاط الطلبات الكامل</h2>
+        <p class="sub">كل تغيير على كل الطلبات — الحالة والتكليف والدفع — بالتاريخ والوقت الكامل، الأحدث أولاً</p>
+      </div>
+      <button class="close-x" onclick="closeActivityLog()">✕</button>
+    </div>
     <button class="btn btn-ghost btn-sm" style="margin-bottom: 12px;" onclick="exportActivityLogCSV()">⬇ تصدير السجل (CSV)</button>
     <div id="activityLogList" class="log-scroll"></div>
   </div>
@@ -2591,6 +3224,7 @@ function openOwner() {
     return;
   }
   renderOwnerPanel();
+  ownerSec('status', document.querySelector('#ownerOverlay .owner-nav button'));
   document.getElementById("ownerOverlay").classList.add("open");
 }
 function closeOwner() { document.getElementById("ownerOverlay").classList.remove("open"); }
@@ -2980,7 +3614,7 @@ async function logout() {
 
 function updateAuthUI() {
   const user = auth.currentUser;
-  document.getElementById("welcomeUser").style.display = user ? "inline" : "none";
+  document.getElementById("welcomeUser").style.display = "none";
   document.getElementById("authBtn").style.display     = user ? "none" : "inline-flex";
   document.getElementById("logoutBtn").style.display   = user ? "inline-flex" : "none";
   document.getElementById("ordersBtn").style.display   = user ? "inline-flex" : "none";
@@ -2989,8 +3623,96 @@ function updateAuthUI() {
   // الهمبرغر يظهر فقط لما يكون فيه مستخدم مسجّل (يضم اللوحات + خروج)
   document.getElementById("menuToggle").style.display  = user ? "inline-flex" : "none";
   if (!user) closeMenu();
-  if (user) document.getElementById("usernameDisplay").textContent = user.displayName || user.email;
+  if (user) {
+    const nm = user.displayName || (user.email || "").split("@")[0] || "حسابي";
+    const initial = (nm.trim()[0] || "U");
+    const handle = user.displayName ? "@" + user.displayName : (user.email || "");
+    document.getElementById("usernameDisplay").textContent = nm;
+    document.getElementById("menuTriggerName").textContent = nm;
+    document.getElementById("menuTriggerAvatar").textContent = initial;
+    document.getElementById("menuIdAvatar").textContent = initial;
+    document.getElementById("menuIdName").textContent = nm;
+    document.getElementById("menuIdHandle").textContent = handle;
+    const badge = document.getElementById("menuRoleBadge");
+    if (isOwner()) { badge.textContent = "مالك"; badge.className = "menu-id-role owner"; badge.style.display = "inline-flex"; }
+    else if (isAdmin()) { badge.textContent = "مشرف"; badge.className = "menu-id-role"; badge.style.display = "inline-flex"; }
+    else { badge.style.display = "none"; }
+  }
+  renderAvatars(user);
   applyMaintenance();
+}
+
+// ===== صورة الحساب (تُرفع من جهاز المستخدم، تُحفظ محلياً لكل حساب) =====
+// قيود صارمة: نوع صورة فقط، حجم أقصى 5MB، ونعيد ترميزها لمربّع 160×160
+// (يمنع الملفات الضخمة وأي محتوى مخفي — ما يقدر أحد يرفع أي شيء)
+const AVATAR_MAX_BYTES = 5 * 1024 * 1024;
+const AVATAR_TYPES = ["image/png", "image/jpeg", "image/webp", "image/gif"];
+const avatarKey = uid => "nv_avatar_" + uid;
+function getAvatar(uid) { try { return localStorage.getItem(avatarKey(uid)) || ""; } catch { return ""; } }
+
+// نُخزّن الصورة في Firestore (تتزامن بين الأجهزة) ونحتفظ بنسخة محلية للعرض الفوري
+function syncAvatarCache(uid, av) {
+  try { if (av) localStorage.setItem(avatarKey(uid), av); else localStorage.removeItem(avatarKey(uid)); } catch {}
+  if (auth.currentUser && auth.currentUser.uid === uid) renderAvatars(auth.currentUser);
+}
+
+function renderAvatars(user) {
+  const data = user ? getAvatar(user.uid) : "";
+  const trig = document.getElementById("menuTriggerAvatar");
+  const lbl = document.querySelector("#menu .menu-id-avatar");
+  const rm = document.getElementById("avatarRemove");
+  [trig, lbl].forEach(el => {
+    if (!el) return;
+    if (data) { el.style.backgroundImage = `url("${data}")`; el.classList.add("has-img"); }
+    else { el.style.backgroundImage = ""; el.classList.remove("has-img"); }
+  });
+  if (rm) rm.style.display = data ? "block" : "none";
+}
+
+function resizeToDataURL(file, size) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const c = document.createElement("canvas");
+      c.width = c.height = size;
+      const ctx = c.getContext("2d");
+      const s = Math.min(img.width, img.height);
+      const sx = (img.width - s) / 2, sy = (img.height - s) / 2;
+      ctx.drawImage(img, sx, sy, s, s, 0, 0, size, size);
+      resolve(c.toDataURL("image/jpeg", 0.85));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("bad image")); };
+    img.src = url;
+  });
+}
+
+async function onAvatarPick(input) {
+  const file = input.files && input.files[0];
+  input.value = "";
+  if (!file) return;
+  if (!AVATAR_TYPES.includes(file.type)) return toast("⛔ يُسمح بالصور فقط (PNG/JPG/WEBP/GIF)");
+  if (file.size > AVATAR_MAX_BYTES) return toast("⛔ الصورة كبيرة — الحد الأقصى 5 ميجابايت");
+  const user = auth.currentUser;
+  if (!user) return;
+  try {
+    const dataUrl = await resizeToDataURL(file, 160);
+    try { localStorage.setItem(avatarKey(user.uid), dataUrl); } catch {}
+    renderAvatars(user);
+    try { await setDoc(doc(db, "users", user.uid), { avatar: dataUrl }, { merge: true }); toast("✅ تم تحديث صورتك"); }
+    catch { toast("⚠ تم الحفظ على هذا الجهاز فقط — تعذّرت المزامنة"); }
+  } catch {
+    toast("⚠ تعذّر قراءة هذه الصورة");
+  }
+}
+
+async function removeAvatar() {
+  const user = auth.currentUser;
+  if (!user) return;
+  try { localStorage.removeItem(avatarKey(user.uid)); } catch {}
+  renderAvatars(user);
+  try { await setDoc(doc(db, "users", user.uid), { avatar: "" }, { merge: true }); } catch {}
 }
 
 // ===== قائمة الهمبرغر =====
@@ -3007,10 +3729,25 @@ function closeMenu() {
 function toggleMenu() {
   document.getElementById("menuDropdown").classList.contains("open") ? closeMenu() : openMenu();
 }
-// نسكّر القائمة لو ضغط برّاها
+// ===== قائمة الهامبرغر (تنقّل الصفحات) =====
+function toggleHam() {
+  const d = document.getElementById("navDropdown");
+  const b = document.getElementById("hamBtn");
+  const open = d.classList.toggle("open");
+  b.setAttribute("aria-expanded", open);
+}
+function closeHam() {
+  const d = document.getElementById("navDropdown");
+  if (d) d.classList.remove("open");
+  const b = document.getElementById("hamBtn");
+  if (b) b.setAttribute("aria-expanded", "false");
+}
+// نسكّر القوائم لو ضغط برّاها
 document.addEventListener("click", e => {
   const menu = document.getElementById("menu");
   if (menu && !menu.contains(e.target)) closeMenu();
+  const ham = document.querySelector(".nav-ham");
+  if (ham && !ham.contains(e.target)) closeHam();
 });
 
 // ===== تأكيد البريد الإلكتروني (رابط تفعيل + كولداون 30 ثانية لإعادة الإرسال) =====
@@ -3114,12 +3851,30 @@ onAuthStateChanged(auth, async user => {
     else closeVerify();
     try {
       const snap = await getDoc(doc(db, "users", user.uid));
-      if (snap.exists()) myDiscord = snap.data().discord || "";
+      if (snap.exists()) {
+        myDiscord = snap.data().discord || "";
+        syncAvatarCache(user.uid, snap.data().avatar || "");
+      }
     } catch {}
+    handlePanelParam();
   } else {
     closeVerify();
   }
 });
+
+// فتح لوحة معيّنة عند الوصول من صفحة ثانية عبر ?panel=owner|admin|orders
+let panelHandled = false;
+function handlePanelParam() {
+  if (panelHandled) return;
+  const p = new URLSearchParams(location.search).get("panel");
+  if (!p) return;
+  panelHandled = true;
+  history.replaceState({}, "", location.pathname);
+  if (p === "owner" && isOwner()) openOwner();
+  else if (p === "admin" && isAdmin()) openAdmin();
+  else if (p === "orders") openOrders();
+  else if (p === "cart") openCart();
+}
 
 const getCart  = () => JSON.parse(localStorage.getItem("nv_cart") || "[]");
 const saveCart = c => localStorage.setItem("nv_cart", JSON.stringify(c));
@@ -3175,6 +3930,8 @@ function updateCartCount() {
   const badge = document.getElementById("cartCount");
   badge.textContent = total;
   badge.style.display = total > 0 ? "flex" : "none";
+  const mc = document.getElementById("cartMenuCount");
+  if (mc) { mc.textContent = total; mc.style.display = total > 0 ? "inline-flex" : "none"; }
 }
 
 function openCart() {
@@ -3212,17 +3969,22 @@ function renderCart() {
     const row = document.createElement("div");
     row.className = "cart-item";
     row.innerHTML = `
-      <span class="ci-icon">${esc(p.icon || "🛒")}</span>
-      <div class="ci-info">
-        <h4>${esc(p.name)}</h4>
-        <span>${price} ر.س × ${item.qty} = ${price * item.qty} ر.س</span>
+      <div class="ci-top">
+        <span class="ci-icon">${esc(p.icon || "🛒")}</span>
+        <div class="ci-info">
+          <h4>${esc(p.name)}</h4>
+          <span class="ci-unit">${price} ر.س × ${item.qty}</span>
+        </div>
+        <button class="remove-item" data-remove>🗑</button>
       </div>
-      <div class="qty-controls">
-        <button data-plus>+</button>
-        <span>${item.qty}</span>
-        <button data-minus>−</button>
-      </div>
-      <button class="remove-item" data-remove>🗑</button>`;
+      <div class="ci-bottom">
+        <div class="qty-controls">
+          <button data-plus>+</button>
+          <span>${item.qty}</span>
+          <button data-minus>−</button>
+        </div>
+        <span class="ci-line">${price * item.qty} ر.س</span>
+      </div>`;
     row.querySelector("[data-plus]").onclick  = () => changeQty(p.id, 1);
     row.querySelector("[data-minus]").onclick = () => changeQty(p.id, -1);
     row.querySelector("[data-remove]").onclick = () => removeItem(p.id);
@@ -3422,6 +4184,11 @@ function confirmCheckout() {
 }
 function closeConfirm() { document.getElementById("confirmOverlay").classList.remove("open"); }
 function closeThanks() { document.getElementById("thanksOverlay").classList.remove("open"); }
+async function copyOrderId() {
+  if (!lastOrder) return;
+  try { await navigator.clipboard.writeText(lastOrder.id); toast("📋 تم نسخ رقم الطلب"); }
+  catch { toast("⚠ تعذر النسخ"); }
+}
 
 let lastOrder = null;
 
@@ -3534,8 +4301,7 @@ async function placeOrder() {
     closeCart();
 
     lastOrder = { id: fmtId(ref.id), rawId: ref.id, total };
-    document.getElementById("thanksOrderId").innerHTML =
-      `رقم طلبك: <b style="color: #a78bfa;">#${fmtId(ref.id)}</b> — احفظه واذكره في التذكرة`;
+    document.getElementById("thanksOrderId").textContent = fmtId(ref.id);
     applyThanks();
     applyPayBlockUI();
     document.getElementById("thanksOverlay").classList.add("open");
@@ -3623,7 +4389,7 @@ async function openOrders() {
     el.innerHTML = orders.map(o => `
       <div class="order-card">
         <div class="order-head">
-          <h4>طلب #${fmtId(o.id)}</h4>
+          <h4>طلب <span class="ord-id">#${fmtId(o.id)}</span></h4>
           <span class="status-badge ${ORDER_STATUS_CLASS[o.status] || "review"}">${ORDER_STATUS_ICON[o.status] || "⏳"} ${esc(o.status)}</span>
         </div>
         <div style="margin: 4px 0 8px; display: flex; gap: 6px; flex-wrap: wrap;">${paidBadge(o)}${deletionCountdownBadge(o)}</div>
@@ -3695,9 +4461,23 @@ function openAdmin() {
   }
   hideMsg("adminPanelMsg");
   renderAdminAll();
+  cpTab('cats', document.querySelector('#adminPanel .cp-tabs button'));
   document.getElementById("adminOverlay").classList.add("open");
 }
 function closeAdmin() { document.getElementById("adminOverlay").classList.remove("open"); }
+
+// تبديل تبويبات لوحة التحكم (عرض/إخفاء فقط — لا يمسّ أي منطق)
+function cpTab(name, btn) {
+  document.querySelectorAll('#adminPanel .cp-tabs button').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.querySelectorAll('#adminPanel .cp-pane').forEach(p => p.classList.toggle('active', p.dataset.pane === name));
+}
+// تبديل أقسام لوحة المالك (الشريط الجانبي)
+function ownerSec(name, btn) {
+  document.querySelectorAll('#ownerOverlay .owner-nav button').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.querySelectorAll('#ownerOverlay .osec').forEach(s => s.classList.toggle('active', s.dataset.osec === name));
+}
 
 function compressImage(file) {
   return new Promise((resolve, reject) => {
@@ -4029,7 +4809,21 @@ function renderAdminOrders() {
   // إجمالي المدفوعات = بس الطلبات اللي اندفعت فعلاً؛ وقيمة الطلبات المفتوحة = اللي مو ملغية (تشمل اللي ما اندفعت)
   const paid = filtered.filter(o => o.paid === true).reduce((s, o) => s + (o.total || 0), 0);
   const open = filtered.filter(o => o.status !== "ملغي").reduce((s, o) => s + (o.total || 0), 0);
-  summaryEl.innerHTML = `🔎 تم العثور على <b>${filtered.length}</b> طلب${term ? ` لـ "${esc(term)}"` : ""} — إجمالي المدفوعات: <b>${paid} ر.س</b> · إجمالي قيمة الطلبات المفتوحة (عدا الملغية): <b>${open} ر.س</b>`;
+  summaryEl.innerHTML = `
+    <div class="orders-stats">
+      <div class="ostat">
+        <div class="ostat-label">${term ? `نتائج البحث عن "${esc(term)}"` : "عدد الطلبات"}</div>
+        <div class="ostat-value">${filtered.length}</div>
+      </div>
+      <div class="ostat green">
+        <div class="ostat-label">إجمالي المدفوعات</div>
+        <div class="ostat-value">${paid} <small>ر.س</small></div>
+      </div>
+      <div class="ostat">
+        <div class="ostat-label">الطلبات المفتوحة (عدا الملغية)</div>
+        <div class="ostat-value">${open} <small>ر.س</small></div>
+      </div>
+    </div>`;
 
   if (adminOrdersCache.length === 0) {
     el.innerHTML = `<div class="empty-cart"><span class="icon">📦</span>لا توجد طلبات بعد</div>`;
@@ -4043,10 +4837,12 @@ function renderAdminOrders() {
   el.innerHTML = filtered.map(o => `
       <div class="order-card">
         <div class="order-head">
-          <h4>طلب #${fmtId(o.id)}</h4>
-          <span class="status-badge ${ORDER_STATUS_CLASS[o.status] || "review"}">${ORDER_STATUS_ICON[o.status] || "⏳"} ${esc(o.status)}${o.cancelledBy === "customer" ? " — ألغاه العميل" : ""}</span>
+          <h4>طلب <span class="ord-id">#${fmtId(o.id)}</span></h4>
+          <span class="oh-badges">
+            <span class="status-badge ${ORDER_STATUS_CLASS[o.status] || "review"}">${ORDER_STATUS_ICON[o.status] || "⏳"} ${esc(o.status)}${o.cancelledBy === "customer" ? " — ألغاه العميل" : ""}</span>
+            ${paidBadge(o)}
+          </span>
         </div>
-        <div style="margin: 4px 0 8px;">${paidBadge(o)}</div>
         <div class="ao-meta">
           <span>👤 ${esc(o.username || "غير معروف")}</span>
           <span class="ao-discord">💬 ${esc(o.discord || "غير محدد")}</span>
@@ -4206,6 +5002,11 @@ function fullDateTime(ts) {
 
 // أيقونة ونص الحدث — نص عادي (بدون HTML) عشان نستخدمه بالعرض والتصدير CSV الاثنين
 const STORE_ICONS = { product_add: "➕", product_edit: "✏️", product_delete: "🗑", product_row: "🏷️", cat_add: "📂", cat_edit: "✏️", cat_delete: "🗑", seed: "🚀" };
+// صنف اللون لشريحة أيقونة السجل حسب نوع الحدث (يطابق المخطط: جديد=أخضر، حالة=أصفر، تعديل=بنفسجي)
+function logIcoClass(e) {
+  if (e.scope === "store") return (e.type === "product_add" || e.type === "cat_add" || e.type === "seed") ? "lg-new" : "lg-edit";
+  return e.type === "created" ? "lg-new" : e.type === "assigned" ? "lg-assign" : e.type === "paid_change" ? "lg-paid" : "lg-status";
+}
 function logEventIcon(e) {
   if (e.scope === "store") return STORE_ICONS[e.type] || "🛒";
   return e.type === "created" ? "🆕" : e.type === "assigned" ? "👤" : e.type === "paid_change" ? "💰" : "🔄";
@@ -4229,7 +5030,7 @@ function logEntryHTML(e, orderId) {
   const ref = orderId ? `<span class="log-order">#${fmtId(orderId)}</span> ` : "";
   const idLine = (orderId && (e.discord || e.email))
     ? `<div class="log-id">💬 ${esc(e.discord || "—")} · 📧 ${esc(e.email || "—")}</div>` : "";
-  return `<div class="log-row"><span class="log-ico">${logEventIcon(e)}</span><div><div class="log-what">${ref}${esc(logEventText(e))}</div>${idLine}<div class="log-meta">${who} · ${when}</div></div></div>`;
+  return `<div class="log-row"><span class="log-ico ${logIcoClass(e)}">${logEventIcon(e)}</span><div><div class="log-what">${ref}${esc(logEventText(e))}</div>${idLine}<div class="log-meta">${who} · ${when}</div></div></div>`;
 }
 
 // سجل طلب واحد — ما يتحمّل إلا لمن نطلبه، مو مع كل تحميل للطلبات
@@ -4429,10 +5230,10 @@ function createStars() {
 
 Object.assign(window, {
   openAuth, closeAuth, register, login, logout, resetPassword,
-  openCart, closeCart, confirmCheckout, placeOrder, closeConfirm, closeThanks,
+  openCart, closeCart, confirmCheckout, placeOrder, closeConfirm, closeThanks, copyOrderId,
   openPay, closePay,
   openOrders, closeOrders, cancelMyOrder,
-  openAdmin, closeAdmin, openAdminOrders, closeAdminOrders,
+  openAdmin, closeAdmin, openAdminOrders, closeAdminOrders, cpTab, ownerSec,
   openOwner, closeOwner, toggleMaintenance, publishClosed, publishAnnounce, publishThanks,
   publishOrdersBlock, publishPayBlock, saveAdminPerms,
   applyPromo, removePromo, savePromoCode, togglePromoActive, deletePromoCode,
@@ -4441,7 +5242,8 @@ Object.assign(window, {
   closeAssign, saveAssignment, closeOrderLog,
   openActivityLog, closeActivityLog, exportActivityLogCSV,
   dismissApplePayNote,
-  toggleMenu, closeMenu,
+  toggleMenu, closeMenu, toggleHam,
+  onAvatarPick, removeAvatar,
   checkVerified, resendVerification, verifyLogout,
 });
 
